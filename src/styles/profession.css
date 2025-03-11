@@ -1,0 +1,18 @@
+.profession {
+  .box {
+      width: 896px;
+      height: 876px;
+      padding: 40px;
+      border-radius: 27px;
+      background-color: #181D19 !important;
+    }
+  
+    .iconbg {
+      background-color: var(--secondBgColor);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+}
