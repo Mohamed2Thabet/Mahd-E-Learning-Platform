@@ -1,26 +1,12 @@
-# Mahd-E-Learning-Platform
+# React + Vite
 
-This project is built using **React** and **Vite** for an e-learning platform.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Technologies Used:
-- React
-- Vite
-- ESLint
-- Babel or SWC for Fast Refresh
+Currently, two official plugins are available:
 
-## Expanding ESLint Configuration
-If you are developing a production-ready application, it is recommended to use **TypeScript** and enable type-aware lint rules. Check out the [Vite + TypeScript template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for more details.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
----
+## Expanding the ESLint configuration
 
-**Important:** Make sure to remove these conflict markers from your file:
-- `<<<<<<< HEAD`
-- `=======`
-- `>>>>>>> 46b6735`
-
-After fixing the issue, add and push your changes to GitHub using the following commands:
-
-```bash
-git add README.md
-git commit -m "Resolve merge conflict in README.md"
-git push origin main
+If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
