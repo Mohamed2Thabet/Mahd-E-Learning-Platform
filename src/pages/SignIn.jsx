@@ -7,7 +7,7 @@ const SignIn = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
-    <div className="login-container d-flex justify-content-center align-items-center vh-100 bg-black">
+    <div className="login-container  d-flex justify-content-center align-items-center vh-100 bg-black">
       <img src="public/image/Shape.svg" alt="" />
       <div className="login-box p-4 text-center rounded-3">
         <div className="box">
@@ -59,9 +59,11 @@ const SignIn = () => {
             </Form.Group>
 
             <Form.Check
-              className="p-3 text-start"
+              
+              className="p-3 text-start pe-auto"
               type="checkbox"
-              label="I agree to receive updates and promotional emails from MAHD"
+              id="agreeCheckbox"
+              label={<label style={{ cursor: "pointer" }} htmlFor="agreeCheckbox">I agree to receive updates and promotional emails from MAHD</label>}
             />
 
             <Button className="w-100 py-2 fw-bold glow-button rounded-5" variant="success">

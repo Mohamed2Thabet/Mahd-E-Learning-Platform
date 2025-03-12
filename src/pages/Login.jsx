@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, Form, Button } from "react-bootstrap";
 import { FaGoogle, FaFacebookF, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 import "../styles/login.css"
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
@@ -49,13 +49,13 @@ const Login = () => {
             </Form.Group>
 
             <div className="text-end mb-3">
-              <a href="#" className="text-success text-decoration-none ">
+              <Link to="/forgot-password" className="text-success text-decoration-none ">
                 Forgot Password?
-              </a>
+              </Link>
             </div>
 
             <Button className="w-100 py-2 fw-bold glow-button rounded-5" variant="success">
-              Sign In
+              Log in
             </Button>
 
             <div className="my-3 p">or continue with</div>

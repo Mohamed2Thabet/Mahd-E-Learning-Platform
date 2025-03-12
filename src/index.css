@@ -3,7 +3,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  --mainBgColor:##181D19 !important;
+  --mainBgColor:#181D19 !important;
   --secondBgColor:#01FE841A !important;
   --mainColor:#01FE84 !important;
 }

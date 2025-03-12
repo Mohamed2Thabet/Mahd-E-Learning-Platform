@@ -1,18 +1,19 @@
   .login-container {
     >img {
       position: absolute;
-      width: 800px;
+      height: 95vh;
+      width: 95vh;
     }
 
     .login-box {
       position: relative;
       z-index: 1;
-      background-color: #181D19;
+      background-color: var(--mainBgColor);
       padding: 2rem;
       border-radius: 12px;
       box-shadow: 0px 0px 30px rgba(0, 255, 0, 0.2);
-      width: 901px;
-      height: 866px;
+      width: 800px;
+      height: 800px;
     }
 
     .box {
@@ -21,19 +22,6 @@
       margin-left: auto;
       margin-right: auto;
       margin-top: 20px;
-    }
-
-
-
-    .glow-button {
-      background: linear-gradient(90deg, #00ff80, #00cc66);
-      box-shadow: 0 0 12px rgba(0, 255, 128, 0.8);
-      transition: all 0.3s ease-in-out;
-      border: none;
-    }
-
-    .glow-button:hover {
-      box-shadow: 0 0 20px rgba(0, 255, 128, 1);
     }
 
     .social-btn {
@@ -45,24 +33,7 @@
       font-size: 1.2rem;
     }
 
-    .input-group-text {
-      border-radius: 0.375rem;
-      cursor: pointer;
-      border: transparent;
-      background-color: #262C27 !important;
-      border: none !important;
-    }
 
-    input {
-      background-color: #262C27 !important;
-      box-shadow: none !important;
-      border: none !important;
-      color: white !important;
-
-      &::placeholder {
-        color: #ADAEBC !important;
-      }
-    }
   }
 
   .p {

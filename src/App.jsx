@@ -6,6 +6,8 @@ import SignIn from "./pages/SignIn";
 import ProfessionSelection from "./pages/ProfessionSelection";
 import LearningGoal from "./pages/LearningGoal";
 import ThankYouScreen from "./pages/ThankYouScreen";
+import WelcomeScreen from "./pages/WelcomeScreen";
+import ForgotPassword from "./pages/ForgetPassword";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route path="/profession" element={<ProfessionSelection />} />
         <Route path="/learning-goal" element={<LearningGoal />} />
         <Route path="/thank-you" element={<ThankYouScreen />} />
+        <Route path="/welcome-screen" element={<WelcomeScreen />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
