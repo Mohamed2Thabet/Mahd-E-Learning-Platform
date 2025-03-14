@@ -3,8 +3,8 @@ import { Button, Container, Card } from "react-bootstrap";
 
 const WelcomeScreen = () => {
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100  ">
-      <Card className="text-center p-5 border-0 bg-transparent" >
+    <Container className="d-flex  justify-content-center align-items-center vh-100  ">
+      <Card className="text-center boxshadowBg p-5 border-0 bg-transparent" >
       <div className="logo mb-4">
         <span className="fs-3 text-white d-flex gap-3 justify-content-center "><img src="public/image/logo.png" alt="" width={"40px"} /> MAHD</span>
       </div>

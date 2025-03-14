@@ -20,7 +20,7 @@ const professions = [
 const ProfessionSelection = () => {
   return (
     <div className="profession container vh-100 d-flex align-items-center justify-content-center vw-100">
-      <div className=" box text-light  d-flex flex-column justify-content- mx-auto ">
+      <div className=" box text-light boxshadowBg  d-flex flex-column justify-content- mx-auto ">
         <h2 className="fw-bold mb-3">What is your current profession?</h2>
         <p className="text-secondary mb-5">
           Select your industry or search for your specific role

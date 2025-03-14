@@ -8,6 +8,8 @@ import LearningGoal from "./pages/LearningGoal";
 import ThankYouScreen from "./pages/ThankYouScreen";
 import WelcomeScreen from "./pages/WelcomeScreen";
 import ForgotPassword from "./pages/ForgetPassword";
+import PasswordReset from "./pages/PasswordReset";
+import PasswordResetSuccess from "./pages/PasswordResetSuccess";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
         <Route path="/thank-you" element={<ThankYouScreen />} />
         <Route path="/welcome-screen" element={<WelcomeScreen />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/password-reset" element={<PasswordReset />} />
+        <Route path="/password-reset-success" element={<PasswordResetSuccess />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

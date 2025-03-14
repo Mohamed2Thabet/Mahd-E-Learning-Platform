@@ -36,41 +36,43 @@ const LearningGoal = () => {
   ];
 
   return (
-    <div class="learning-goal" style={{ backgroundColor: "#101310" }}>
-      <Container className="text-center text-white  vh-100 d-flex flex-column justify-content-center" style={{ width: "896px" }}>
-        <h2 className="mb-3">What is your learning goal?</h2>
-        <p className="mb-4 p">Select the option that best describes your career aspirations</p>
-        <Row className="" >
-          {options.map((option) => (
-            <Col md={6} className="mb-3" key={option.id}>
-              <Card
-                className={`p-3 text-white `}
-                onClick={() => setSelectedOption(option.id)}
-                style={{
-                  backgroundColor: selectedOption === option.id ? "#198754" : "#181D19",
-                  cursor: "pointer",
-                  borderRadius: "20px"
-                }}
-              >
-                <Card.Body className="d-flex gap-4">
-                  <div class="d-flex justify-content-center align-items-center rounded-3" style={{ width: "60px", backgroundColor: "#01FE841A", height: "40px" }}>
-                    {option.icon}
-                  </div>
-                  <div className="text-start">
-                    <div className="d-flex ">
-                      <h5 style={{ width: "156px" }}>{option.title} </h5>
-                      <span style={{ display: "inline-block", borderRadius: "50%", width: "20px", height: "20px", border: "1px solid white", marginLeft: "auto" }}></span>
-                    </div>                    <p className="p">{option.description}</p>
-                  </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-        {/* Navigation Buttons */}
-        <div className="d-flex justify-content-between mt-4">
-          <SkipButton color="#01FE84" />
-          <NextButton color="#01FE84" />
+    <div class="learning-goal" >
+      <Container className="text-center text-white  vh-100 d-flex flex-column justify-content-center" style={{ width: "896px" ,height: "900px" }}>
+        <div className="boxshadowBg p-5 rounded-4">
+          <h2 className="mb-3">What is your learning goal?</h2>
+          <p className="mb-4 p">Select the option that best describes your career aspirations</p>
+          <Row className="" >
+            {options.map((option) => (
+              <Col md={6} className="mb-3" key={option.id}>
+                <Card
+                  className={`p-3 text-white `}
+                  onClick={() => setSelectedOption(option.id)}
+                  style={{
+                    backgroundColor: selectedOption === option.id ? "#198754" : "#181D19",
+                    cursor: "pointer",
+                    borderRadius: "20px"
+                  }}
+                >
+                  <Card.Body className="d-flex gap-4">
+                    <div class="d-flex justify-content-center align-items-center rounded-3" style={{ width: "60px", backgroundColor: "#01FE841A", height: "40px" }}>
+                      {option.icon}
+                    </div>
+                    <div className="text-start">
+                      <div className="d-flex ">
+                        <h5 style={{ width: "156px" }}>{option.title} </h5>
+                        <span style={{ display: "inline-block", borderRadius: "50%", width: "20px", height: "20px", border: "1px solid white", marginLeft: "auto" }}></span>
+                      </div>                    <p className="p">{option.description}</p>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+          {/* Navigation Buttons */}
+          <div className="d-flex justify-content-between mt-4">
+            <SkipButton color="#01FE84" />
+            <NextButton color="#01FE84" />
+          </div>
         </div>
       </Container>
     </div>

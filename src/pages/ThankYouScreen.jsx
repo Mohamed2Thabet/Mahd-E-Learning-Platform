@@ -7,7 +7,7 @@ import { NavLink } from "react-router-dom";
 const ThankYouScreen = () => {
   return (
     <Container className="text-center  vh-100 d-flex  justify-content-center align-items-center">
-      <Card className=" text-white d-flex gap-3 justify-content-center align-items-center" style={{ backgroundColor: "#181D19", width: "580px", height: "606px" ,padding:"40px"}}>
+      <Card className=" boxshadowBg text-white d-flex gap-3 justify-content-center align-items-center" style={{ backgroundColor: "#181D19", width: "580px", height: "606px" ,padding:"40px"}}>
         <div className="mb-3">
           <FaCheckCircle size={60} color="#01FE84" />
         </div>
