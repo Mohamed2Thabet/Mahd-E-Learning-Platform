@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { Container, Form, Button, Card } from "react-bootstrap";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 
 const PasswordReset = () => {
+  const navigate = useNavigate()
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -13,7 +15,7 @@ const PasswordReset = () => {
   const [matchError, setMatchError] = useState("");
 
   const validatePasswordStrength = (password) => {
-    if (password.length === 0) return ""; 
+    if (password.length === 0) return "";
 
     const hasLetters = /[a-zA-Z]/.test(password);
     const hasNumbers = /\d/.test(password);
@@ -43,13 +45,13 @@ const PasswordReset = () => {
     const newPassword = e.target.value;
     setPassword(newPassword);
     setStrength(validatePasswordStrength(newPassword));
-    setMatchError(""); 
+    setMatchError("");
   };
 
   const handleConfirmPasswordChange = (e) => {
     const newConfirmPassword = e.target.value;
     setConfirmPassword(newConfirmPassword);
-    setMatchError(""); 
+    setMatchError("");
   };
 
   const validateMatch = () => {
@@ -73,18 +75,25 @@ const PasswordReset = () => {
   };
 
   return (
-    <Container className="d-flex  justify-content-center align-items-center vh-100">
-      <Card className="boxshadowBg bg-transparent" style={{ width: "400px", padding: "20px", color: "white", borderRadius: "10px" }}>
-        <div className="logo mb-3">
-          <span className="fs-3 fw- d-flex gap-3 justify-content-center "><img src="public/image/logo.png" alt="" width={"40px"} /> MAHD</span>
+    <Container className="d-flex justify-content-center align-items-center vh-100">
+      <Card
+        className="boxshadowBg bg-transparent"
+        style={{ width: "400px", padding: "20px", color: "white", borderRadius: "10px" }}
+        data-aos="zoom-in"
+      >
+        <div className="logo mb-3" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">
+          <span className="fs-3 d-flex gap-3 justify-content-center">
+            <img src="public/image/logo.png" alt="" width={"40px"} /> MAHD
+          </span>
         </div>
-        <h4 className="text-center">Create a New Password</h4>
-        <p className="text-center p" style={{ fontSize: "14px" }}>
+        <h4 className="text-center" data-aos="fade-left" data-aos-duration="1500" data-aos-delay="400">
+          Create a New Password
+        </h4>
+        <p className="text-center p" style={{ fontSize: "14px" }} data-aos="fade-up" data-aos-duration="1500" data-aos-delay="500">
           Your new password must be 8-64 characters long and include a number and a special character for high security.
         </p>
         <Form>
-          {/* New Password Field */}
-          <Form.Group className="mb-3">
+          <Form.Group className="mb-3" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="600">
             <Form.Label>Password</Form.Label>
             <div className="input-group">
               <Form.Control
@@ -102,14 +111,17 @@ const PasswordReset = () => {
               </button>
             </div>
             {strength && (
-              <small className={strength === "Strong password" ? "text-success" : strength === "Medium strength" ? "text-warning" : "text-danger"}>
+              <small className={
+                strength === "Strong password" ? "text-success" :
+                  strength === "Medium strength" ? "text-warning" :
+                    "text-danger"
+              }>
                 {strength}
               </small>
             )}
           </Form.Group>
 
-          {/* Confirm Password Field */}
-          <Form.Group className="mt-3">
+          <Form.Group className="mt-3" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="700">
             <Form.Label>Confirm Password</Form.Label>
             <div className="input-group">
               <Form.Control
@@ -130,19 +142,24 @@ const PasswordReset = () => {
             {matchError && <small className="text-danger">{matchError}</small>}
           </Form.Group>
 
-          {/* Reset Password Button */}
           <Button
             className="w-100 mt-4"
             style={{ background: "#00ff88", border: "none" }}
             disabled={!isFormValid()}
+            data-aos="fade-up"
+            data-aos-duration="1500"  
+            data-aos-delay="800"
+            onClick={() => navigate('/password-reset-success')}
           >
             Reset Password
           </Button>
 
-          <div className="mt-3 text-center">
-                    <FaArrowLeft className="text-success me-2" />
-                    <Link to="/signin" className="text-success text-decoration-none">Back to Sign In</Link>
-                  </div>
+          <div className="mt-3 text-center" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="900">
+            <FaArrowLeft className="text-success me-2" />
+            <Link to="/signin" className="text-success text-decoration-none">
+              Back to Sign In
+            </Link>
+          </div>
         </Form>
       </Card>
     </Container>

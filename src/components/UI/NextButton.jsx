@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 
-const NextButton = ({color}) => {
+const NextButton = ({color,onClick}) => {
   return (
     <StyledWrapper>
-      <button className="cta" style={{ backgroundColor: `${color}` }}>
+      <button className="cta" style={{ backgroundColor: `${color}` }} onClick={onClick}>
         <span className="span">NEXT</span>
         <span className="second">
           <svg width="50px" height="20px" viewBox="0 0 66 43" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">

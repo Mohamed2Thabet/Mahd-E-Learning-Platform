@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
 import { FaRocket, FaChartLine, FaTrophy, FaRegCompass } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
 import SkipButton from "../components/UI/SkipButton";
 import NextButton from "../components/UI/NextButton";
+import { useNavigate } from "react-router-dom";
 
 const LearningGoal = () => {
+  const navigate = useNavigate()
   const [selectedOption, setSelectedOption] = useState(null);
 
   const options = [
@@ -36,32 +37,73 @@ const LearningGoal = () => {
   ];
 
   return (
-    <div class="learning-goal" >
-      <Container className="text-center text-white  vh-100 d-flex flex-column justify-content-center" style={{ width: "896px" ,height: "900px" }}>
-        <div className="boxshadowBg p-5 rounded-4">
-          <h2 className="mb-3">What is your learning goal?</h2>
-          <p className="mb-4 p">Select the option that best describes your career aspirations</p>
-          <Row className="" >
-            {options.map((option) => (
-              <Col md={6} className="mb-3" key={option.id}>
+    <div className="learning-goal">
+      <Container
+        className="text-center text-white vh-100 d-flex flex-column justify-content-center"
+        style={{ width: "896px", height: "900px" }}
+      >
+        <div
+          className="boxshadowBg p-5 rounded-4"
+          data-aos="zoom-in"
+          data-aos-duration="1500"
+        >
+          <h2 className="mb-3" data-aos="fade-right" data-aos-duration="1500">
+            What is your learning goal?
+          </h2>
+          <p
+            className="mb-4 p"
+            data-aos="fade-left"
+            data-aos-duration="1500"
+            data-aos-delay="300"
+          >
+            Select the option that best describes your career aspirations
+          </p>
+          <Row>
+            {options.map((option, index) => (
+              <Col
+                md={6}
+                className="mb-3"
+                key={option.id}
+                data-aos="fade-up"
+                data-aos-duration="1500"
+                data-aos-delay={400 + index * 200}
+              >
                 <Card
-                  className={`p-3 text-white `}
+                  className={`p-3 text-white`}
                   onClick={() => setSelectedOption(option.id)}
                   style={{
-                    backgroundColor: selectedOption === option.id ? "#198754" : "#181D19",
+                    backgroundColor:
+                      selectedOption === option.id ? "#198754" : "#181D19",
                     cursor: "pointer",
-                    borderRadius: "20px"
+                    borderRadius: "20px",
                   }}
                 >
                   <Card.Body className="d-flex gap-4">
-                    <div class="d-flex justify-content-center align-items-center rounded-3" style={{ width: "60px", backgroundColor: "#01FE841A", height: "40px" }}>
+                    <div
+                      className="d-flex justify-content-center align-items-center rounded-3"
+                      style={{
+                        width: "60px",
+                        backgroundColor: "#01FE841A",
+                        height: "40px",
+                      }}
+                    >
                       {option.icon}
                     </div>
                     <div className="text-start">
-                      <div className="d-flex ">
-                        <h5 style={{ width: "156px" }}>{option.title} </h5>
-                        <span style={{ display: "inline-block", borderRadius: "50%", width: "20px", height: "20px", border: "1px solid white", marginLeft: "auto" }}></span>
-                      </div>                    <p className="p">{option.description}</p>
+                      <div className="d-flex">
+                        <h5 style={{ width: "156px" }}>{option.title}</h5>
+                        <span
+                          style={{
+                            display: "inline-block",
+                            borderRadius: "50%",
+                            width: "20px",
+                            height: "20px",
+                            border: "1px solid white",
+                            marginLeft: "auto",
+                          }}
+                        ></span>
+                      </div>
+                      <p className="p">{option.description}</p>
                     </div>
                   </Card.Body>
                 </Card>
@@ -69,9 +111,14 @@ const LearningGoal = () => {
             ))}
           </Row>
           {/* Navigation Buttons */}
-          <div className="d-flex justify-content-between mt-4">
+          <div
+            className="d-flex justify-content-between mt-4"
+            data-aos="fade-up"
+            data-aos-duration="1500"
+            data-aos-delay="900"
+          >
             <SkipButton color="#01FE84" />
-            <NextButton color="#01FE84" />
+            <NextButton color="#01FE84" onClick={() => navigate('/profession')} />
           </div>
         </div>
       </Container>
