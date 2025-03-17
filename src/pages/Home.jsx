@@ -4,7 +4,7 @@ import FavoriteClass from './FavoriteClass';
 const Home = () => {
   return (
     <div>
-      <FavoriteClass/>
+      {/* <FavoriteClass/> */}
     </div>
   );
 }
