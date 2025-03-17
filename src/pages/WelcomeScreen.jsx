@@ -7,13 +7,13 @@ const WelcomeScreen = () => {
       <Card className="text-center boxshadowBg p-5 border-0 bg-transparent" data-aos="zoom-in" data-aos-duration="1500">
         <div className="logo mb-4" data-aos="fade-down" data-aos-duration="1500">
           <span className="fs-3 text-white d-flex gap-3 justify-content-center">
-            <img src="public/image/logo.png" alt="" width={"40px"} /> MAHD
+            <img src="image/logo.png" alt="" width={"40px"} /> MAHD
           </span>
         </div>
         <div className="mb-3 position-relative">
-          <img className="position-relative" style={{ bottom: "-40px", left: "10px" }} src="public/image/star.svg" alt="" data-aos="fade-left" data-aos-duration="1500" />
-          <img src="public/image/yes.svg" alt="" data-aos="fade-up" data-aos-duration="1500" />
-          <img className="position-relative" style={{ top: "-40px", right: "10px" }} src="public/image/star.svg" alt="" data-aos="fade-right" data-aos-duration="1500" />
+          <img className="position-relative" style={{ bottom: "-40px", left: "10px" }} src="image/star.svg" alt="" data-aos="fade-left" data-aos-duration="1500" />
+          <img src="image/yes.svg" alt="" data-aos="fade-up" data-aos-duration="1500" />
+          <img className="position-relative" style={{ top: "-40px", right: "10px" }} src="image/star.svg" alt="" data-aos="fade-right" data-aos-duration="1500" />
         </div>
         <h2 className="text-white" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">Welcome to MAHD!</h2>
         <p className="text-success" data-aos="fade-left" data-aos-duration="1500" data-aos-delay="400">Your account has been successfully created.</p>

@@ -9,12 +9,12 @@ const Login = () => {
 
   return (
     <div className="login-container d-flex justify-content-center align-items-center vh-100 bg-black" >
-      <img src="public/image/Shape.svg" alt=""/>
+      <img src="image/Shape.svg" alt=""/>
       <div className="login-box p-4 text-center rounded-3" data-aos="zoom-in">
         <div class="box">
           <div className="text-white mb-4" data-aos="fade-right">
             <div className="logo mb-2" >
-              <span className="fs-3 fw- d-flex gap-3 justify-content-center " data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300"><img src="public/image/logo.png" alt="" width={"40px"} data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300" /> MAHD</span>
+              <span className="fs-3 fw- d-flex gap-3 justify-content-center " data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300"><img src="image/logo.png" alt="" width={"40px"} data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300" /> MAHD</span>
             </div>
             <h3 className="fw-bold" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">Welcome Back</h3>
             <p className="p" data-aos="fade-left" data-aos-duration="1500" data-aos-delay="300">Sign in to continue your learning journey</p>

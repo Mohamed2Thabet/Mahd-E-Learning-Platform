@@ -38,7 +38,7 @@ const ProfessionSelection = () => {
               <button className="btn btn-outline-success w-100 d-flex align-items-center p-3">
                 <span className="me-2 fs-4 iconbg">{prof.icon}</span>
                 {prof.name}
-                <img className="ms-auto " src="public/image/back.png" alt="" />
+                <img className="ms-auto " src="image/back.png" alt="" />
               </button>
             </div>
           ))}

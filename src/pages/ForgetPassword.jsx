@@ -14,7 +14,7 @@ const ForgotPassword = () => {
       >
         <div className="logo" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">
           <span className="fs-3 text-white d-flex gap-3 justify-content-center">
-            <img src="public/image/logo.png" alt="" width={"40px"} /> MAHD
+            <img src="image/logo.png" alt="" width={"40px"} /> MAHD
           </span>
         </div>
 

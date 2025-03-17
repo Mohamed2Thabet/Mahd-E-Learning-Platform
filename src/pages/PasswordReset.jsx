@@ -83,7 +83,7 @@ const PasswordReset = () => {
       >
         <div className="logo mb-3" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">
           <span className="fs-3 d-flex gap-3 justify-content-center">
-            <img src="public/image/logo.png" alt="" width={"40px"} /> MAHD
+            <img src="image/logo.png" alt="" width={"40px"} /> MAHD
           </span>
         </div>
         <h4 className="text-center" data-aos="fade-left" data-aos-duration="1500" data-aos-delay="400">

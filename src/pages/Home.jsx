@@ -1,9 +1,10 @@
 import React from 'react';
+import FavoriteClass from './FavoriteClass';
 
 const Home = () => {
   return (
     <div>
-      home
+      <FavoriteClass/>
     </div>
   );
 }

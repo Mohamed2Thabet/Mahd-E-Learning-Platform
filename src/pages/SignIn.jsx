@@ -10,13 +10,13 @@ const SignIn = () => {
 
   return (
     <div className="login-container d-flex justify-content-center align-items-center vh-100 bg-black">
-      <img src="public/image/Shape.svg" alt="" />
+      <img src="image/Shape.svg" alt="" />
       <div className="login-box p-4 text-center rounded-3" data-aos="zoom-in">
         <div className="box">
           <div className="text-white mb-4" data-aos="fade-right">
             <div className="logo mb-2">
               <span className="fs-3 fw- d-flex gap-3 justify-content-center" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">
-                <img src="public/image/logo.png" alt="" width={"40px"} data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300" /> MAHD
+                <img src="image/logo.png" alt="" width={"40px"} data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300" /> MAHD
               </span>
             </div>
             <h3 className="fw-bold" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">Create Account</h3>
@@ -62,7 +62,9 @@ const SignIn = () => {
               className="p-3 text-start pe-auto"
               type="checkbox"
               id="agreeCheckbox"
-              label={<label style={{ cursor: "pointer" }} htmlFor="agreeCheckbox">I agree to receive updates and promotional emails from MAHD</label>}
+              label={<label style={{ cursor: "pointer" }} htmlFor="agreeCheckbox" data-aos="fade-up"
+                data-aos-duration="1500"
+                data-aos-delay="600">I agree to receive updates and promotional emails from MAHD</label>}
               data-aos="fade-up"
               data-aos-duration="1500"
               data-aos-delay="600"

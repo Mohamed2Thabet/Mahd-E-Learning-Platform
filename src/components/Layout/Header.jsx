@@ -9,7 +9,7 @@ const Header = () => {
     <Navbar expand="lg" className="bg-dark" data-aos="fade-up">
       <Container>
         <Navbar.Brand href="#" className="text-white">
-          <img data-aos="fade-up" src="public/image/logo.png" alt="" width={"40px"}/>MAHD
+          <img data-aos="fade-up" src="image/logo.png" alt="" width={"40px"}/>MAHD
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
