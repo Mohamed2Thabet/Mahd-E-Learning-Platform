@@ -8,7 +8,8 @@ import "../styles/profession.css"
 import InputSearch from "../components/UI/InputSearch";
 import NextButton from "../components/UI/NextButton";
 import SkipButton from "../components/UI/SkipButton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { NavLink } from "react-bootstrap";
 
 const professions = [
   { name: "Software Development", icon: <BiCodeAlt /> },
@@ -53,7 +54,9 @@ const ProfessionSelection = () => {
 
         {/* Navigation Buttons */}
         <div className="d-flex justify-content-between mt-4">
-          <SkipButton color="#01FE84" />
+        <Link to="/" className="text-success fw-bold text-decoration-none">
+                        Skip
+        </Link>
           <NextButton color="#01FE84" onClick={() => navigate('/thank-you')} />
         </div>
       </div>

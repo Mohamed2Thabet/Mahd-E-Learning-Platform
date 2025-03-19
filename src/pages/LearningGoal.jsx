@@ -3,7 +3,7 @@ import { Container, Row, Col, Card } from "react-bootstrap";
 import { FaRocket, FaChartLine, FaTrophy, FaRegCompass } from "react-icons/fa";
 import SkipButton from "../components/UI/SkipButton";
 import NextButton from "../components/UI/NextButton";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const LearningGoal = () => {
   const navigate = useNavigate();
@@ -79,7 +79,9 @@ const LearningGoal = () => {
           </Row>
           {/* Navigation Buttons */}
           <div className="d-flex justify-content-between mt-4">
-            <SkipButton color="#01FE84" />
+              <Link to="/" className="text-success fw-bold text-decoration-none">
+                                    Skip
+                    </Link>
             <NextButton color="#01FE84" onClick={() => navigate('/profession')} />
           </div>
         </div>
