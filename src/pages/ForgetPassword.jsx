@@ -6,7 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 const ForgotPassword = () => {
   const navigate = useNavigate()
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
+    <Container className="d-flex justify-content-center align-items-center " style={{minHeight:"100vh"}}>
       <Card
         className="p-4 text-center border-0 mainBgColor boxshadowBg"
         style={{ width: "450px", borderRadius: "20px" }}

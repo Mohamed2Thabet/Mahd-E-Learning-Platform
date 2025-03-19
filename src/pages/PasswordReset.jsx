@@ -75,7 +75,7 @@ const PasswordReset = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100">
+    <Container className="d-flex justify-content-center align-items-center " style={{ minHeight: "100vh" }}>
       <Card
         className="boxshadowBg bg-transparent"
         style={{ width: "400px", padding: "20px", color: "white", borderRadius: "10px" }}

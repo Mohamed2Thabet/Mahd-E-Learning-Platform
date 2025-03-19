@@ -8,8 +8,7 @@ const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
-    <div className="login-container d-flex justify-content-center align-items-center vh-100 bg-black" >
-      <img src="image/Shape.svg" alt=""/>
+    <div className="login-container d-flex justify-content-center align-items-center " style={{ minHeight: "100vh" }}>
       <div className="login-box p-4 text-center rounded-3" data-aos="zoom-in">
         <div class="box">
           <div className="text-white mb-4" data-aos="fade-right">
@@ -71,7 +70,7 @@ const Login = () => {
               </Button>
             </div>
 
-            <div className="mt-4 p" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="900">
+            <div className="mt-4 p">
               Don't have an account?{" "}
               <NavLink to="/signin" className="text-success fw-bold text-decoration-none">
                 Sign Up

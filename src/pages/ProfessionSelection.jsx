@@ -22,7 +22,7 @@ const professions = [
 const ProfessionSelection = () => {
   const navigate = useNavigate()
   return (
-    <div className="profession container vh-100 d-flex align-items-center justify-content-center vw-100" data-aos="fade-in">
+    <div className="profession container  d-flex align-items-center justify-content-center " style={{ minHeight: "100vh" }} data-aos="fade-in">
       <div className="box text-light boxshadowBg d-flex flex-column justify-content- mx-auto " data-aos="zoom-in" data-aos-duration="1500">
         <h2 className="fw-bold mb-3" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">What is your current profession?</h2>
         <p className="text-secondary mb-5" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="400">
@@ -52,7 +52,7 @@ const ProfessionSelection = () => {
         </div>
 
         {/* Navigation Buttons */}
-        <div className="d-flex justify-content-between mt-4" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="900">
+        <div className="d-flex justify-content-between mt-4">
           <SkipButton color="#01FE84" />
           <NextButton color="#01FE84" onClick={() => navigate('/thank-you')} />
         </div>
