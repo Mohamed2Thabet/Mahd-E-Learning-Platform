@@ -1,7 +1,7 @@
 .navbar-toggler {
-  all: unset;
-  width: 80px;
-  height: 40px;
+  all: unset ;
+  width: 40px;
+  height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -19,7 +19,9 @@
     background-color: #198754;
 
   }
-
+&:focus {
+  box-shadow: none !important;
+}
   &:hover .custom-toggler-icon {
     color: white;
   }

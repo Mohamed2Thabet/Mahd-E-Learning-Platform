@@ -13,7 +13,7 @@ const Header = () => {
           <img data-aos="fade-up" src="image/logo.png" alt="" width={"40px"} className="me-2" />{ "    "}MAHD
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" >
-          <BsList size={30} className="custom-toggler-icon" />
+          <BsList size={20} className="custom-toggler-icon" />
         </Navbar.Toggle>       <Navbar.Collapse id="navbarScroll">
           <Nav
             className="me-auto ms-auto my-2 my-lg-0" data-aos="fade-up"
