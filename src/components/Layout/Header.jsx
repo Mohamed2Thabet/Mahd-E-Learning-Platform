@@ -2,6 +2,7 @@ import { Button, Container, Form, Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import {  useState } from "react";
 import './header.css'
+import { BsList } from "react-icons/bs";
 const Header = () => {
   const [activeLink, setActiveLink] = useState("Home");
 
@@ -11,8 +12,9 @@ const Header = () => {
         <Navbar.Brand href="#" className="text-white">
           <img data-aos="fade-up" src="image/logo.png" alt="" width={"40px"} className="me-2" />{ "    "}MAHD
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="navbarScroll" />
-        <Navbar.Collapse id="navbarScroll">
+        <Navbar.Toggle aria-controls="navbarScroll" >
+          <BsList size={30} className="custom-toggler-icon" />
+        </Navbar.Toggle>       <Navbar.Collapse id="navbarScroll">
           <Nav
             className="me-auto ms-auto my-2 my-lg-0" data-aos="fade-up"
             // style={{ maxHeight: "100px" }}

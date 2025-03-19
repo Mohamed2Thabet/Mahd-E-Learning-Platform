@@ -1,0 +1,26 @@
+.navbar-toggler {
+  all: unset;
+  width: 80px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 30px !important;
+  border: 1px solid #198754 !important;
+  transition: .3s;
+
+  .custom-toggler-icon {
+    color: #198754;
+    transition: color 0.3s ease-in-out;
+  }
+
+
+  &:hover {
+    background-color: #198754;
+
+  }
+
+  &:hover .custom-toggler-icon {
+    color: white;
+  }
+}
