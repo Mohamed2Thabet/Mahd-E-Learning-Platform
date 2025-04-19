@@ -18,7 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 16.x
+          node-version: 18.x  # Updated Node.js version to 18.x
 
       - name: Install Dependencies
         run: npm install
@@ -34,4 +34,3 @@ jobs:
 
       - name: Upload dist to S3
         run: aws s3 sync dist s3://mahd-e-learning-platform
-
