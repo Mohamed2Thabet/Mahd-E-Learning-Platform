@@ -2,10 +2,10 @@ name: 🚀 Build & Push React Docker Image
 
 on:
   push:
-    branches: [main] # or "master" or your main branch
+    branches: [main] # Your main branch
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,10 +21,17 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: 🛠️ Build and push image
+    - name: 🛠️ Build and push image to Docker Hub
       uses: docker/build-push-action@v5
       with:
         context: .
         file: ./Dockerfile
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/react-app:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/vite-app:latest
+
+    - name: 🧪 (Optional) Pull and run image to test
+      run: |
+        docker pull ${{ secrets.DOCKERHUB_USERNAME }}/vite-app:latest
+        docker run -d -p 3000:80 --name vite-app ${{ secrets.DOCKERHUB_USERNAME }}/vite-app:latest
+        sleep 5
+        curl -I http://localhost:3000 || echo "App not reachable in GitHub runner"
