@@ -29,11 +29,14 @@
   }
 
 
-.mainBgColor {
-  background-color: #181D19 ;
+.background-dark {
+  background-color: var(--background-dark) ;
 }
 .secondBgColor {
   color: #01FE841A ;
+}
+.card-background {
+  background-color: var(--card-background);
 }
 .mainColor {
   color: #01FE84 ;

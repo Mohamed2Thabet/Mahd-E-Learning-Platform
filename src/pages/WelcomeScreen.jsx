@@ -3,8 +3,8 @@ import { Button, Container, Card } from "react-bootstrap";
 
 const WelcomeScreen = () => {
   return (
-    <Container className="d-flex justify-content-center align-items-center vh-100" data-aos="fade-in">
-      <Card className="text-center boxshadowBg p-5 border-0 bg-transparent" data-aos="zoom-in" data-aos-duration="1500">
+    <div  className="d-flex  background-dark justify-content-center align-items-center vh-100" data-aos="fade-in">
+      <Card className="text-center boxshadowBg p-5 border-0 card-background " data-aos="zoom-in" data-aos-duration="1500">
         <div className="logo mb-4" data-aos="fade-down" data-aos-duration="1500">
           <span className="fs-3 text-white d-flex gap-3 justify-content-center">
             <img src="image/logo.png" alt="" width={"40px"} /> MAHD
@@ -25,7 +25,7 @@ const WelcomeScreen = () => {
           Complete Your Profile
         </Button>
       </Card>
-    </Container>
+    </div>
   );
 };
 

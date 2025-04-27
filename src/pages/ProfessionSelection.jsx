@@ -23,7 +23,7 @@ const professions = [
 const ProfessionSelection = () => {
   const navigate = useNavigate()
   return (
-    <div className="profession container  d-flex align-items-center justify-content-center " style={{ minHeight: "100vh" }} data-aos="fade-in">
+    <div className="profession background-dark d-flex align-items-center justify-content-center " style={{ minHeight: "100vh" }} data-aos="fade-in">
       <div className="box text-light boxshadowBg d-flex flex-column justify-content- mx-auto " data-aos="zoom-in" data-aos-duration="1500">
         <h2 className="fw-bold mb-3" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">What is your current profession?</h2>
         <p className="text-secondary mb-5" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="400">

@@ -6,9 +6,9 @@ import { Link, useNavigate } from "react-router-dom";
 const ForgotPassword = () => {
   const navigate = useNavigate()
   return (
-    <Container className="d-flex justify-content-center align-items-center " style={{minHeight:"100vh"}}>
+    <div className="d-flex background-dark justify-content-center align-items-center " style={{minHeight:"100vh"}}>
       <Card
-        className="p-4 text-center border-0 mainBgColor boxshadowBg"
+        className="p-4 text-center border-0 card-background boxshadowBg"
         style={{ width: "450px", borderRadius: "20px" }}
         data-aos="zoom-in"
       >
@@ -53,7 +53,7 @@ const ForgotPassword = () => {
           </Link>
         </div>
       </Card>
-    </Container>
+    </div>
   );
 };
 

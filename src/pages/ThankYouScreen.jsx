@@ -7,7 +7,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 const ThankYouScreen = () => {
   const navigate = useNavigate()
   return (
-    <Container className="text-center vh-100 d-flex justify-content-center align-items-center" data-aos="fade-in">
+    <div className="text-center background-dark vh-100 d-flex justify-content-center align-items-center" data-aos="fade-in">
       <Card className="boxshadowBg text-white d-flex gap-3 justify-content-center align-items-center"
         style={{ backgroundColor: "#181D19", width: "580px", height: "606px", padding: "40px" }}
         data-aos="zoom-in" data-aos-duration="1500">
@@ -32,7 +32,7 @@ const ThankYouScreen = () => {
           <span>Help Center</span>  <span>Contact Support</span>
         </div>
       </Card>
-    </Container>
+    </div>
   );
 };
 

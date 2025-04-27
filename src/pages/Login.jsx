@@ -9,7 +9,7 @@ const Login = () => {
 
   return (
     <div className="login-container d-flex justify-content-center align-items-center " style={{ minHeight: "100vh" }}>
-      <div className="login-box p-4 text-center rounded-3" data-aos="zoom-in">
+      <div className="login-box p-4 text-center rounded-3 " data-aos="zoom-in">
         <div class="box">
           <div className="text-white mb-4" data-aos="fade-right">
             <div className="logo mb-2" >

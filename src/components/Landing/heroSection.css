@@ -1,0 +1,26 @@
+.hero-section {
+  .fog {
+    position: relative;
+    &::before {
+      content: "";
+    position: absolute;
+      left: 0px;
+      top: 0px;
+      width: 592px;
+      height: 600px;
+      opacity: 1;
+    
+      background: linear-gradient(90deg, #101310 0%, rgba(0, 0, 0, 0) 100%);
+    
+      box-sizing: border-box;
+      border: 0px solid #E5E7EB;
+    }
+        .stats-box {
+          position: absolute;
+          bottom:  -20px;
+          left: -40px;
+          width: 200px
+        }
+  }
+
+}

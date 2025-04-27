@@ -9,7 +9,7 @@ const SignIn = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
 
   return (
-    <div className="login-container">
+    <div className="login-container   ">
       <div className="login-box text-center" data-aos="zoom-in">
         <div className="box">
           <div className="text-white mb-4" data-aos="fade-right">

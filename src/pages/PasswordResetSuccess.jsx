@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 const PasswordResetSuccess = () => {
   const navigate = useNavigate()
   return (
-    <div className="d-flex justify-content-center align-items-center " style={{ minHeight: "100vh" }} data-aos="zoom-in">
-      <Card className="text-center boxshadowBg p-4" style={{ width: "350px", backgroundColor: "#111", color: "#fff", borderRadius: "10px" }} data-aos="fade-up" data-aos-duration="1500">
+    <div className="d-flex justify-content-center align-items-center background-dark" style={{ minHeight: "100vh" }} data-aos="zoom-in">
+      <Card className="text-center boxshadowBg card-background p-4" style={{ width: "350px", color: "#fff", borderRadius: "10px" }} data-aos="fade-up" data-aos-duration="1500">
         <div className="logo mb-2" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">
           <span className="fs-3 fw- d-flex gap-3 justify-content-center "><img src="image/logo.png" alt="" width={"40px"} /> MAHD</span>
         </div>

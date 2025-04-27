@@ -75,9 +75,9 @@ const PasswordReset = () => {
   };
 
   return (
-    <Container className="d-flex justify-content-center align-items-center " style={{ minHeight: "100vh" }}>
+    <div className="d-flex  background-dark justify-content-center align-items-center " style={{ minHeight: "100vh" }}>
       <Card
-        className="boxshadowBg bg-transparent"
+        className="boxshadowBg  card-background"
         style={{ width: "400px", padding: "20px", color: "white", borderRadius: "10px" }}
         data-aos="zoom-in"
       >
@@ -162,7 +162,7 @@ const PasswordReset = () => {
           </div>
         </Form>
       </Card>
-    </Container>
+    </div>
   );
 };
 
