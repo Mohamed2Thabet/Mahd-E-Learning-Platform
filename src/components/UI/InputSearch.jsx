@@ -27,7 +27,8 @@ const StyledWrapper = styled.div`
 
   .input {
     font-family: "Montserrat", sans-serif;
-    width: 100%;
+    min-width: 200px;
+    width:500px;
     height: 45px;
     padding-left: 2.5rem;
     box-shadow: 0 0 0 1.5px #2b2c37, 0 0 25px -17px #000;

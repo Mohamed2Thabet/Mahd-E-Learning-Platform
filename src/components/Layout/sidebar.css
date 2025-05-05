@@ -1,0 +1,63 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 80px;
+  background-color: #111;
+  color: #01FE84;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem 0;
+  z-index: 1000;
+  .sidebar-icons,
+    .sidebar-logout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+  
+    .nav-link {
+      color: #01FE84;
+      font-size: 1.5rem;
+      text-decoration: none;
+      /* إزالة التسطير */
+    }
+  
+    .nav-link:hover,
+    .nav-link.active {
+      color: white;
+    }
+}
+
+
+/* Responsive: Bottom navbar on mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    top: auto;
+    bottom: 0;
+    left: 0;
+    height: 60px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    &::-webkit-scrollbar {
+        display: none;
+      }
+            .sidebar-icons,
+            .sidebar-logout {
+              flex-direction: row;
+              align-items: center;
+              gap: 1rem;
+            }
+  }
+
+  
+
+}

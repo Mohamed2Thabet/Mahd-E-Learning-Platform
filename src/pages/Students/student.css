@@ -1,0 +1,54 @@
+.page {
+  display: flex;
+}
+
+.main-content {
+  margin-left: 80px;
+  padding: 1rem;
+  color: white;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* 📌 تنسيق البطاقة */
+.summary-card {
+  background-color: #333;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+/* 🧩 تنسيق عنوان البطاقة مع الأيقونة */
+.summary-card .card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* 🎨 تنسيق الأيقونة */
+.summary-card  svg {
+  font-size: 1.5rem;
+  color: #01FE84;
+}
+.card-text {
+  font-size: 20px;
+}
+.custom-progress .progress-bar {
+  background-color: #01FE84;
+  color: white;
+  font-weight: bold;
+}
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-bottom: 60px;
+  }
+}

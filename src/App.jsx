@@ -10,14 +10,35 @@ import WelcomeScreen from "./pages/WelcomeScreen";
 import ForgotPassword from "./pages/ForgetPassword";
 import PasswordReset from "./pages/PasswordReset";
 import PasswordResetSuccess from "./pages/PasswordResetSuccess";
+import Courese from "./pages/Courses";
+import Profile from "./pages/Profile";
+import Student from "./pages/Students/Student";
+import Instructor from "./pages/Instructor/Instructor";
+import SavedCourses from "./pages/SavedCourses";
+import CourseCatalog from "./pages/CourseCatalog";
+import CommunityPage from "./pages/Community/CommunityPage";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<><Header /><Home /></>} />
+        
+        <Route path="/courses" element={<>
+          <Header />
+          <Courese />
+        </>} />
+        <Route path="/profile" element={<>
+          <Header />
+          <Profile />
+        </>} />
         <Route path="/login" element={<Login />} />
+        <Route path="/saved-courses" element={<SavedCourses />} />
+        <Route path="/community" element={<CommunityPage />} />
+        <Route path="/course-catalog" element={<><Header /><CourseCatalog /></>} />
         <Route path="/signin" element={<SignIn />} />
+        <Route path="/instructor" element={<Instructor />} />
+        <Route path="/dashboard" element={<Student />} />
         <Route path="/profession" element={<ProfessionSelection />} />
         <Route path="/learning-goal" element={<LearningGoal />} />
         <Route path="/thank-you" element={<ThankYouScreen />} />

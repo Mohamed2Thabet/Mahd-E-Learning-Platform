@@ -1,105 +1,14 @@
 import { Container, Button } from 'react-bootstrap';
 import CourseCard from './CourseCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import {  Autoplay } from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-const PopularCourses = () => {
-  const courses = [
-    {
-      image: './image/fullstack.png',
-      title: 'UI/UX Design Masterclass',
-      description: 'Master the fundamentals of user interface and experience design',
-      instructor: './image/mike-johnson.png',
-      name: 'John Smith',
-      role: 'Senior Designer',
-      rating: 4.9,
-      reviews: '2.5k',
-      students: '15k',
-      price: 99,
-      free: false,
-    },
-    {
-      image: './image/fullstack.png',
-      title: 'UI/UX Design Masterclass',
-      description: 'Master the fundamentals of user interface and experience design',
-      instructor: './image/mike-johnson.png',
-      name: 'John Smith',
-      role: 'Senior Designer',
-      rating: 4.9,
-      reviews: '2.5k',
-      students: '15k',
-      price: 99,
-      free: false,
-    },
-    {
-      image: './image/fullstack.png',
-      title: 'Full-Stack Web Development',
-      description: 'Build modern web applications from front to back end',
-      instructor: './image/mike-johnson.png',
-      name: 'Mike Johnson',
-      role: 'Lead Developer',
-      rating: 4.8,
-      reviews: '1.8k',
-      students: '12k',
-      price: 129,
-      free: false,
-    },
-    {
-      image: './image/fullstack.png',
-      title: 'Full-Stack Web Development',
-      description: 'Build modern web applications from front to back end',
-      instructor: './image/mike-johnson.png',
-      name: 'Mike Johnson',
-      role: 'Lead Developer',
-      rating: 4.8,
-      reviews: '1.8k',
-      students: '12k',
-      price: 129,
-      free: false,
-    },
-    {
-      image: './image/fullstack.png',
-      title: 'Digital Marketing Fundamentals',
-      description: 'Learn essential digital marketing strategies and tools',
-      instructor: './image/mike-johnson.png',
-      name: 'Sarah Williams',
-      role: 'Marketing Expert',
-      rating: 4.7,
-      reviews: '3.2k',
-      students: '20k',
-      price: 0,
-      free: true,
-    },
-    {
-      image: './image/fullstack.png',
-      title: 'Digital Marketing Fundamentals',
-      description: 'Learn essential digital marketing strategies and tools',
-      instructor: './image/mike-johnson.png',
-      name: 'Sarah Williams',
-      role: 'Marketing Expert',
-      rating: 4.7,
-      reviews: '3.2k',
-      students: '20k',
-      price: 0,
-      free: true,
-    },
-    {
-      image: './image/fullstack.png',
-      title: 'Digital Marketing Fundamentals',
-      description: 'Learn essential digital marketing strategies and tools',
-      instructor: './image/mike-johnson.png',
-      name: 'Sarah Williams',
-      role: 'Marketing Expert',
-      rating: 4.7,
-      reviews: '3.2k',
-      students: '20k',
-      price: 0,
-      free: true,
-    },
-  ];
+// استيراد البيانات
+import courses from '../../data/coursesData';
 
+const PopularCourses = () => {
   return (
     <section className="text-white py-5 ">
       <Container>
@@ -108,10 +17,9 @@ const PopularCourses = () => {
 
         <Swiper
           modules={[Autoplay]}
-        
           loop
           autoplay={{
-            delay: 1000, // 1 ثانية
+            delay: 1000,
             disableOnInteraction: false,
           }}
           spaceBetween={30}
@@ -121,8 +29,8 @@ const PopularCourses = () => {
             992: { slidesPerView: 3 },
           }}
         >
-          {courses.map((course, index) => (
-            <SwiperSlide key={index}>
+          {courses.map((course) => (
+            <SwiperSlide key={course.id}>
               <CourseCard {...course} />
             </SwiperSlide>
           ))}

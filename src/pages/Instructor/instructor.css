@@ -1,0 +1,26 @@
+// 📁 src/pages/Instructor.css
+.page {
+  display: flex;
+}
+
+.main-content {
+  margin-left: 80px;
+  padding: 1rem;
+  color: white;
+  background: var(--background-dark);
+  width: 100%;
+  min-height: 100vh;
+}
+
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+    margin-bottom: 60px;
+  }
+}
