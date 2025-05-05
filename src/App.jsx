@@ -16,7 +16,6 @@ import Student from "./pages/Students/Student";
 import Instructor from "./pages/Instructor/Instructor";
 import SavedCourses from "./pages/SavedCourses";
 import CourseCatalog from "./pages/CourseCatalog";
-import CommunityPage from "./pages/Community/CommunityPage";
 
 function App() {
   return (
@@ -34,7 +33,6 @@ function App() {
         </>} />
         <Route path="/login" element={<Login />} />
         <Route path="/saved-courses" element={<SavedCourses />} />
-        <Route path="/community" element={<CommunityPage />} />
         <Route path="/course-catalog" element={<><Header /><CourseCatalog /></>} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/instructor" element={<Instructor />} />
