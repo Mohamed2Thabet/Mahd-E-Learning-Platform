@@ -1,7 +1,7 @@
 // 📁 src/pages/Instructor.jsx
 import React from 'react';
 import './instructor.css';
-import { Card, Button, ProgressBar } from 'react-bootstrap';
+import { Card} from 'react-bootstrap';
 import Sidebar from '../../components/Layout/Sidebar';
 import DashboardCoursesAnalytics from '../../components/Dasboard/Instructor/DashboardCoursesAnalytics ';
 

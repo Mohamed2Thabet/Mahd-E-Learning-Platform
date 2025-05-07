@@ -1,7 +1,7 @@
 // 📁 src/pages/Student.jsx
 import React from 'react';
 import './student.css';
-import { Card, Button, ProgressBar } from 'react-bootstrap';
+import { Card, ProgressBar } from 'react-bootstrap';
 import { FaBook, FaClock, FaCertificate, FaTrophy } from "react-icons/fa";
 import Sidebar from '../../components/Layout/Sidebar';
 import courses from '../../data/coursesData';
