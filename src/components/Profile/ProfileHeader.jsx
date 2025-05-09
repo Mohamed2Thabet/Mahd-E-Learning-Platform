@@ -23,13 +23,13 @@ const ProfileHeader = () => {
           <h1 className="mb-0">David Anderson</h1>
           <FiCheck className="verified-badge" size={22} />
         </div>
-        <h5 className="text-primary mb-3">UI/UX Designer & Instructor</h5>
-        <p className="mb-3">
+        <h5 className=" mb-3">UI/UX Designer & Instructor</h5>
+        <p className="mb-3 ">
           Award-winning designer with 10+ years of experience in digital product
           design. Passionate about teaching and helping others master the craft of
           UI/UX design.
         </p>
-        <div className="d-flex align-items-center mb-3">
+        <div className="d-flex align-items-center mb-3 ">
           <a href="#" className="social-icon"><FiLinkedin /></a>
           <a href="#" className="social-icon"><FiTwitter /></a>
           <a href="#" className="social-icon"><FiGlobe /></a>

@@ -52,12 +52,12 @@
 .stat-value {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--primary-color);
+  color: var(--mode-text);
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: var(--medium-text);
+  color: var();
   margin-top: 0.5rem;
 }
 
@@ -103,6 +103,7 @@
 
 .swiper-pagination-bullet {
   background: var(--medium-text) !important;
+  
 }
 
 .swiper-pagination-bullet-active {

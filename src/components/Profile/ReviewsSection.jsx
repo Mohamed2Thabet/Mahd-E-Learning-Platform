@@ -21,11 +21,35 @@ const ReviewsSection = () => {
       rating: 5,
       date: '1 month ago',
       review: 'The course exceeded my expectations. David\'s expertise in UI/UX design is evident, and his feedback on assignments was invaluable. I particularly appreciated the real-world projects that helped build my portfolio.'
-    }
+    },
+    {
+      id: 3,
+      name: 'Michael Chen',
+      avatar: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg',
+      rating: 5,
+      date: '1 month ago',
+      review: 'The course exceeded my expectations. David\'s expertise in UI/UX design is evident, and his feedback on assignments was invaluable. I particularly appreciated the real-world projects that helped build my portfolio.'
+    },
+    {
+      id: 4,
+      name: 'Michael Chen',
+      avatar: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg',
+      rating: 5,
+      date: '1 month ago',
+      review: 'The course exceeded my expectations. David\'s expertise in UI/UX design is evident, and his feedback on assignments was invaluable. I particularly appreciated the real-world projects that helped build my portfolio.'
+    },
+    {
+      id: 5,
+      name: 'Michael Chen',
+      avatar: 'https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg',
+      rating: 5,
+      date: '1 month ago',
+      review: 'The course exceeded my expectations. David\'s expertise in UI/UX design is evident, and his feedback on assignments was invaluable. I particularly appreciated the real-world projects that helped build my portfolio.'
+    },
   ]
 
   return (
-    <div className="py-4 mb-5">
+    <div className="">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="mb-0">Student Reviews</h2>
         <div className="d-flex align-items-center">
@@ -62,7 +86,7 @@ const ReviewsSection = () => {
       <Row>
         {reviews.map(review => (
           <Col key={review.id} md={12} className="mb-4">
-            <Card className="p-4">
+            <Card className="p-4 card-background">
               <div className="d-flex align-items-start">
                 <img
                   src={review.avatar}

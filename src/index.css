@@ -8,6 +8,8 @@
   --text-light: rgba(255, 255, 255, 0.87);
   --text-secondary: rgba(255, 255, 255, 0.6);
   --border-color: #333;
+  --heading-color:white;
+  --mode-text:white;
 }
 * {
   margin: 0;
@@ -24,7 +26,9 @@ body {
   color: var(--text-light);
   min-height: 100vh;
 }
-
+h1,h2,h3,h4,h5,h6 {
+  color: var(--heading-color) !important;
+}
 a {
   color: var(--primary);
   text-decoration: none;

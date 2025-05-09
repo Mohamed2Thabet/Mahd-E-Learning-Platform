@@ -11,8 +11,8 @@ const StatsSection = () => {
   return (
     <Row className="py-4">
       {stats.map((stat, index) => (
-        <Col key={index} xs={6} md={3} className="mb-3 mb-md-0">
-          <div className="stats-container text-center">
+        <Col key={index} xs={6} md={3} className="mb-3 mb-md-0 ">
+          <div className="stats-container text-center card-background">
             <div className="stat-value">{stat.value}</div>
             <div className="stat-label">{stat.label}</div>
           </div>

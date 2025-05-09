@@ -44,5 +44,12 @@
 .boxshadowBg {
   box-shadow: 0px 0px 30px rgba(0, 255, 0, 0.2);
 }
-
-
+.primary-color {
+  color: var(--primary) !important;
+}
+.primary-background {
+  background-color: var(--primary) !important ;
+}
+.mode-text {
+  color: var(--mode-text) !important;
+}

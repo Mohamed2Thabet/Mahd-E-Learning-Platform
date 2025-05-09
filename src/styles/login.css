@@ -44,7 +44,7 @@
 
 
 /* النصوص */
-.p {
+.p,p {
   color: #8C8F99;
   font-size: 18px;
 }

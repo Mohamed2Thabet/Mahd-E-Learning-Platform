@@ -17,7 +17,12 @@ const Header = () => {
   ];
 
   return (
-    <Navbar expand="lg" className="bg-dark" data-aos="fade-up">
+    <Navbar
+      expand="lg"
+      className="bg-dark z-50 position-relative"
+      data-aos="fade-up"
+      style={{ zIndex: 100 }}
+    >
       <Container>
         <Navbar.Brand as={Link} to="/" className="text-white d-flex align-items-center">
           <img data-aos="fade-up" src="image/logo.png" alt="Logo" width="40px" className="me-2" />

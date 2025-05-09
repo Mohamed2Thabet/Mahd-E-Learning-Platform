@@ -16,12 +16,15 @@ import Student from "./pages/Students/Student";
 import Instructor from "./pages/Instructor/Instructor";
 import SavedCourses from "./pages/SavedCourses";
 import CourseCatalog from "./pages/CourseCatalog";
+import Footer from "./components/Layout/Footer";
+import Community from "./pages/Community/Community";
+import StudentProfilePage from "./pages/StudentProfilePage";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<><Header /><Home /></>} />
+        <Route path="/" element={<><Header /><Home />  <Footer/></>} />
         
         <Route path="/courses" element={<>
           <Header />
@@ -30,9 +33,15 @@ function App() {
         <Route path="/profile" element={<>
           <Header />
           <Profile />
+          <Footer />
         </>} />
         <Route path="/login" element={<Login />} />
+        <Route path="/community" element={<>
+          <Header/>
+          <Community />
+        </>} />
         <Route path="/saved-courses" element={<SavedCourses />} />
+        <Route path="/student-profile-page" element={<StudentProfilePage />} />
         <Route path="/course-catalog" element={<><Header /><CourseCatalog /></>} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/instructor" element={<Instructor />} />
