@@ -52,7 +52,14 @@ const SignIn = () => {
                 </button>
               </div>
             </Form.Group>
-
+            <Form.Group className="mb-3 " data-aos="fade-up">
+              <Form.Label className="text-start w-100">Account Type</Form.Label>
+              <Form.Select aria-label="Select account type" className="white-arrow-select">
+                <option value="">Select account type</option>
+                <option value="student">Student</option>
+                <option value="teacher">Teacher</option>
+              </Form.Select>
+            </Form.Group>
             <Form.Check
               className="p-3 text-start"
               type="checkbox"

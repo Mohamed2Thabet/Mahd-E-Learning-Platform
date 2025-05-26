@@ -17,7 +17,7 @@
     border: none !important;
   }
 
-  input {
+  input  , option ,select{
     background-color: #262C27 !important;
     box-shadow: none !important;
     border: none !important;
@@ -52,4 +52,24 @@
 }
 .mode-text {
   color: var(--mode-text) !important;
+}
+.h1,.h2,.h3,.h4,.h5,.h6{
+  color:white;
+}
+.bg-info {
+  background-color: var(--primary) !important;
+}
+
+.white-arrow-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='20' viewBox='0 0 24 24' width='20' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
 }

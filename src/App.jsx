@@ -19,13 +19,22 @@ import CourseCatalog from "./pages/CourseCatalog";
 import Footer from "./components/Layout/Footer";
 import Community from "./pages/Community/Community";
 import StudentProfilePage from "./pages/StudentProfilePage";
-
+import PlatformInsights from "./pages/PlatformInsights";
+import "./App.css"
+import DownloadAppPage from "./pages/DownloadAppPage";
+import SettingsPage from "./pages/SettingsPage";
+import HelpCenterPage from "./pages/HelpCenterPage";
+import BillingPage from "./pages/BillingPage";
+import GoalsMilestonesPage from "./pages/GoalsMilestonesPage";
+import CoursePlayer from "./pages/CoursePlayer";
+import Notifications from "./pages/Notifications";
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<><Header /><Home />  <Footer/></>} />
-        
+        <Route path="/" element={<><Header /><Home />  <Footer /></>} />
+        <Route path="/course-player" element={<><Header />  <CoursePlayer /></>} />
+
         <Route path="/courses" element={<>
           <Header />
           <Courese />
@@ -37,12 +46,26 @@ function App() {
         </>} />
         <Route path="/login" element={<Login />} />
         <Route path="/community" element={<>
-          <Header/>
+          <Header />
           <Community />
         </>} />
+        <Route path="/help-center" element={<>
+          <Header />
+          <HelpCenterPage />
+        </>} />
+        <Route path="/platform-insights" element={<PlatformInsights />} />
+        <Route path="/download-app" element={<><Header /><DownloadAppPage />  </>} />
         <Route path="/saved-courses" element={<SavedCourses />} />
+        <Route path="/notifications" element={<Notifications />} />
+        <Route path="/settings" element={<>
+          <Header /><SettingsPage />
+        </>} />
+        <Route path="/billing" element={<>
+          <Header /><BillingPage />
+        </>} />
         <Route path="/student-profile-page" element={<StudentProfilePage />} />
         <Route path="/course-catalog" element={<><Header /><CourseCatalog /></>} />
+        <Route path="/goals-milestones" element={<><Header /><GoalsMilestonesPage /></>} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/instructor" element={<Instructor />} />
         <Route path="/dashboard" element={<Student />} />
