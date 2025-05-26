@@ -284,7 +284,7 @@ const Overlay = styled.div`
 const ContentWrapper = styled.div`
   margin-left: ${props => props.$sidebarOpen ? '280px' : '0'};
   transition: margin-left 0.3s ease;
-  min-height: 100vh;
+
   
   @media (max-width: 768px) {
     margin-left: 0;
