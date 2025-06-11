@@ -1,62 +1,122 @@
 // 📁 src/pages/Student.jsx
 import React from 'react';
-import './student.css';
+import styled from 'styled-components';
 import { Card, ProgressBar } from 'react-bootstrap';
 import { FaBook, FaClock, FaCertificate, FaTrophy } from "react-icons/fa";
 import Sidebar from '../../components/Layout/Sidebar';
-import courses from '../../data/coursesData';
 import CourseCard from '../../components/Landing/CourseCard';
+import LearningSchedule from '../../components/Dasboard/User/LearningSchedule';
+import { coursesData } from '../../data/coursesData';
 
+// بيانات ملخص الطالب
 const summaryData = [
   { title: "Courses", icon: <FaBook /> },
   { title: "Hours", icon: <FaClock /> },
   { title: "Certificates", icon: <FaCertificate /> },
   { title: "Achievements", icon: <FaTrophy /> },
 ];
+
 const Student = () => {
   return (
-    <div className="page student-page">
-      <Sidebar/>
-      <main className="main-content background-dark">
+    <PageWrapper>
+      <Sidebar />
+      <MainContent>
         <h2>Welcome back, Jonathan!</h2>
-        <div className="summary-cards">
+
+        <SummaryCards>
           {summaryData.map((item, i) => (
-            <Card key={i} className="summary-card text-white card-background ">
+            <SummaryCard key={i}>
               <Card.Body>
-                <div className="d-flex align-items-center gap-2 mb-2">
-                  <div className='icons'>{item.icon}</div>
+                <IconTitleWrapper>
+                  <Icon>{item.icon}</Icon>
                   <Card.Title className="mb-0">{item.title}</Card.Title>
-                </div>
-                <Card.Text>{i * 24+1}</Card.Text>
-                <ProgressBar now={40 + i * 10} label={`${40 + i * 10}%`} className="custom-progress" />
+                </IconTitleWrapper>
+                <Card.Text>{i * 24 + 1}</Card.Text>
+                <ProgressBar
+                  now={40 + i * 10}
+                  label={`${40 + i * 10}%`}
+                  className="custom-progress"
+                />
               </Card.Body>
-            </Card>
+            </SummaryCard>
           ))}
-        </div>
+        </SummaryCards>
 
         <h3>Current Courses</h3>
         <CourseList>
-          {courses.map((course, index) => (
+          {coursesData.map((course, index) => (
             <CourseCard key={index} {...course} />
           ))}
         </CourseList>
 
-
-      <LearningSchedule/>
-      </main>
-    </div>
+        <LearningSchedule />
+      </MainContent>
+    </PageWrapper>
   );
 };
 
 export default Student;
+const PageWrapper = styled.div`
+  display: flex;
+  background-color: var(--background-dark);
+  color: var(--text-light);
+  min-height: 100vh;
+`;
 
-import styled from "styled-components";
-import LearningSchedule from '../../components/Dasboard/User/LearningSchedule';
+const MainContent = styled.main`
+  flex-grow: 1;
+  padding: 2rem;
+  background-color: var(--background-dark);
+  margin-left:50px;
+`;
+
+const SummaryCards = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const SummaryCard = styled(Card)`
+  background-color: var(--card-background);
+  color: var(--text-light);
+  border: none;
+  padding: 1rem;
+
+  .card-title {
+    color: var(--heading-color);
+  }
+
+  .card-text {
+    color: var(--text-secondary);
+  }
+
+  .progress {
+    height: 0.75rem;
+    background-color: var(--border-color);
+  }
+
+  .progress-bar {
+    background-color: var(--primary);
+  }
+`;
+
+const IconTitleWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+`;
+
+const Icon = styled.div`
+  font-size: 1.5rem;
+  color: var(--primary);
+`;
 
 const CourseList = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
   gap: 1rem;
   margin-bottom: 2rem;
-  padding: 1rem;
+  padding: 1rem 0;
 `;

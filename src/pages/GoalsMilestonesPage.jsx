@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import SummaryStats from '../components/GoalsMilestones/SummaryStats';
 import ActiveGoal from '../components/GoalsMilestones/ActiveGoal';
 import Milestone from '../components/GoalsMilestones/Milestone';
-import SideBarSettings from '../components/Settings/SideBarSettings';
+import Sidebar from '../components/Layout/Sidebar';
 
 const PageWrapper = styled.div`
   background-color: var(--background-dark, #101310);
@@ -38,12 +38,12 @@ const StyledContainer = styled(BootstrapContainer)`
   margin-bottom: 1.5rem;
   
   @media (min-width: 768px) {
-    margin-left: 270px;
+    margin-left: 70px;
     max-width: calc(100% - 270px);
   }
   
   @media (min-width: 992px) {
-    margin-left: 270px;
+    margin-left: 70px;
     max-width: calc(100% - 270px);
   }
 `;
@@ -251,7 +251,7 @@ const GoalsMilestonesPage = () => {
     <PageWrapper>
       <ProgressIndicator />
       <ContentWrapper>
-        <SideBarSettings />
+        <Sidebar/>
         <StyledContainer>
           <Header>
             <PageTitle>Learning Goals & Milestones</PageTitle>

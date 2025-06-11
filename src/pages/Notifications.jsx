@@ -10,7 +10,7 @@ const PageWrapper = styled.div`
 
 const ContentArea = styled.div`
   flex: 1;
-  background-color: #0e0e0e;
+  background-color: var(--background-dark);
   padding: 40px;
 `;
 

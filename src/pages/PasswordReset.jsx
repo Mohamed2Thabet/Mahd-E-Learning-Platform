@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Container, Form, Button, Card } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import { FaArrowLeft, FaEye, FaEyeSlash } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { Link, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 
+// Component
 const PasswordReset = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -75,95 +76,270 @@ const PasswordReset = () => {
   };
 
   return (
-    <div className="d-flex  background-dark justify-content-center align-items-center " style={{ minHeight: "100vh" }}>
-      <Card
-        className="boxshadowBg  card-background"
-        style={{ width: "400px", padding: "20px", color: "white", borderRadius: "10px" }}
-        data-aos="zoom-in"
-      >
-        <div className="logo mb-3" data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">
-          <span className="fs-3 d-flex gap-3 justify-content-center">
-            <img src="image/logo.png" alt="" width={"40px"} /> MAHD
-          </span>
-        </div>
-        <h4 className="text-center" data-aos="fade-left" data-aos-duration="1500" data-aos-delay="400">
+    <ResetContainer>
+      <ResetCard data-aos="zoom-in">
+        <Logo data-aos="fade-right" data-aos-duration="1500" data-aos-delay="300">
+          <LogoSpan>
+            <LogoImage src="image/logo.png" alt="" />
+            MAHD
+          </LogoSpan>
+        </Logo>
+
+        <MainTitle data-aos="fade-left" data-aos-duration="1500" data-aos-delay="400">
           Create a New Password
-        </h4>
-        <p className="text-center p" style={{ fontSize: "14px" }} data-aos="fade-up" data-aos-duration="1500" data-aos-delay="500">
+        </MainTitle>
+
+        <SubtitleText data-aos="fade-up" data-aos-duration="1500" data-aos-delay="500">
           Your new password must be 8-64 characters long and include a number and a special character for high security.
-        </p>
-        <Form>
-          <Form.Group className="mb-3" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="600">
-            <Form.Label>Password</Form.Label>
-            <div className="input-group">
-              <Form.Control
+        </SubtitleText>
+
+        <StyledForm>
+          <FormGroup data-aos="fade-up" data-aos-duration="1500" data-aos-delay="600">
+            <FormLabel>Password</FormLabel>
+            <InputGroup>
+              <PasswordInput
                 type={passwordVisible ? "text" : "password"}
                 placeholder="Enter your password"
                 value={password}
                 onChange={handlePasswordChange}
               />
-              <button
+              <EyeButton
                 type="button"
-                className="input-group-text border-0 bg-transparent"
                 onClick={() => setPasswordVisible(!passwordVisible)}
               >
-                {passwordVisible ? <FaEyeSlash color="white" /> : <FaEye color="white" />}
-              </button>
-            </div>
+                {passwordVisible ? <FaEye /> : <FaEyeSlash /> }
+              </EyeButton>
+            </InputGroup>
             {strength && (
-              <small className={
-                strength === "Strong password" ? "text-success" :
-                  strength === "Medium strength" ? "text-warning" :
-                    "text-danger"
-              }>
+              <StrengthIndicator strength={strength}>
                 {strength}
-              </small>
+              </StrengthIndicator>
             )}
-          </Form.Group>
+          </FormGroup>
 
-          <Form.Group className="mt-3" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="700">
-            <Form.Label>Confirm Password</Form.Label>
-            <div className="input-group">
-              <Form.Control
+          <FormGroup data-aos="fade-up" data-aos-duration="1500" data-aos-delay="700">
+            <FormLabel>Confirm Password</FormLabel>
+            <InputGroup>
+              <PasswordInput
                 type={confirmPasswordVisible ? "text" : "password"}
                 placeholder="Confirm new password"
                 value={confirmPassword}
                 onChange={handleConfirmPasswordChange}
                 onBlur={validateMatch}
               />
-              <button
+              <EyeButton
                 type="button"
-                className="input-group-text border-0 bg-transparent"
                 onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
               >
-                {confirmPasswordVisible ? <FaEyeSlash color="white" /> : <FaEye color="white" />}
-              </button>
-            </div>
-            {matchError && <small className="text-danger">{matchError}</small>}
-          </Form.Group>
+                {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
+              </EyeButton>
+            </InputGroup>
+            {matchError && <ErrorMessage>{matchError}</ErrorMessage>}
+          </FormGroup>
 
-          <Button
-            className="w-100 mt-4"
-            style={{ background: "#00ff88", border: "none" }}
+          <ResetButton
             disabled={!isFormValid()}
             data-aos="fade-up"
-            data-aos-duration="1500"  
+            data-aos-duration="1500"
             data-aos-delay="800"
             onClick={() => navigate('/password-reset-success')}
           >
             Reset Password
-          </Button>
+          </ResetButton>
 
-          <div className="mt-3 text-center" data-aos="fade-up" data-aos-duration="1500" data-aos-delay="900">
-            <FaArrowLeft className="text-success me-2" />
-            <Link to="/signin" className="text-success text-decoration-none">
+          <BackLinkContainer data-aos="fade-up" data-aos-duration="1500" data-aos-delay="900">
+            <BackIcon />
+            <BackLinkText to="/signin">
               Back to Sign In
-            </Link>
-          </div>
-        </Form>
-      </Card>
-    </div>
+            </BackLinkText>
+          </BackLinkContainer>
+        </StyledForm>
+      </ResetCard>
+    </ResetContainer>
   );
 };
 
 export default PasswordReset;
+
+// Styled Components
+const ResetContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--background-dark);
+  padding: 20px;
+`;
+
+const ResetCard = styled.div`
+  background-color: var(--card-background);
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  color: var(--text-light);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 255, 0, 0.1);
+  
+  @media (max-width: 768px) {
+    padding: 25px 20px;
+    max-width: 90%;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 20px;
+    max-width: 95%;
+  }
+`;
+
+const Logo = styled.div`
+  margin-bottom: 20px;
+`;
+
+const LogoSpan = styled.span`
+  font-size: 1.5rem;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-light);
+`;
+
+const LogoImage = styled.img`
+  width: 40px;
+  height: auto;
+`;
+
+const MainTitle = styled.h4`
+  text-align: center;
+  color: var(--heading-color);
+  margin-bottom: 15px;
+  font-weight: bold;
+`;
+
+const SubtitleText = styled.p`
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-bottom: 25px;
+  line-height: 1.5;
+`;
+
+const StyledForm = styled(Form)`
+  width: 100%;
+`;
+
+const FormGroup = styled(Form.Group)`
+  margin-bottom: 20px;
+`;
+
+const FormLabel = styled(Form.Label)`
+  color: var(--text-light);
+  margin-bottom: 8px;
+  font-weight: 500;
+`;
+
+const InputGroup = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const PasswordInput = styled(Form.Control)`
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+  padding: 12px 45px 12px 15px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  
+  &:focus {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
+    color: var(--text-light);
+  }
+  
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+`;
+
+const EyeButton = styled.button`
+  position: absolute;
+  right: 15px;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+  
+  &:hover {
+    color: var(--primary);
+  }
+`;
+
+const StrengthIndicator = styled.small`
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+  color: ${props =>
+    props.strength === "Strong password" ? "var(--success-color)" :
+      props.strength === "Medium strength" ? "#ffa726" :
+        "var(--error-color)"
+  };
+`;
+
+const ErrorMessage = styled.small`
+  display: block;
+  margin-top: 5px;
+  color: var(--error-color);
+  font-size: 12px;
+`;
+
+const ResetButton = styled(Button)`
+  width: 100%;
+  margin-top: 25px;
+  padding: 12px;
+  background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 230, 118, 0.3);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+`;
+
+const BackLinkContainer = styled.div`
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+`;
+
+const BackIcon = styled(FaArrowLeft)`
+  color: var(--primary);
+`;
+
+const BackLinkText = styled(Link)`
+  color: var(--primary);
+  text-decoration: none;
+  
+  &:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+  }
+`;

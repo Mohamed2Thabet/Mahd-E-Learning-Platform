@@ -7,10 +7,10 @@ import BillingHistoryTable from "../components/Billing/BillingHistoryTable";
 import AvailablePlans from "../components/Billing/AvailablePlans";
 import SideBarSettings from "../components/Settings/SideBarSettings";
 
-// ✅ Page wrapper with responsive design
+// ✅ Page wrapper with responsive design using CSS variables
 const PageWrapper = styled.div`
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  background: var(--background-dark);
   padding-left: 0;
   transition: padding-left 0.3s ease;
 
@@ -28,7 +28,7 @@ const MainContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 40px 20px;
-  color: #ffffff;
+  color: var(--text-light);
 
   @media (min-width: 768px) {
     padding: 50px 40px;
@@ -43,17 +43,14 @@ const MainContent = styled.div`
 const HeaderSection = styled.div`
   margin-bottom: 48px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border-color);
 `;
 
 const PageTitle = styled.h1`
   font-size: 32px;
   font-weight: 700;
   margin: 0 0 8px 0;
-  background: linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--heading-color);
   letter-spacing: -0.02em;
 
   @media (min-width: 768px) {
@@ -63,7 +60,7 @@ const PageTitle = styled.h1`
 
 const PageSubtitle = styled.p`
   font-size: 16px;
-  color: #a0a0a0;
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
   font-weight: 400;
@@ -80,20 +77,20 @@ const ContentGrid = styled.div`
   }
 `;
 
-// ✅ Section containers with consistent styling
+// ✅ Section containers with consistent styling using CSS variables
 const Section = styled.section`
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--card-background);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 0;
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.03);
+    border-color: var(--primary);
+    background: var(--card-background);
     transform: translateY(-2px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 230, 118, 0.1);
   }
 `;
 
@@ -120,7 +117,7 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 200px;
-  color: #a0a0a0;
+  color: var(--text-secondary);
 `;
 
 const BillingPage = () => {

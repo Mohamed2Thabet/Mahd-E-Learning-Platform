@@ -1,4 +1,3 @@
-// MainContent.jsx
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Pagination from '../courses/Pagination';
@@ -24,18 +23,38 @@ const SidebarPlaceholder = styled.div`
 const Main = styled.main`
   padding: 20px;
   width: 100%;
+  background-color: var(--background-dark);
+  color: var(--text-light);
 
   @media (min-width: 773px) {
     width: calc(100% - 250px);
   }
+
+  h2 {
+    color: var(--heading-color);
+  }
+
+  button.btn-success {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--mode-text);
+
+    &:hover,
+    &:focus {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+      color: var(--mode-text);
+    }
+  }
 `;
 
 const PostCard = styled.div`
-  background-color: #212529;
-  color: #fff;
+  background-color: var(--card-background);
+  color: var(--text-light);
   padding: 1rem;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
+  border: 1px solid var(--border-color);
 `;
 
 const Header = styled.div`
@@ -63,20 +82,20 @@ const Filters = styled.div`
 
   select {
     width: auto;
-    background-color: #343a40;
-    color: #fff;
-    border: none;
+    background-color: var(--card-background);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
 
     option {
-      background-color: #343a40;
-      color: #fff;
+      background-color: var(--card-background);
+      color: var(--text-light);
     }
   }
 `;
 
-// Dummy data
+// Dummy data same as before
 const postsData = [
   {
     title: 'Tips for creating engaging UI animations?',
@@ -173,8 +192,8 @@ const MainContent = () => {
           <PostCard key={index}>
             <h5>{post.title}</h5>
             <p>{post.description}</p>
-            <small className="text-success">
-              {post.author} • {post.time} • {post.replies} replies • {post.category}
+            <small  style={{ color: 'var(--primary)' }}>
+              {post.author} • {post.time} •  {post.replies} replies • {post.category}
             </small>
           </PostCard>
         ))}

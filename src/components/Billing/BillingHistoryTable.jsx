@@ -1,4 +1,3 @@
-// components/Billing/BillingHistoryTable.jsx
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FaFileInvoice, FaDownload, FaEye, FaCalendarAlt, FaFilter, FaSearch } from "react-icons/fa";
@@ -9,13 +8,21 @@ const Container = styled.div`
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 32px;
-  color: #ffffff;
+  color: var(--text-light);
   backdrop-filter: blur(10px);
   transition: all 0.3s ease;
 
   &:hover {
     border-color: rgba(255, 255, 255, 0.12);
     background: rgba(255, 255, 255, 0.03);
+  }
+
+  @media (max-width: 768px) {
+    padding: 20px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px;
   }
 `;
 
@@ -26,7 +33,7 @@ const Header = styled.div`
   align-items: flex-start;
   margin-bottom: 32px;
   padding-bottom: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-color);
 
   @media (max-width: 768px) {
     flex-direction: column;
@@ -45,14 +52,22 @@ const Title = styled.h3`
   font-size: 20px;
   font-weight: 600;
   margin: 0;
-  color: #ffffff;
+  color: var(--heading-color);
   letter-spacing: -0.01em;
+
+  @media (max-width: 480px) {
+    font-size: 18px;
+  }
 `;
 
 const Subtitle = styled.p`
   font-size: 14px;
-  color: #a0a0a0;
+  color: var(--text-secondary);
   margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
 `;
 
 // ✅ Controls section
@@ -65,6 +80,10 @@ const Controls = styled.div`
     flex-direction: column;
     align-items: stretch;
   }
+
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
 `;
 
 const SearchInput = styled.div`
@@ -76,32 +95,39 @@ const SearchInput = styled.div`
 const SearchIcon = styled.div`
   position: absolute;
   left: 12px;
-  color: #a0a0a0;
+  color: var(--text-secondary);
   font-size: 14px;
+  z-index: 1;
 `;
 
 const Input = styled.input`
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 10px 12px 10px 36px;
-  color: #ffffff;
+  color: var(--text-light);
   font-size: 14px;
   width: 200px;
   transition: all 0.2s ease;
 
   &::placeholder {
-    color: #666;
+    color: var(--text-secondary);
   }
 
   &:focus {
     outline: none;
-    border-color: #4CAF50;
+    border-color: var(--primary);
     background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
   }
 
   @media (max-width: 768px) {
     width: 100%;
+  }
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+    padding: 8px 10px 8px 32px;
   }
 `;
 
@@ -110,17 +136,23 @@ const FilterButton = styled.button`
   align-items: center;
   gap: 8px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   padding: 10px 16px;
-  color: #ffffff;
+  color: var(--text-light);
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--primary);
+    color: var(--primary);
+  }
+
+  @media (max-width: 480px) {
+    padding: 8px 12px;
+    font-size: 13px;
   }
 `;
 
@@ -128,8 +160,12 @@ const FilterButton = styled.button`
 const TableContainer = styled.div`
   overflow-x: auto;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.02);
+
+  @media (max-width: 768px) {
+    border-radius: 8px;
+  }
 `;
 
 const Table = styled.table`
@@ -137,6 +173,12 @@ const Table = styled.table`
   border-collapse: separate;
   border-spacing: 0;
   font-size: 14px;
+  min-width: 600px;
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+    min-width: 500px;
+  }
 `;
 
 const TableHeader = styled.thead`
@@ -144,14 +186,14 @@ const TableHeader = styled.thead`
 `;
 
 const HeaderRow = styled.tr`
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--border-color);
 `;
 
 const HeaderCell = styled.th`
   padding: 20px 24px;
   text-align: left;
   font-weight: 600;
-  color: #e0e0e0;
+  color: var(--text-light);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.02em;
@@ -163,6 +205,11 @@ const HeaderCell = styled.th`
 
   &:last-child {
     border-top-right-radius: 12px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 16px 12px;
+    font-size: 12px;
   }
 `;
 
@@ -183,9 +230,13 @@ const TableRow = styled.tr`
 
 const TableCell = styled.td`
   padding: 20px 24px;
-  color: #ffffff;
+  color: var(--text-light);
   vertical-align: middle;
   border-bottom: none;
+
+  @media (max-width: 480px) {
+    padding: 16px 12px;
+  }
 `;
 
 // ✅ Status badge
@@ -200,12 +251,12 @@ const StatusBadge = styled.span`
   letter-spacing: 0.02em;
 
   ${props => {
-    switch (props.status?.toLowerCase()) {
+    switch (props.$status?.toLowerCase()) {
       case 'paid':
         return `
-          background: rgba(76, 175, 80, 0.2);
-          color: #4CAF50;
-          border: 1px solid rgba(76, 175, 80, 0.3);
+          background: rgba(0, 230, 118, 0.2);
+          color: var(--primary);
+          border: 1px solid rgba(0, 230, 118, 0.3);
         `;
       case 'pending':
         return `
@@ -222,11 +273,16 @@ const StatusBadge = styled.span`
       default:
         return `
           background: rgba(158, 158, 158, 0.2);
-          color: #9e9e9e;
-          border: 1px solid rgba(158, 158, 158, 0.3);
+          color: var(--text-secondary);
+          border: 1px solid var(--border-color);
         `;
     }
   }}
+
+  @media (max-width: 480px) {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
 `;
 
 // ✅ Action buttons
@@ -234,6 +290,10 @@ const ActionButtons = styled.div`
   display: flex;
   gap: 8px;
   align-items: center;
+
+  @media (max-width: 480px) {
+    gap: 4px;
+  }
 `;
 
 const ActionButton = styled.button`
@@ -243,16 +303,16 @@ const ActionButton = styled.button`
   width: 36px;
   height: 36px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
   border-radius: 8px;
-  color: #a0a0a0;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
     background: rgba(255, 255, 255, 0.08);
-    color: #4CAF50;
-    border-color: rgba(76, 175, 80, 0.3);
+    color: var(--primary);
+    border-color: var(--primary);
     transform: translateY(-1px);
   }
 
@@ -260,47 +320,103 @@ const ActionButton = styled.button`
     color: #2196F3;
     border-color: rgba(33, 150, 243, 0.3);
   }
+
+  @media (max-width: 480px) {
+    width: 32px;
+    height: 32px;
+  }
 `;
 
 // ✅ Amount styling
 const Amount = styled.span`
   font-weight: 600;
-  color: #ffffff;
+  color: var(--heading-color);
   font-size: 15px;
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
 `;
 
 // ✅ Date styling
 const DateText = styled.span`
-  color: #e0e0e0;
+  color: var(--text-light);
   font-weight: 500;
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
 `;
 
 // ✅ Plan styling
 const PlanText = styled.span`
-  color: #4CAF50;
+  color: var(--primary);
   font-weight: 500;
+
+  @media (max-width: 480px) {
+    font-size: 13px;
+  }
 `;
 
 // ✅ Empty state
 const EmptyState = styled.div`
   text-align: center;
   padding: 60px 20px;
-  color: #a0a0a0;
+  color: var(--text-secondary);
+
+  @media (max-width: 480px) {
+    padding: 40px 16px;
+  }
 `;
 
 const EmptyIcon = styled.div`
   font-size: 48px;
   margin-bottom: 16px;
   opacity: 0.5;
+
+  @media (max-width: 480px) {
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
 `;
 
 const EmptyText = styled.p`
   font-size: 16px;
   margin: 0;
+  color: var(--text-secondary);
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+  }
+`;
+
+// ✅ Loading state
+const LoadingState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: var(--text-secondary);
+`;
+
+const LoadingSpinner = styled.div`
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 16px;
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 `;
 
 const BillingHistoryTable = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const history = [
     {
@@ -334,24 +450,73 @@ const BillingHistoryTable = () => {
       amount: "$29.00",
       status: "Failed",
       invoiceNumber: "INV-2024-004"
+    },
+    {
+      id: 5,
+      date: "Aug 24, 2024",
+      plan: "Team Plan",
+      amount: "$99.00",
+      status: "Pending",
+      invoiceNumber: "INV-2024-005"
     }
   ];
 
   const filteredHistory = history.filter(item =>
     item.plan.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.date.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.status.toLowerCase().includes(searchTerm.toLowerCase())
+    item.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    item.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleViewInvoice = (invoiceNumber) => {
+  const handleViewInvoice = async (invoiceNumber) => {
+    setIsLoading(true);
     console.log('View invoice:', invoiceNumber);
-    // Add view invoice functionality
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Add view invoice functionality here
+      alert(`Viewing invoice: ${invoiceNumber}`);
+    } catch (error) {
+      console.error('Error viewing invoice:', error);
+      alert('Failed to view invoice. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleDownloadInvoice = (invoiceNumber) => {
+  const handleDownloadInvoice = async (invoiceNumber) => {
+    setIsLoading(true);
     console.log('Download invoice:', invoiceNumber);
-    // Add download invoice functionality
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Add download invoice functionality here
+      alert(`Downloaded invoice: ${invoiceNumber}`);
+    } catch (error) {
+      console.error('Error downloading invoice:', error);
+      alert('Failed to download invoice. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const handleFilter = () => {
+    console.log('Filter clicked');
+    // Add filter functionality here
+  };
+
+  if (isLoading) {
+    return (
+      <Container>
+        <LoadingState>
+          <LoadingSpinner />
+          Processing request...
+        </LoadingState>
+      </Container>
+    );
+  }
 
   return (
     <Container>
@@ -374,7 +539,7 @@ const BillingHistoryTable = () => {
             />
           </SearchInput>
 
-          <FilterButton>
+          <FilterButton onClick={handleFilter}>
             <FaFilter size={12} />
             Filter
           </FilterButton>
@@ -406,7 +571,7 @@ const BillingHistoryTable = () => {
                     <Amount>{item.amount}</Amount>
                   </TableCell>
                   <TableCell>
-                    <StatusBadge status={item.status}>
+                    <StatusBadge $status={item.status}>
                       {item.status}
                     </StatusBadge>
                   </TableCell>
@@ -415,6 +580,7 @@ const BillingHistoryTable = () => {
                       <ActionButton
                         onClick={() => handleViewInvoice(item.invoiceNumber)}
                         title="View Invoice"
+                        disabled={isLoading}
                       >
                         <FaEye size={14} />
                       </ActionButton>
@@ -422,6 +588,7 @@ const BillingHistoryTable = () => {
                         className="download"
                         onClick={() => handleDownloadInvoice(item.invoiceNumber)}
                         title="Download Invoice"
+                        disabled={isLoading}
                       >
                         <FaDownload size={14} />
                       </ActionButton>
@@ -435,7 +602,9 @@ const BillingHistoryTable = () => {
       ) : (
         <EmptyState>
           <EmptyIcon>📋</EmptyIcon>
-          <EmptyText>No billing history found</EmptyText>
+          <EmptyText>
+            {searchTerm ? 'No transactions found matching your search' : 'No billing history found'}
+          </EmptyText>
         </EmptyState>
       )}
     </Container>

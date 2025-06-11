@@ -1,12 +1,23 @@
+/* متغيرات الألوان في index.css */
+:root {
+  --primary: #00E676;
+  --primary-dark: #00C853;
+  --background-dark: #101310;
+  --card-background: #181d19;
+  --text-light: rgba(255, 255, 255, 0.87);
+  --text-secondary: rgba(255, 255, 255, 0.6);
+  --border-color: #333;
+  --heading-color: white;
+  --mode-text: white;
+}
+
 .login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  /* لضمان التوسّط الكامل */
   overflow: hidden;
-  /* منع أي تجاوز للشاشة */
   background-color: var(--background-dark);
 }
 
@@ -16,58 +27,62 @@
   border-radius: 12px;
   box-shadow: 0px 0px 30px rgba(0, 255, 0, 0.2);
   max-width: 90%;
-  /* اجعلها تستجيب لحجم الشاشة */
   width: 600px;
-  /* فقط في الشاشات الكبيرة */
   height: auto;
-  /* السماح بالتعديل حسب المحتوى */
-  /* صندوق تسجيل الدخول */
-    .box {
-      width: 100%;
-      /* استبدال العرض الثابت بجعله متجاوبًا */
-      max-width: 500px;
-      height: auto;
-      margin: 20px auto;
-    }
-  
-    /* أزرار السوشيال ميديا */
-    .social-btn {
-      min-width: 60px;
-      /* منع تصغير الأزرار أكثر من اللازم */
-      height: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-    }
 }
 
+.box {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin: 20px auto;
+}
 
-/* النصوص */
-.p,p {
-  color: #8C8F99;
+.social-btn {
+  min-width: 60px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+.p,
+p {
+  color: var(--text-secondary);
   font-size: 18px;
 }
 
-/* 🌍 تحسين Media Queries */
+/* تحسين الـ glow button */
+.glow-button {
+  background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.glow-button:hover {
+  box-shadow: 0 0 20px rgba(0, 230, 118, 0.5);
+  transform: translateY(-2px);
+}
+
+/* Media Queries */
 @media screen and (max-width: 768px) {
   .login-box {
     width: 90%;
     height: auto;
     padding: 30px 20px;
-      
-      
-        .social-btn {
-          min-width: 50px;
-          height: 35px;
-          font-size: 1rem;
-        }
   }
-.box {
-  width: 100%;
-  height: auto;
-}
 
+  .box {
+    width: 100%;
+    height: auto;
+  }
+
+  .social-btn {
+    min-width: 50px;
+    height: 35px;
+    font-size: 1rem;
+  }
 }
 
 @media screen and (max-width: 480px) {
@@ -75,8 +90,6 @@
     width: 95%;
     padding: 20px;
   }
-
-
 
   .social-btn {
     min-width: 45px;
@@ -89,5 +102,4 @@
   .login-box {
     max-width: 700px;
   }
-  
 }

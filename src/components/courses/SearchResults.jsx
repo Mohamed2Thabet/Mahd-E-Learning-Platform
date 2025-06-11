@@ -3,9 +3,10 @@ import { Row, Col, Container } from 'react-bootstrap';
 import FilterSidebar from './FilterSidebar';
 import SortDropdown from './SortDropdown';
 import Pagination from './Pagination';
-import courses from '../../data/coursesData';
+
 import CourseCard from '../Landing/CourseCard';
 import InputSearch from '../UI/InputSearch'
+import { coursesData } from '../../data/coursesData';
 const SearchResults = ({ searchQuery }) => {
   const [sortBy, setSortBy] = useState('popular');
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,7 +17,7 @@ const SearchResults = ({ searchQuery }) => {
     rating: null
   });
 
-  const filteredCourses = courses;
+  const filteredCourses = coursesData;
   const coursesPerPage = 6;
   const totalPages = Math.ceil(filteredCourses.length / coursesPerPage);
 

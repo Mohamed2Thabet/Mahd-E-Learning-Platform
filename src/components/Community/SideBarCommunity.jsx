@@ -4,8 +4,8 @@ import { FaBars, FaComments, FaBookmark, FaFileAlt } from 'react-icons/fa';
 import styled from 'styled-components';
 
 const FixedSidebar = styled.div`
-  background-color: #212529;
-  color: #fff;
+  background-color: var(--background-dark);
+  color: var(--text-light);
   padding: 1rem;
   width: 250px;
   height: 100vh;
@@ -16,6 +16,40 @@ const FixedSidebar = styled.div`
 
   @media (min-width: 773px) {
     display: block;
+  }
+
+  input.form-control {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+
+    &::placeholder {
+      color: var(--text-secondary);
+    }
+  }
+
+  .btn-success {
+    background-color: var(--primary);
+    border-color: var(--primary);
+    color: var(--mode-text);
+
+    &:hover, &:focus {
+      background-color: var(--primary-dark);
+      border-color: var(--primary-dark);
+      color: var(--mode-text);
+    }
+  }
+
+  .text-light {
+    color: var(--text-light) !important;
+  }
+
+  .text-muted {
+    color: var(--text-secondary) !important;
+  }
+
+  ul li {
+    color: var(--text-light);
   }
 `;
 
@@ -36,7 +70,7 @@ const SidebarContent = () => (
     <div className="text-muted text-uppercase small mb-2">Popular Tags</div>
     <ul className="list-unstyled">
       {['UI/UX Design', 'Marketing', 'Beginner Help', 'Development', 'Career Advice'].map((tag, index) => (
-        <li key={index} className="text-light mb-2"># {tag}</li>
+        <li key={index}># {tag}</li>
       ))}
     </ul>
   </>
@@ -52,6 +86,11 @@ const SideBarCommunity = () => {
         variant="dark"
         className="d-md-none mb-4 me-4 position-fixed bottom-0 end-0 z-3"
         onClick={() => setShow(true)}
+        style={{
+          backgroundColor: 'var(--background-dark)',
+          borderColor: 'var(--border-color)',
+          color: 'var(--text-light)',
+        }}
       >
         <FaBars />
       </Button>
@@ -62,7 +101,15 @@ const SideBarCommunity = () => {
       </FixedSidebar>
 
       {/* Offcanvas (for small screens) */}
-      <Offcanvas show={show} onHide={() => setShow(false)} className="bg-dark text-light" placement="start">
+      <Offcanvas
+        show={show}
+        onHide={() => setShow(false)}
+        placement="start"
+        style={{
+          backgroundColor: 'var(--background-dark)',
+          color: 'var(--text-light)',
+        }}
+      >
         <Offcanvas.Header closeButton closeVariant="white">
           <Offcanvas.Title>Menu</Offcanvas.Title>
         </Offcanvas.Header>

@@ -2,7 +2,6 @@ import React from 'react'
 import { Pagination as BootstrapPagination } from 'react-bootstrap'
 import styled from 'styled-components'
 
-
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const renderPageItems = () => {
     const items = []
@@ -100,9 +99,9 @@ const StyledPagination = styled(BootstrapPagination)`
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      border: 1px solid #444;
+      border: 1px solid var(--border-color);
       background-color: transparent;
-      color: white;
+      color: var(--text-light);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -110,12 +109,12 @@ const StyledPagination = styled(BootstrapPagination)`
     }
 
     .page-link:hover {
-      background-color: #333;
+      background-color: var(--card-background);
     }
 
     .page-item.active .page-link {
-      background-color: #00ff84; /* اللون الأخضر */
-      color: black;
+      background-color: var(--primary);
+      color: var(--mode-text);
       border: none;
     }
 
@@ -123,7 +122,7 @@ const StyledPagination = styled(BootstrapPagination)`
       opacity: 0.4;
       pointer-events: none;
       background-color: transparent;
-      border: 1px solid #444;
+      border: 1px solid var(--border-color);
     }
   }
 `

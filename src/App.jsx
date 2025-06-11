@@ -63,9 +63,9 @@ function App() {
         <Route path="/billing" element={<>
           <Header /><BillingPage />
         </>} />
-        <Route path="/student-profile-page" element={<StudentProfilePage />} />
+        <Route path="/student-profile" element={<StudentProfilePage />} />
         <Route path="/course-catalog" element={<><Header /><CourseCatalog /></>} />
-        <Route path="/goals-milestones" element={<><Header /><GoalsMilestonesPage /></>} />
+        <Route path="/goals-milestones" element={<GoalsMilestonesPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/instructor" element={<Instructor />} />
         <Route path="/dashboard" element={<Student />} />

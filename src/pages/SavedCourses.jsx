@@ -3,8 +3,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaStar, FaTimes } from 'react-icons/fa';
 import Sidebar from '../components/Layout/Sidebar';
 import CourseCard from '../components/Landing/CourseCard';
-import courses from '../data/coursesData';
 import styled from 'styled-components';
+import { coursesData } from '../data/coursesData';
 
 const SavedCourses = () => {
   return (
@@ -26,7 +26,7 @@ const SavedCourses = () => {
         </HeaderSection>
 
         <CourseList>
-          {courses.map((course, index) => (
+          {coursesData.map((course, index) => (
             <CourseCard key={index} {...course} />
           ))}
         </CourseList>
@@ -38,7 +38,7 @@ const SavedCourses = () => {
 export default SavedCourses;
 const PageContainer = styled.div`
   display: flex;
-  background-color: #121212;
+  background-color: var(--background-dark);
   min-height: 100vh;
   color: white;
   padding-top: 2rem;
