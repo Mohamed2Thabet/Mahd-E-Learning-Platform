@@ -15,7 +15,6 @@ import Profile from "./pages/Profile";
 import Student from "./pages/Students/Student";
 import Instructor from "./pages/Instructor/Instructor";
 import SavedCourses from "./pages/SavedCourses";
-import CourseCatalog from "./pages/CourseCatalog";
 import Footer from "./components/Layout/Footer";
 import Community from "./pages/Community/Community";
 import StudentProfilePage from "./pages/StudentProfilePage";
@@ -28,6 +27,10 @@ import BillingPage from "./pages/BillingPage";
 import GoalsMilestonesPage from "./pages/GoalsMilestonesPage";
 import CoursePlayer from "./pages/CoursePlayer";
 import Notifications from "./pages/Notifications";
+import CheckoutPage from "./pages/CheckoutPage";
+import CoursePage from "./pages/CourseDetailsPage";
+import QuizApp from "./pages/quiz-app";
+
 function App() {
   return (
     <Router>
@@ -64,17 +67,20 @@ function App() {
           <Header /><BillingPage />
         </>} />
         <Route path="/student-profile" element={<StudentProfilePage />} />
-        <Route path="/course-catalog" element={<><Header /><CourseCatalog /></>} />
         <Route path="/goals-milestones" element={<GoalsMilestonesPage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/instructor" element={<Instructor />} />
         <Route path="/dashboard" element={<Student />} />
         <Route path="/profession" element={<ProfessionSelection />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/quiz" element={<QuizApp />} />
         <Route path="/learning-goal" element={<LearningGoal />} />
         <Route path="/thank-you" element={<ThankYouScreen />} />
         <Route path="/welcome-screen" element={<WelcomeScreen />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />  
         <Route path="/password-reset" element={<PasswordReset />} />
+        <Route path="/course-details-page" element={<CoursePage />} />
+
         <Route path="/password-reset-success" element={<PasswordResetSuccess />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

@@ -20,7 +20,7 @@
   --text-light: rgba(255, 255, 255, 0.87);
   --text-secondary: rgba(255, 255, 255, 0.6);
   --border-color: #333;
-  --heading-color: white;
+  --heading-color: white !important;
   --mode-text: white;
 }
 

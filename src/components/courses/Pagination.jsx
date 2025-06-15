@@ -87,7 +87,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   )
 }
 
-export default Pagination
+export default Pagination;
 
 const StyledPagination = styled(BootstrapPagination)`
   &.custom-pagination {

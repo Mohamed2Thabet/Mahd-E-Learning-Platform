@@ -76,6 +76,7 @@ const Filters = styled.div`
   gap: 1rem;
   margin-bottom: 1rem;
 
+
   @media (min-width: 768px) {
     flex-direction: row;
   }
