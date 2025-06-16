@@ -2,33 +2,33 @@
 import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Row, Col } from 'react-bootstrap';
-import CoursesList from './CoursesList';
 import Analytics from './Analytics';
 import useCourses from '../../hooks/useCourses';
+import VeiwCourses from './VeiwCourses';
 
 // ✅ Animations
 const fadeInUp = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  `;
 
 // ✅ Main Container
 const Container = styled.div`
-  padding: clamp(1rem, 3vw, 2rem);
-  background-color: var(--background-dark);
-  min-height: 100vh;
-  animation: ${css`${fadeInUp} 0.8s ease-out`};
+    padding: clamp(1rem, 3vw, 2rem);
+    background-color: var(--background-dark);
+    min-height: 100vh;
+    animation: ${css`${fadeInUp} 0.8s ease-out`};
 
-  @media (max-width: 768px) {
-    padding: 1rem 0.5rem;
-  }
-`;
+    @media (max-width: 768px) {
+      padding: 1rem 0.5rem;
+    }
+  `;
 
 // ✅ Main Component
 const DashboardCoursesAnalytics = () => {
@@ -45,7 +45,7 @@ const DashboardCoursesAnalytics = () => {
     <Container>
       <Row>
         <Col md={8}>
-          <CoursesList
+          <VeiwCourses
             courses={courses}
             onAdd={addCourse}
             onUpdate={updateCourse}

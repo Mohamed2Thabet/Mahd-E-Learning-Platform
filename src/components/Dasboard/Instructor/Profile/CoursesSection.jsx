@@ -5,7 +5,7 @@ import { FaArrowLeft, FaArrowRight, FaStar } from 'react-icons/fa';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import '../Landing//TestimonialSection.css'; 
+import '../../../Landing/TestimonialSection'; 
 
 const courses = [
   {

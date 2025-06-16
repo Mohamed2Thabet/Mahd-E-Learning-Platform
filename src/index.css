@@ -10,8 +10,10 @@
   --border-color: #333;
   --heading-color: white;
   --mode-text: white;
+  --error-color: #ff4d4f;
 }
 
+/* 1. Dark */
 [data-theme='dark'] {
   --primary: #00E676;
   --primary-dark: #00C853;
@@ -24,6 +26,7 @@
   --mode-text: white;
 }
 
+/* 2. Light */
 [data-theme='light'] {
   --primary: #007BFF;
   --primary-dark: #0056b3;
@@ -34,6 +37,110 @@
   --border-color: #ddd;
   --heading-color: #000;
   --mode-text: #000;
+}
+
+/* 3. Blue */
+[data-theme='blue'] {
+  --primary: #2196f3;
+  --primary-dark: #1976d2;
+  --background-dark: #e3f2fd;
+  --card-background: #bbdefb;
+  --text-light: #0d47a1;
+  --text-secondary: rgba(13, 71, 161, 0.7);
+  --border-color: #90caf9;
+  --heading-color: #0d47a1;
+  --mode-text: #0d47a1;
+}
+
+/* 4. Sepia */
+[data-theme='sepia'] {
+  --primary: #704214;
+  --primary-dark: #5a3310;
+  --background-dark: #f4ecd8;
+  --card-background: #e2d3b3;
+  --text-light: #4b3621;
+  --text-secondary: rgba(75, 54, 33, 0.7);
+  --border-color: #c2b280;
+  --heading-color: #4b3621;
+  --mode-text: #4b3621;
+}
+
+/* 5. Purple */
+[data-theme='purple'] {
+  --primary: #9c27b0;
+  --primary-dark: #7b1fa2;
+  --background-dark: #f3e5f5;
+  --card-background: #e1bee7;
+  --text-light: #4a148c;
+  --text-secondary: rgba(74, 20, 140, 0.7);
+  --border-color: #ce93d8;
+  --heading-color: #4a148c;
+  --mode-text: #4a148c;
+}
+
+/* 6. Teal */
+[data-theme='teal'] {
+  --primary: #009688;
+  --primary-dark: #00796b;
+  --background-dark: #e0f2f1;
+  --card-background: #b2dfdb;
+  --text-light: #004d40;
+  --text-secondary: rgba(0, 77, 64, 0.7);
+  --border-color: #80cbc4;
+  --heading-color: #004d40;
+  --mode-text: #004d40;
+}
+
+/* 7. Pink */
+[data-theme='pink'] {
+  --primary: #e91e63;
+  --primary-dark: #c2185b;
+  --background-dark: #fce4ec;
+  --card-background: #f8bbd0;
+  --text-light: #880e4f;
+  --text-secondary: rgba(136, 14, 79, 0.7);
+  --border-color: #f48fb1;
+  --heading-color: #880e4f;
+  --mode-text: #880e4f;
+}
+
+/* 8. Orange */
+[data-theme='orange'] {
+  --primary: #ff9800;
+  --primary-dark: #f57c00;
+  --background-dark: #fff3e0;
+  --card-background: #ffe0b2;
+  --text-light: #e65100;
+  --text-secondary: rgba(230, 81, 0, 0.7);
+  --border-color: #ffcc80;
+  --heading-color: #e65100;
+  --mode-text: #e65100;
+}
+
+/* 9. Green */
+[data-theme='green'] {
+  --primary: #4caf50;
+  --primary-dark: #388e3c;
+  --background-dark: #e8f5e9;
+  --card-background: #c8e6c9;
+  --text-light: #1b5e20;
+  --text-secondary: rgba(27, 94, 32, 0.7);
+  --border-color: #a5d6a7;
+  --heading-color: #1b5e20;
+  --mode-text: #1b5e20;
+}
+
+/* 10. Gray */
+[data-theme='gray'] {
+  --primary: #607d8b;
+  --primary-dark: #455a64;
+  --background-dark: #eceff1;
+  --card-background: #cfd8dc;
+  --text-light: #263238;
+  --text-secondary: rgba(38, 50, 56, 0.7);
+  --border-color: #b0bec5;
+  --heading-color: #263238;
+  --mode-text: #263238;
 }
 
 * {

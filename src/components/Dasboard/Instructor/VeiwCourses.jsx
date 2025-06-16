@@ -400,7 +400,7 @@ const LoadingSpinner = styled.div`
 `;
 
 // ✅ CoursesList Component
-const CoursesList = ({ courses, onAdd, onUpdate, onDelete }) => {
+const VeiwCourses = ({ courses=[], onAdd, onUpdate, onDelete }) => {
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
@@ -735,4 +735,4 @@ const CoursesList = ({ courses, onAdd, onUpdate, onDelete }) => {
   );
 };
 
-export default CoursesList;
+export default VeiwCourses;

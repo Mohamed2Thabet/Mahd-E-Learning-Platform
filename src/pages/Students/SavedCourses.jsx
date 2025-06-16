@@ -1,10 +1,10 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaStar, FaTimes } from 'react-icons/fa';
-import Sidebar from '../components/Layout/Sidebar';
-import CourseCard from '../components/Landing/CourseCard';
+import Sidebar from '../../components/Layout/Sidebar';
+import CourseCard from '../../components/Landing/CourseCard';
 import styled from 'styled-components';
-import { coursesData } from '../data/coursesData';
+import { coursesData } from '../../data/coursesData';
 
 const SavedCourses = () => {
   return (

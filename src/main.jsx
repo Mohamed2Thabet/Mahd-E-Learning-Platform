@@ -8,14 +8,18 @@ import './styles/global.css';
 import 'aos/dist/aos.css'; // Import AOS CSS
 import AOS from 'aos'; // Import AOS
 import { ThemeProvider } from './context/ThemeContext'; 
-
+import { store } from './store/store';
+import { Provider } from 'react-redux';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 // Initialize AOS
 AOS.init();
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider> 
-      <App />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider> 
+        <App />
+      </ThemeProvider>
+    </Provider>
   </StrictMode>
 );

@@ -1,145 +1,227 @@
-// ThemeToggle.js
-import React from 'react';
+import { Dropdown, Form } from 'react-bootstrap';
+import { FaSun, FaMoon, FaWater, FaLeaf, FaPalette, FaCheck, FaGem, FaHeart, FaFire, FaTree, FaSquare } from 'react-icons/fa';
 import styled from 'styled-components';
 import { useTheme } from '../../context/ThemeContext';
 
-// Styled Components
-const ToggleContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 32px;
-`;
+const StyledDropdown = styled(Dropdown)`
+  .dropdown-toggle {
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.6rem 1rem !important;
+    border: 2px solid var(--primary) !important;
+    color: var(--primary) !important;
+    background: transparent !important;
+    transition: 0.3s ease !important;
+    margin-left:auto;
+    margin-right:auto;
+    margin-bottom: 20px;
+    &:hover {
+      background: var(--primary) !important;
+      color: var(--background-dark) !important;
+      border-color: var(--primary) !important;
+    }
 
-const ToggleButton = styled.button`
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 24px;
-  background: ${props => props.theme === 'dark'
-    ? 'linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)'
-    : 'linear-gradient(135deg, #007BFF 0%, #0056b3 100%)'
-  };
-  color: ${props => props.theme === 'dark' ? '#000' : '#fff'};
-  border: none;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: ${props => props.theme === 'dark'
-    ? '0 8px 32px rgba(0, 230, 118, 0.25)'
-    : '0 8px 32px rgba(0, 123, 255, 0.25)'
-  };
-  overflow: hidden;
-  min-width: 160px;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: ${props => props.theme === 'dark'
-    ? 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)'
-    : 'linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%)'
-  };
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
+    &:focus {
+      box-shadow: 0 0 0 0.2rem var(--primary-glow) !important;
+    }
 
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${props => props.theme === 'dark'
-    ? '0 12px 40px rgba(0, 230, 118, 0.35)'
-    : '0 12px 40px rgba(0, 123, 255, 0.35)'
-  };
-    
-    &::before {
-      opacity: 1;
+    &::after {
+      display: none !important;
     }
   }
 
-  &:active {
-    transform: translateY(-1px);
-    transition: transform 0.1s ease;
+  .dropdown-menu {
+    background-color: var(--card-background) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    padding: 0.5rem !important;
+    min-width: 250px !important;
+    max-width: 300px !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+    
+    /* Make it scrollable */
+    max-height: 400px !important;
+    overflow-y: auto !important;
+    
+    /* Custom scrollbar */
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--card-background);
+      border-radius: 3px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+      
+      &:hover {
+        background: var(--primary);
+      }
+    }
   }
+
+  .dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    border-radius: 6px !important;
+    padding: 0.75rem 1rem !important;
+    color: var(--text-light) !important;
+    transition: 0.2s ease !important;
+    margin-bottom: 0.25rem !important;
+    white-space: nowrap !important;
+
+    &:hover {
+      background-color: var(--primary) !important;
+      color: var(--background-dark) !important;
+    }
+
+    &.active {
+      background-color: var(--primary-glow) !important;
+      color: var(--primary) !important;
+    }
+    
+    &:last-child {
+      margin-bottom: 0 !important;
+    }
+  }
+`;
+
+const StyledSelect = styled(Form.Select)`
+  background-color: var(--background-dark) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-light) !important;
+  border-radius: 8px !important;
+  padding: 0.6rem 1rem !important;
+  font-weight: 500 !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
 
   &:focus {
-    outline: none;
-    box-shadow: ${props => props.theme === 'dark'
-    ? '0 0 0 3px rgba(0, 230, 118, 0.3), 0 12px 40px rgba(0, 230, 118, 0.35)'
-    : '0 0 0 3px rgba(0, 123, 255, 0.3), 0 12px 40px rgba(0, 123, 255, 0.35)'
-  };
+    background-color: var(--background-dark) !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 0.2rem var(--primary-glow) !important;
+    color: var(--text-light) !important;
+  }
+
+  option {
+    background-color: var(--background-dark) !important;
+    color: var(--text-light) !important;
+    padding: 0.5rem !important;
   }
 `;
 
-const IconWrapper = styled.span`
+const ThemeIcon = styled.div`
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
-  font-size: 16px;
-  transition: transform 0.3s ease;
+  flex-shrink: 0;
+`;
+
+const CheckIcon = styled(FaCheck)`
+  color: var(--primary);
+  margin-left: auto;
+  flex-shrink: 0;
+`;
+
+const ThemeInfo = styled.div`
+  flex: 1;
+  min-width: 0;
   
-  ${ToggleButton}:hover & {
-    transform: scale(1.1) rotate(10deg);
+  .theme-name {
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  
+  .theme-description {
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    line-height: 1.2;
   }
 `;
 
-const ButtonText = styled.span`
-  position: relative;
-  z-index: 1;
-  font-weight: 600;
-  text-shadow: ${props => props.theme === 'dark' ? 'none' : '0 1px 2px rgba(0,0,0,0.1)'};
+const ScrollHint = styled.div`
+  text-align: center;
+  padding: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.5rem;
+  position: sticky;
+  bottom: 0;
+  background: var(--card-background);
 `;
 
-const StatusIndicator = styled.div`
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 12px;
-  height: 12px;
-  background: ${props => props.theme === 'dark' ? '#00E676' : '#007BFF'};
-  border: 2px solid ${props => props.theme === 'dark' ? '#000' : '#fff'};
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-  
-  @keyframes pulse {
-    0% {
-      box-shadow: 0 0 0 0 ${props => props.theme === 'dark'
-    ? 'rgba(0, 230, 118, 0.7)'
-    : 'rgba(0, 123, 255, 0.7)'
-  };
-    }
-    70% {
-      box-shadow: 0 0 0 10px transparent;
-    }
-    100% {
-      box-shadow: 0 0 0 0 transparent;
-    }
+const ThemeToggle = ({ variant = 'dropdown' }) => {
+  const { theme, setTheme } = useTheme();
+
+  const themes = [
+    { key: 'light', name: 'Light', icon: <FaSun />, description: 'Bright and clean' },
+    { key: 'dark', name: 'Dark', icon: <FaMoon />, description: 'Easy on the eyes' },
+    { key: 'blue', name: 'Blue', icon: <FaWater />, description: 'Cool and professional' },
+    { key: 'sepia', name: 'Sepia', icon: <FaLeaf />, description: 'Warm and natural' },
+    { key: 'purple', name: 'Purple', icon: <FaGem />, description: 'Creative & modern' },
+    { key: 'teal', name: 'Teal', icon: <FaWater />, description: 'Soft and calm' },
+    { key: 'pink', name: 'Pink', icon: <FaHeart />, description: 'Feminine and fresh' },
+    { key: 'orange', name: 'Orange', icon: <FaFire />, description: 'Energetic and warm' },
+    { key: 'green', name: 'Green', icon: <FaTree />, description: 'Natural and clean' },
+    { key: 'gray', name: 'Gray', icon: <FaSquare />, description: 'Minimal and neutral' }
+  ];
+
+  const currentTheme = themes.find(t => t.key === theme) || themes[1];
+
+  if (variant === 'select') {
+    return (
+      <StyledSelect
+        value={theme}
+        onChange={(e) => setTheme(e.target.value)}
+        size="sm"
+      >
+        {themes.map((t) => (
+          <option key={t.key} value={t.key}>
+            {t.name} - {t.description}
+          </option>
+        ))}
+      </StyledSelect>
+    );
   }
-`;
-
-const ThemeToggle = () => {
-  const { theme, toggleTheme } = useTheme();
 
   return (
-    <ToggleContainer>
-      <ToggleButton onClick={toggleTheme} theme={theme}>
-        <StatusIndicator theme={theme} />
-        <IconWrapper>
-          {theme === 'dark' ? '☀️' : '🌙'}
-        </IconWrapper>
-        <ButtonText theme={theme}>
-          {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-        </ButtonText>
-      </ToggleButton>
-    </ToggleContainer>
+    <StyledDropdown>
+      <Dropdown.Toggle id="theme-dropdown">
+        <ThemeIcon>{currentTheme.icon}</ThemeIcon>
+        {currentTheme.name}
+        <FaPalette style={{ marginLeft: '0.25rem', opacity: 0.7 }} />
+      </Dropdown.Toggle>
+
+      <Dropdown.Menu>
+        {themes.map((t) => (
+          <Dropdown.Item
+            key={t.key}
+            onClick={() => setTheme(t.key)}
+            className={theme === t.key ? 'active' : ''}
+          >
+            <ThemeIcon>{t.icon}</ThemeIcon>
+            <ThemeInfo>
+              <div className="theme-name">{t.name}</div>
+              <div className="theme-description">{t.description}</div>
+            </ThemeInfo>
+            {theme === t.key && <CheckIcon size={14} />}
+          </Dropdown.Item>
+        ))}
+        <ScrollHint>
+          <FaPalette size={12} /> Scroll for more themes
+        </ScrollHint>
+      </Dropdown.Menu>
+    </StyledDropdown>
   );
 };
 

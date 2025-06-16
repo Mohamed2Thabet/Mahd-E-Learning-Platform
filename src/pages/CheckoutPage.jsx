@@ -23,11 +23,11 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 // --- Course Data ---
 const initialCourseData = {
-  id: '22',
+  id: '52',
   title: 'The Complete 2025 Web Development Bootcamp',
   instructor: {
     name: 'Dr. Angela Yu',
-    id: ' *edu_123* '
+    id: 'edu_123'
   },
   image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=500&h=300&fit=crop',
   price: 89.99,

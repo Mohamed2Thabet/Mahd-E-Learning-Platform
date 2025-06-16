@@ -1,13 +1,6 @@
 // pages/StudentProfilePage.jsx
-import React from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import ProfileHeader from '../components/profileStudent/ProfileHeader';
-import StatsCards from '../components/profileStudent/StatsCards';
-import LearningPath from '../components/profileStudent/LearningPath';
-import RecentActivity from '../components/profileStudent/RecentActivity';
-import Certificates from '../components/profileStudent/Certificates';
-import Sidebar from '../components/Layout/Sidebar';
-import useProfile from '../components/hooks/useProfile';
+import useProfile from '../../components/hooks/useProfile';
 
 
 // ✅ Animations
@@ -112,7 +105,6 @@ const StudentProfilePage = () => {
 
   return (
     <PageWrapper>
-      <Sidebar />
       <ProfileContainer>
         <ProfileHeader
           profile={profileData}

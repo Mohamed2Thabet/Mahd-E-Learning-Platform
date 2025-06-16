@@ -1,10 +1,11 @@
 import React from 'react';
 import { Container as BootstrapContainer, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
-import SummaryStats from '../components/GoalsMilestones/SummaryStats';
-import ActiveGoal from '../components/GoalsMilestones/ActiveGoal';
-import Milestone from '../components/GoalsMilestones/Milestone';
-import Sidebar from '../components/Layout/Sidebar';
+import SummaryStats from '../../components/Dasboard/User/GoalsMilestones/SummaryStats';
+import ActiveGoal from '../../components/Dasboard/User/GoalsMilestones/ActiveGoal';
+import Milestone from '../../components/Dasboard/User/GoalsMilestones/Milestone';
+// import Sidebar from '../../components/Layout/Sidebar';
+// "src/components"
 
 const PageWrapper = styled.div`
   background-color: var(--background-dark, #101310);
@@ -251,7 +252,7 @@ const GoalsMilestonesPage = () => {
     <PageWrapper>
       <ProgressIndicator />
       <ContentWrapper>
-        <Sidebar/>
+        {/* <Sidebar /> */}
         <StyledContainer>
           <Header>
             <PageTitle>Learning Goals & Milestones</PageTitle>
