@@ -1,63 +1,69 @@
-import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Form, Button, Alert } from "react-bootstrap";
 import { FaGoogle, FaFacebookF, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { GoogleLogin } from "@react-oauth/google";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import styled from "styled-components";
+import { loginUser, googleLogin, clearError } from "../store/authSlice";
 
+// Validation schema
+const loginSchema = z.object({
+  email: z.string().email("Invalid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
 
-
-// Component
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isLoading, error, isSuccess, isAuthenticated } = useSelector(state => state.auth);
+
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    trigger,
+    getFieldState
+  } = useForm({
+    resolver: zodResolver(loginSchema),
+    mode: "onTouched"
   });
-  const [errors, setErrors] = useState({});
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ""
-      }));
+  // Clear errors when component mounts
+  useEffect(() => {
+    dispatch(clearError());
+  }, [dispatch]);
+
+  // Redirect if already authenticated or login successful
+  useEffect(() => {
+    if (isAuthenticated || isSuccess) {
+      navigate('/dashboard');
     }
+  }, [isAuthenticated, isSuccess, navigate]);
+
+  const onSubmit = async (data) => {
+    dispatch(loginUser(data));
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-    }
-
-    return newErrors;
+  const handleGoogleSuccess = (credentialResponse) => {
+    dispatch(googleLogin(credentialResponse.credential));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const formErrors = validateForm();
+  const handleGoogleError = () => {
+    console.error('Google login failed');
+  };
 
-    if (Object.keys(formErrors).length === 0) {
-      console.log("Login data:", formData);
-      navigate('/learning-goal');
-    } else {
-      setErrors(formErrors);
+  const getInputClassName = (fieldName) => {
+    const fieldState = getFieldState(fieldName);
+    if (errors[fieldName]) {
+      return 'is-invalid';
     }
+    return '';
   };
 
   return (
@@ -79,24 +85,28 @@ const Login = () => {
             <SubtitleText>Sign in to continue your learning journey</SubtitleText>
           </div>
 
-          <StyledForm onSubmit={handleSubmit}>
+          {error && (
+            <Alert variant="danger" className="mb-3">
+              {error}
+            </Alert>
+          )}
+
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
             <InputGroupCustom>
               <FormLabel>Email</FormLabel>
               <InputWrapper>
                 <CustomInput
                   type="email"
-                  name="email"
                   placeholder="Enter your email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className={errors.email ? 'is-invalid' : ''}
-                  required
+                  className={getInputClassName('email')}
+                  {...register('email')}
+                  onBlur={() => trigger('email')}
                 />
                 <InputIcon>
                   <FaEnvelope />
                 </InputIcon>
               </InputWrapper>
-              {errors.email && <ErrorMessage>{errors.email}</ErrorMessage>}
+              {errors.email && <ErrorMessage>{errors.email.message}</ErrorMessage>}
             </InputGroupCustom>
 
             <InputGroupCustom>
@@ -104,12 +114,10 @@ const Login = () => {
               <InputWrapper>
                 <CustomInput
                   type={passwordVisible ? "text" : "password"}
-                  name="password"
                   placeholder="Enter your password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className={errors.password ? 'is-invalid' : ''}
-                  required
+                  className={getInputClassName('password')}
+                  {...register('password')}
+                  onBlur={() => trigger('password')}
                 />
                 <PasswordToggle
                   type="button"
@@ -119,7 +127,7 @@ const Login = () => {
                   {passwordVisible ? <FaEyeSlash /> : <FaEye />}
                 </PasswordToggle>
               </InputWrapper>
-              {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
+              {errors.password && <ErrorMessage>{errors.password.message}</ErrorMessage>}
             </InputGroupCustom>
 
             <div className="text-end mb-3">
@@ -130,20 +138,30 @@ const Login = () => {
 
             <LoginButton
               type="submit"
-              disabled={!formData.email || !formData.password}
+              disabled={isLoading || !isValid}
             >
-              Log in
+              {isLoading ? "Logging in..." : "Log in"}
             </LoginButton>
 
             <DividerText>or continue with</DividerText>
 
             <SocialButtons>
-              <SocialButton variant="outline-light">
-                <FaGoogle />
-              </SocialButton>
-              <SocialButton variant="outline-light">
+              <GoogleLoginWrapper>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={handleGoogleError}
+                  useOneTap={false}
+                  theme="filled_black"
+                  shape="rectangular"
+                  size="large"
+                  text="signin_with"
+                  disabled={isLoading}
+                />
+              </GoogleLoginWrapper>
+
+              {/* <SocialButton variant="outline-light" disabled>
                 <FaFacebookF />
-              </SocialButton>
+              </SocialButton> */}
             </SocialButtons>
 
             <SignupLink>
@@ -160,7 +178,8 @@ const Login = () => {
 };
 
 export default Login;
-// Styled Components
+
+// Styled Components (keeping existing styles and adding new ones)
 const LoginContainer = styled.div`
   display: flex;
   align-items: center;
@@ -270,6 +289,7 @@ const CustomInput = styled(Form.Control)`
   
   &.is-invalid {
     border-color: var(--error-color);
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
   }
 `;
 
@@ -332,6 +352,7 @@ const LoginButton = styled(Button)`
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -346,6 +367,17 @@ const SocialButtons = styled.div`
   justify-content: center;
   gap: 15px;
   margin-bottom: 25px;
+  align-items: center;
+`;
+
+const GoogleLoginWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  
+  /* Override Google button styles to match theme */
+  .google-login-button {
+    border-radius: 8px !important;
+  }
 `;
 
 const SocialButton = styled(Button)`
@@ -358,9 +390,14 @@ const SocialButton = styled(Button)`
   border-radius: 8px;
   transition: all 0.3s ease;
   
-  &:hover {
+  &:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+  }
+  
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
   
   @media (max-width: 480px) {

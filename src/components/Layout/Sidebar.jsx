@@ -54,9 +54,6 @@ const MobileToggleButton = styled.button`
   }
 `;
 
-// ❌ إزالة Back Button الخارجي - تم حذفه بالكامل
-// const BackButton = styled(NavLink)`...`
-
 const MobileOverlay = styled.div`
   position: fixed;
   inset: 0;
@@ -65,6 +62,7 @@ const MobileOverlay = styled.div`
   backdrop-filter: blur(5px);
 `;
 
+// ✅ Fixed: Added transient props ($expanded, $mobileOpen)
 const SidebarContainer = styled.div`
   position: fixed;
   top: 0;
@@ -84,13 +82,13 @@ const SidebarContainer = styled.div`
   box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
 
   ${(props) =>
-    props.expanded &&
+    props.$expanded &&
     css`
       width: 280px;
     `}
 
   ${(props) =>
-    props.mobileOpen &&
+    props.$mobileOpen &&
     css`
       width: 280px;
       position: fixed;
@@ -98,11 +96,11 @@ const SidebarContainer = styled.div`
     `}
 
   @media (max-width: 767px) {
-    transform: translateX(${(props) => (props.mobileOpen ? '0' : '-100%')});
+    transform: translateX(${(props) => (props.$mobileOpen ? '0' : '-100%')});
     transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     width: 280px;
     box-shadow: ${(props) =>
-    props.mobileOpen
+    props.$mobileOpen
       ? '4px 0 40px rgba(0, 0, 0, 0.5)'
       : 'none'
   };
@@ -237,9 +235,10 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+// ✅ Fixed: Added transient prop ($expanded)
 const NavIcon = styled.span`
   font-size: 1.4rem;
-  margin-right: ${(props) => (props.expanded ? '1rem' : '0')};
+  margin-right: ${(props) => (props.$expanded ? '1rem' : '0')};
   display: flex;
   justify-content: center;
   width: 24px;
@@ -251,12 +250,13 @@ const NavIcon = styled.span`
   }
 `;
 
+// ✅ Fixed: Added transient prop ($expanded)
 const NavText = styled.span`
   flex-grow: 1;
-  opacity: ${(props) => (props.expanded ? 1 : 0)};
+  opacity: ${(props) => (props.$expanded ? 1 : 0)};
   transition: opacity 0.3s ease;
   white-space: nowrap;
-  pointer-events: ${(props) => (props.expanded ? 'auto' : 'none')};
+  pointer-events: ${(props) => (props.$expanded ? 'auto' : 'none')};
   font-weight: 500;
   
   @media (max-width: 767px) {
@@ -347,7 +347,7 @@ const Sidebar = ({ role = 'instructor', instructorId = '' }) => {
   ];
 
   const navLinks = role === 'instructor' ? instructorLinks : studentLinks;
-
+  console.log(navLinks);
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
@@ -374,8 +374,8 @@ const Sidebar = ({ role = 'instructor', instructorId = '' }) => {
       {/* Mobile Overlay */}
       {isMobileOpen && <MobileOverlay onClick={toggleMobileSidebar} />}
 
-      {/* Sidebar */}
-      <SidebarContainer expanded={isExpanded} mobileOpen={isMobileOpen}>
+      {/* ✅ Fixed: Updated to use transient props */}
+      <SidebarContainer $expanded={isExpanded} $mobileOpen={isMobileOpen}>
         {/* Mobile Close Button */}
         {isMobileOpen && (
           <MobileCloseButton onClick={toggleMobileSidebar}>
@@ -400,8 +400,9 @@ const Sidebar = ({ role = 'instructor', instructorId = '' }) => {
                   data-aos="fade-right"
                   data-aos-delay={index * 50}
                 >
-                  <NavIcon expanded={isExpanded}>{link.icon}</NavIcon>
-                  <NavText expanded={isExpanded}>{link.name}</NavText>
+                  {/* ✅ Fixed: Updated to use transient props */}
+                  <NavIcon $expanded={isExpanded}>{link.icon}</NavIcon>
+                  <NavText $expanded={isExpanded}>{link.name}</NavText>
                 </StyledNavLink>
               </NavItemCustom>
             ))}
@@ -412,10 +413,11 @@ const Sidebar = ({ role = 'instructor', instructorId = '' }) => {
         <SidebarBottom>
           {/* Back Button داخل الـ Sidebar */}
           <SidebarBackButton to="/" title="Back to Home">
-            <NavIcon expanded={isExpanded}>
+            {/* ✅ Fixed: Updated to use transient props */}
+            <NavIcon $expanded={isExpanded}>
               <FaArrowLeft />
             </NavIcon>
-            <NavText expanded={isExpanded}>Back to Home</NavText>
+            <NavText $expanded={isExpanded}>Back to Home</NavText>
           </SidebarBackButton>
 
           {/* Logout Button */}
@@ -423,10 +425,11 @@ const Sidebar = ({ role = 'instructor', instructorId = '' }) => {
             onClick={handleLogout}
             title={!isExpanded ? 'Logout' : ''}
           >
-            <NavIcon expanded={isExpanded}>
+            {/* ✅ Fixed: Updated to use transient props */}
+            <NavIcon $expanded={isExpanded}>
               <FaSignOutAlt />
             </NavIcon>
-            <NavText expanded={isExpanded}>Logout</NavText>
+            <NavText $expanded={isExpanded}>Logout</NavText>
           </LogoutBtn>
         </SidebarBottom>
       </SidebarContainer>

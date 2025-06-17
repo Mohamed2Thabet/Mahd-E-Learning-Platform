@@ -38,25 +38,37 @@ const SignIn = () => {
     await trigger(fieldName);
   };
 
-  // Handle form submission
+  // في الـ SignIn component
   const onSubmit = async (data) => {
     try {
-      // Extract only the fields needed for API
       const { firstName, lastName, email, password, role } = data;
+      const apiPayload = { firstName, lastName, email, password, role };
 
-      const apiPayload = {
-        firstName,
-        lastName,
-        email,
-        password,
-        role
-      };
-
-      await dispatch(registerUser(apiPayload)).unwrap();
+      console.log('Dispatching registerUser with:', apiPayload);
+      const result = await dispatch(registerUser(apiPayload)).unwrap();
+      console.log('Registration successful:', result.message);
     } catch (error) {
       console.error('Registration failed:', error);
     }
   };
+
+  // أضف useEffect لمراقبة التغييرات
+  useEffect(() => {
+    console.log('Auth state changed:', { isSuccess, error, isLoading });
+  }, [isSuccess, error, isLoading]);
+
+  // في الـ useEffect للنجاح
+  useEffect(() => {
+    if (isSuccess && !error) { // تأكد من عدم وجود خطأ
+      console.log('Registration truly successful, redirecting...');
+      const timer = setTimeout(() => {
+        dispatch(clearSuccess());
+        navigate('/login');
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isSuccess, error, navigate, dispatch]);
+
   
   // Handle successful registration
   useEffect(() => {
@@ -109,19 +121,20 @@ const SignIn = () => {
             <SubtitleText>Sign up to get started with MAHD</SubtitleText>
           </div>
 
-          {/* Success Alert */}
+          {/* Success Alert - will only show when isSuccess is true */}
           {isSuccess && (
             <Alert variant="success" className="mb-3">
               Registration successful! Redirecting to login...
             </Alert>
           )}
 
-          {/* Error Alert */}
+          {/* Error Alert - will show the specific API error message */}
           {error && (
             <Alert variant="danger" className="mb-3" dismissible onClose={() => dispatch(clearError())}>
               {error}
             </Alert>
           )}
+
 
           <StyledForm onSubmit={handleSubmit(onSubmit)}>
             {/* First Name Field */}

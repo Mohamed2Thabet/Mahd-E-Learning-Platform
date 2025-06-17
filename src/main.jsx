@@ -17,9 +17,11 @@ AOS.init();
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <Provider store={store}>
-      <ThemeProvider> 
-        <App />
-      </ThemeProvider>
+      <GoogleOAuthProvider clientId="235195855890-prbe81hmikd3is6cnqi85ss55jvcrfq7.apps.googleusercontent.com">
+        <ThemeProvider> 
+          <App />
+        </ThemeProvider>
+    </GoogleOAuthProvider >
     </Provider>
   </StrictMode>
 );

@@ -1,11 +1,16 @@
 // pages/StudentProfilePage.jsx
 import styled, { keyframes, css } from 'styled-components';
 import useProfile from '../../components/hooks/useProfile';
+import ProfileHeader from '../../components/Dasboard/User/profileStudent/ProfileHeader';
+import Certificates from '../../components/Dasboard/User/profileStudent/Certificates';
+import LearningPath from '../../components/Dasboard/User/profileStudent/LearningPath';
+import StatsCards from '../../components/Dasboard/User/profileStudent/StatsCards';
+import RecentActivity from '../../components/Dasboard/User/profileStudent/RecentActivity';
 
 
 // ✅ Animations
 const fadeIn = keyframes`
-  from {
+  from {  
     opacity: 0;
   }
   to {
