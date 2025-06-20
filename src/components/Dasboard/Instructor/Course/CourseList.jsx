@@ -1,12 +1,109 @@
-import { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Button, Badge, Alert, Spinner } from 'react-bootstrap';
-import { FaEdit, FaTrash, FaEye, FaPlus, FaTag, FaDollarSign, FaUser, FaCheckCircle, FaClock, FaBook, FaGraduationCap, FaStar } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
-import { courseAPI } from '../../../services/api';
-import Sidebar from '../../../Layout/Sidebar';
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Container, Row, Col, Button, Spinner, Alert, Card, Badge } from "react-bootstrap";
+import { Link } from "react-router-dom";
+import { FaPlus, FaEye, FaEdit, FaTrash, FaBook } from "react-icons/fa";
+import styled, { keyframes } from "styled-components";
+import { fetchCoursesForEducator } from "../../../../store/courseSlice";
 
-// Professional animations with subtle easing
+const CourseList = () => {
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
+  const educatorData = JSON.parse(localStorage.getItem("user"));
+  const educatorId = educatorData?.id;
+  const courses = useSelector(state => state.course.educatorCourses);
+  const loading = useSelector(state => state.course.loading);
+  const error = useSelector(state => state.course.error);
+  console.log(courses)
+  useEffect(() => {
+    console.log(educatorId)
+    if (educatorId) {
+      dispatch(fetchCoursesForEducator({ educatorId, limit: 0, offset: 0 }));
+    }
+  }, [dispatch, educatorId, token]);
+
+  if (loading) {
+    return (
+      <Container className="text-center py-5">
+        <Spinner animation="border" role="status" />
+        <p>Loading courses...</p>
+      </Container>
+    );
+  }
+
+  return (
+    <Container fluid>
+      <Row className="mb-4">
+        <Col className="d-flex justify-content-between align-items-center">
+          <h3>My Courses</h3>
+          <Button as={Link} to="/create-course" variant="success">
+            <FaPlus /> Add New Course
+          </Button>
+        </Col>
+      </Row>
+
+      {error && (
+        <Row className="mb-3">
+          <Col>
+            <Alert variant="danger">{error}</Alert>
+          </Col>
+        </Row>
+      )}
+
+      {courses.length === 0 ? (
+        <EmptyState>
+          <div className="empty-icon">
+            <FaBook />
+          </div>
+          <h4>No Courses Found</h4>
+          <p>You haven’t created any courses yet. Start by adding your first course.</p>
+          <Button as={Link} to="/create-course" variant="success">
+            <FaPlus /> Create Course
+          </Button>
+        </EmptyState>
+      ) : (
+        <Row>
+          {courses.map(course => (
+            <Col key={course.id} md={6} lg={4} className="mb-4">
+              <Card>
+                <Card.Img variant="top" src={course.imageUrl || 'https://via.placeholder.com/400x200'} />
+                <Card.Body>
+                  <Card.Title>{course.title}</Card.Title>
+                  <Card.Text>
+                    {course.description.length > 100
+                      ? `${course.description.substring(0, 100)}...`
+                      : course.description}
+                  </Card.Text>
+                  <Badge bg={course.approved ? "success" : "warning"}>
+                    {course.approved ? "Approved" : "Pending"}
+                  </Badge>{" "}
+                  <Badge bg="info">{course.level}</Badge>{" "}
+                  <Badge bg="secondary">${course.price}</Badge>
+                </Card.Body>
+                <Card.Footer className="d-flex justify-content-between">
+                  <Button size="sm" as={Link} to={`/dashboard/instructor/course/${course._id}`} variant="outline-primary">
+                    <FaEye /> View
+                  </Button>
+                  <Button size="sm" as={Link} to={`/dashboard/instructor/course/edit/${course._id}`} variant="outline-secondary">
+                    <FaEdit /> Edit
+                  </Button>
+                  <Button size="sm" variant="outline-danger" onClick={() => alert('Confirm deletion')}>
+                    <FaTrash /> Delete
+                  </Button>
+                </Card.Footer>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      )}
+    </Container>
+  );
+};
+
+export default CourseList;
+
+
+//  Professional animations with subtle easing
 const fadeInUp = keyframes`
   from {
     opacity: 0;
@@ -501,221 +598,3 @@ const StatCard = styled.div`
     font-weight: 500;
   }
 `;
-
-const CourseList = () => {
-  const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  const fetchCourses = async () => {
-    try {
-      setLoading(true);
-      const response = await courseAPI.getAll();
-      setCourses(response.data);
-      console.log(response.data);
-      setError('');
-    } catch (err) {
-      setError('Failed to fetch courses. Please try again.');
-      console.error('Error fetching courses:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleDeleteCourse = async (courseId) => {
-    if (window.confirm('Are you sure you want to delete this course? This action cannot be undone.')) {
-      try {
-        await courseAPI.delete(courseId);
-        setCourses(courses.filter(course => course.id !== courseId));
-        setError('');
-      } catch (err) {
-        setError('Failed to delete course. Please try again.');
-        console.error('Error deleting course:', err);
-      }
-    }
-  };
-
-  const getLevelBadgeColor = (level) => {
-    switch (level) {
-      case 'Beginner': return 'var(--primary)';
-      case 'Intermediate': return '#ffc107';
-      case 'Advanced': return '#dc3545';
-      default: return 'var(--border-color)';
-    }
-  };
-
-  const getStats = () => {
-    const approved = courses.filter(c => c.approved).length;
-    const pending = courses.filter(c => !c.approved).length;
-    const totalRevenue = courses.reduce((sum, c) => sum + (c.price || 0), 0);
-
-    return { approved, pending, total: courses.length, totalRevenue };
-  };
-
-  if (loading) {
-    return (
-      <ProfessionalContainer fluid>
-        <LoadingContainer>
-          <StyledSpinner animation="border" />
-          <LoadingText>Loading your courses...</LoadingText>
-        </LoadingContainer>
-      </ProfessionalContainer>
-    );
-  }
-
-  const stats = getStats();
-
-  return (
-    <ProfessionalContainer fluid>
-      {/* <Sidebar /> */}
-      {/* <PageHeader>
-        <div className="header-content">
-          <PageTitle>
-            <FaGraduationCap className="title-icon" />
-            My Courses
-          </PageTitle>
-          <StyledButton
-            as={Link}
-            to="/instructor/courses/create"
-            className="btn-primary"
-            size="lg"
-          >
-            <FaPlus /> Create New Course
-          </StyledButton>
-
-        </div>
-      </PageHeader> */}
-
-      {error && (
-        <Row className="mb-4">
-          <Col>
-            <ErrorAlert variant="danger" dismissible onClose={() => setError('')}>
-              {error}
-            </ErrorAlert>
-          </Col>
-        </Row>
-      )}
-
-      {courses.length > 0 && (
-        <StatsSection>
-          <StatCard>
-            <div className="stat-number">{stats.total}</div>
-            <div className="stat-label">Total Courses</div>
-          </StatCard>
-          <StatCard>
-            <div className="stat-number">{stats.approved}</div>
-            <div className="stat-label">Approved</div>
-          </StatCard>
-          <StatCard>
-            <div className="stat-number">{stats.pending}</div>
-            <div className="stat-label">Pending</div>
-          </StatCard>
-          <StatCard>
-            <div className="stat-number">${stats.totalRevenue}</div>
-            <div className="stat-label">Total Value</div>
-          </StatCard>
-        </StatsSection>
-      )}
-
-      {courses.length === 0 ? (
-        <EmptyState>
-          <div className="empty-icon">
-            <FaBook />
-          </div>
-          <h4>No courses found</h4>
-          <p>Start by creating your first course and share your knowledge with the world!</p>
-          <StyledButton as={Link} to="/create-course" className="btn-primary" size="lg">
-            <FaPlus /> Create Your First Course
-          </StyledButton>
-        </EmptyState>
-      ) : (
-        <Row>
-          {courses.map((course, index) => (
-            <Col key={course.id} lg={4} md={6} className="mb-4">
-              <StyledCard style={{ animationDelay: `${index * 0.1}s` }}>
-                <CourseImage>
-                  <img
-                    src={course.imageUrl || 'https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=400'}
-                    alt={course.title}
-                  />
-                  <PriceTag>
-                    <FaDollarSign size={12} />
-                    {course.price}
-                  </PriceTag>
-                  <ApprovalBadge className={course.approved ? 'approved' : 'pending'}>
-                    {course.approved ? <FaCheckCircle /> : <FaClock />}
-                    {course.approved ? 'Approved' : 'Pending'}
-                  </ApprovalBadge>
-                </CourseImage>
-
-                <CardBody>
-                  <Card.Title className="card-title">{course.title}</Card.Title>
-                  <Card.Text className="card-text">
-                    {course.description.length > 100
-                      ? `${course.description.substring(0, 100)}...`
-                      : course.description}
-                  </Card.Text>
-
-                  <CourseMetadata>
-                    <div className="educator-info">
-                      <FaUser />
-                      {course.educator}
-                    </div>
-                    <div className="level-badge">
-                      <StyledBadge style={{ backgroundColor: getLevelBadgeColor(course.level) }}>
-                        <FaStar size={8} className="me-1" />
-                        {course.level}
-                      </StyledBadge>
-                    </div>
-                  </CourseMetadata>
-
-                  <TagsContainer>
-                    {course.tags && course.tags.map((tag, index) => (
-                      <StyledBadge key={index}>
-                        <FaTag size={8} className="me-1" />
-                        {tag}
-                      </StyledBadge>
-                    ))}
-                  </TagsContainer>
-
-                  <CardActions>
-                    <StyledButton
-                      as={Link}
-                      to={`/instructor/course/${course.id}`}
-                      className="btn-outline-primary"
-                      size="sm"
-                    
-                    >
-                      <FaEye /> View
-                    </StyledButton>
-                    <StyledButton
-                      as={Link}
-                      to={`/instructor/edit-course/${course.id}`}
-                      className="btn-outline-secondary"
-                      size="sm"
-                    >
-                      <FaEdit /> Edit
-                    </StyledButton>
-                    <StyledButton
-                      className="btn-outline-danger"
-                      size="sm"
-                      onClick={() => handleDeleteCourse(course.id)}
-                    >
-                      <FaTrash /> Delete
-                    </StyledButton>
-                  </CardActions>
-                </CardBody>
-              </StyledCard>
-            </Col>
-          ))}
-        </Row>
-      )}
-    </ProfessionalContainer>
-  );
-};
-
-export default CourseList;

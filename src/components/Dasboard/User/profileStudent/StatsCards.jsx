@@ -1,7 +1,7 @@
 // components/profileStudent/EnhancedStatsCards.jsx
 import React, { useState, useEffect } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Card, Col, Row, Badge, ProgressBar } from 'react-bootstrap';
+import { Card, Badge } from 'react-bootstrap';
 import {
   FaBookOpen,
   FaCertificate,
@@ -11,7 +11,6 @@ import {
   FaChartLine,
   FaArrowUp,
   FaArrowDown,
-  FaEye,
   FaInfoCircle
 } from 'react-icons/fa';
 
@@ -47,8 +46,6 @@ const pulse = keyframes`
   }
 `;
 
-
-
 const float = keyframes`
   0%, 100% {
     transform: translateY(0px);
@@ -60,22 +57,37 @@ const float = keyframes`
 
 const glow = keyframes`
   0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 0 20px var(--primary);
   }
   50% {
-    box-shadow: 0 0 30px rgba(0, 230, 118, 0.6);
+    box-shadow: 0 0 30px var(--primary);
   }
 `;
 
-// ✅ Enhanced Styled Components
-const StatsContainer = styled(Row)`
+// ✅ Enhanced Styled Components with CSS Grid for Equal Heights
+const StatsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(1rem, 2.5vw, 2rem);
   margin-bottom: 40px;
   animation: ${css`${slideInUp} 0.8s ease-out`};
   animation-delay: 0.2s;
   animation-fill-mode: both;
+  max-width: 100%;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
 
   @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
     margin-bottom: 32px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
 `;
 
@@ -92,7 +104,12 @@ const StatBox = styled(Card)`
   animation: ${css`${slideInUp} 0.6s ease-out`};
   animation-delay: ${props => props.$delay || '0s'};
   animation-fill-mode: both;
-  min-height: 180px;
+  
+  /* Key for equal height */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 280px;
 
   &::before {
     content: '';
@@ -116,16 +133,16 @@ const StatBox = styled(Card)`
   }
 
   &:hover {
-    transform: translateY(-10px) scale(1.03);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
-    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--box-shadow-hover);
+    border-color: rgba(255, 255, 255, 0.2);
 
     &::after {
       left: 100%;
     }
 
     .stat-icon {
-      transform: scale(1.3) rotate(10deg);
+      transform: scale(1.2) rotate(8deg);
       animation: ${css`${glow} 1s ease-in-out`};
     }
 
@@ -143,22 +160,24 @@ const StatBox = styled(Card)`
   }
 
   .card-body {
-    padding: 32px 24px !important;
+    padding: clamp(1.25rem, 3vw, 2rem) clamp(1rem, 2.5vw, 1.5rem) !important;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    flex: 1; /* Allow body to grow and fill available space */
+    gap: clamp(0.75rem, 2vw, 1rem);
     height: 100%;
-    gap: 16px;
-
-    @media (max-width: 768px) {
-      padding: 24px 20px !important;
-      gap: 12px;
-    }
   }
 
   @media (max-width: 768px) {
-    min-height: 160px;
+    min-height: 240px;
+    border-radius: 16px !important;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 220px;
+    border-radius: 12px !important;
   }
 `;
 
@@ -166,17 +185,18 @@ const StatIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 70px;
-  height: 70px;
+  width: clamp(60px, 8vw, 70px);
+  height: clamp(60px, 8vw, 70px);
   background: ${props => props.$bgColor || 'rgba(0, 230, 118, 0.1)'};
-  border-radius: 20px;
+  border-radius: clamp(16px, 3vw, 20px);
   color: ${props => props.$color || 'var(--primary)'};
-  font-size: 28px;
+  font-size: clamp(20px, 4vw, 28px);
   transition: all 0.4s ease;
-  margin-bottom: 12px;
+  margin-bottom: clamp(8px, 2vw, 12px);
   box-shadow: 0 8px 25px ${props => props.$shadowColor || 'rgba(0, 230, 118, 0.3)'};
   position: relative;
   animation: ${css`${float} 4s ease-in-out infinite`};
+  flex-shrink: 0; /* Prevent icon from shrinking */
 
   &::before {
     content: '';
@@ -185,35 +205,33 @@ const StatIcon = styled.div`
     left: -2px;
     right: -2px;
     bottom: -2px;
-    border-radius: 22px;
+    border-radius: clamp(18px, 3.5vw, 22px);
     background: linear-gradient(45deg, ${props => props.$color || 'var(--primary)'}, transparent);
     opacity: 0.3;
     z-index: -1;
   }
-
-  @media (max-width: 768px) {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-  }
 `;
 
 const StatValue = styled.div`
-  font-size: clamp(1.75rem, 5vw, 2.5rem) !important;
+  font-size: clamp(1.5rem, 5vw, 2.25rem) !important;
   font-weight: 800 !important;
   margin: 0 !important;
   color: var(--heading-color) !important;
   line-height: 1.2;
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   flex-direction: column;
   text-align: center;
+  flex: 1; /* Allow value to take available space */
+  min-height: 80px; /* Ensure minimum height for consistency */
 
   .main-value {
     display: flex;
     align-items: baseline;
-    gap: 6px;
+    gap: 4px;
+    justify-content: center;
   }
 
   .unit {
@@ -225,7 +243,7 @@ const StatValue = styled.div`
   }
 
   .trend {
-    font-size: 0.35em;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
     padding: 4px 8px;
     border-radius: 8px;
     font-weight: 700;
@@ -235,24 +253,27 @@ const StatValue = styled.div`
     display: flex;
     align-items: center;
     gap: 4px;
+    white-space: nowrap;
   }
 `;
 
 const StatLabel = styled.p`
-  font-size: clamp(0.875rem, 2vw, 1rem) !important;
+  font-size: clamp(0.75rem, 2vw, 0.9rem) !important;
   color: var(--text-secondary) !important;
   margin: 0 !important;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
   text-align: center;
+  flex-shrink: 0; /* Prevent label from shrinking */
+  line-height: 1.3;
 `;
 
 const StreakBadge = styled.div`
   position: absolute;
   top: 16px;
   right: 16px;
-  background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+  background: linear-gradient(135deg, var(--warning-color) 0%, #F7931E 100%);
   color: white;
   padding: 6px 12px;
   border-radius: 16px;
@@ -262,7 +283,7 @@ const StreakBadge = styled.div`
   align-items: center;
   gap: 6px;
   animation: ${css`${pulse} 2s ease-in-out infinite`};
-  box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+  box-shadow: 0 4px 15px rgba(255, 165, 2, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 
@@ -279,9 +300,10 @@ const ProgressIndicator = styled.div`
   height: 4px;
   background: var(--border-color);
   border-radius: 2px;
-  margin-top: 12px;
+  margin-top: auto; /* Push to bottom */
   overflow: hidden;
   position: relative;
+  flex-shrink: 0;
 
   &::after {
     content: '';
@@ -292,15 +314,15 @@ const ProgressIndicator = styled.div`
     width: ${props => props.$progress || 0}%;
     background: linear-gradient(90deg, ${props => props.$color || 'var(--primary)'}, ${props => props.$color || 'var(--primary)'}88);
     border-radius: 2px;
-    transition: width 0.8s ease;
+    transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 `;
 
 const TrendBadge = styled(Badge)`
   background: ${props => {
-    if (props.$trend === 'up') return 'linear-gradient(135deg, #10B981 0%, #059669 100%)';
-    if (props.$trend === 'down') return 'linear-gradient(135deg, #EF4444 0%, #DC2626 100%)';
-    return 'linear-gradient(135deg, #6B7280 0%, #4B5563 100%)';
+    if (props.$trend === 'up') return 'var(--success-color)';
+    if (props.$trend === 'down') return 'var(--error-color)';
+    return 'var(--text-secondary)';
   }} !important;
   color: white !important;
   padding: 4px 8px !important;
@@ -366,9 +388,9 @@ const getEnhancedStatsData = (profile) => [
     icon: FaBookOpen,
     value: profile.coursesEnrolled,
     label: 'Courses Enrolled',
-    color: '#4F46E5',
-    bgColor: 'rgba(79, 70, 229, 0.1)',
-    shadowColor: 'rgba(79, 70, 229, 0.2)',
+    color: 'var(--info-color)',
+    bgColor: 'rgba(55, 66, 250, 0.1)',
+    shadowColor: 'rgba(55, 66, 250, 0.2)',
     trend: '+3 this month',
     trendType: 'up',
     progress: 75,
@@ -378,9 +400,9 @@ const getEnhancedStatsData = (profile) => [
     icon: FaClock,
     value: profile.hoursLearned,
     label: 'Hours Learned',
-    color: '#059669',
-    bgColor: 'rgba(5, 150, 105, 0.1)',
-    shadowColor: 'rgba(5, 150, 105, 0.2)',
+    color: 'var(--success-color)',
+    bgColor: 'rgba(46, 213, 115, 0.1)',
+    shadowColor: 'rgba(46, 213, 115, 0.2)',
     unit: 'hrs',
     trend: '+12 this week',
     trendType: 'up',
@@ -391,9 +413,9 @@ const getEnhancedStatsData = (profile) => [
     icon: FaCertificate,
     value: profile.certifications,
     label: 'Certifications',
-    color: '#D97706',
-    bgColor: 'rgba(217, 119, 6, 0.1)',
-    shadowColor: 'rgba(217, 119, 6, 0.2)',
+    color: 'var(--warning-color)',
+    bgColor: 'rgba(255, 165, 2, 0.1)',
+    shadowColor: 'rgba(255, 165, 2, 0.2)',
     trend: '+1 this month',
     trendType: 'up',
     progress: 60,
@@ -403,9 +425,9 @@ const getEnhancedStatsData = (profile) => [
     icon: FaChartLine,
     value: `${profile.completionRate}%`,
     label: 'Completion Rate',
-    color: '#DC2626',
-    bgColor: 'rgba(220, 38, 38, 0.1)',
-    shadowColor: 'rgba(220, 38, 38, 0.2)',
+    color: 'var(--error-color)',
+    bgColor: 'rgba(255, 71, 87, 0.1)',
+    shadowColor: 'rgba(255, 71, 87, 0.2)',
     trend: '+5% this month',
     trendType: 'up',
     progress: profile.completionRate,
@@ -415,9 +437,9 @@ const getEnhancedStatsData = (profile) => [
     icon: FaTrophy,
     value: profile.totalPoints,
     label: 'Total Points',
-    color: '#7C3AED',
-    bgColor: 'rgba(124, 58, 237, 0.1)',
-    shadowColor: 'rgba(124, 58, 237, 0.2)',
+    color: 'var(--primary)',
+    bgColor: 'rgba(0, 230, 118, 0.1)',
+    shadowColor: 'rgba(0, 230, 118, 0.2)',
     unit: 'pts',
     trend: '+150 this week',
     trendType: 'up',
@@ -428,9 +450,9 @@ const getEnhancedStatsData = (profile) => [
     icon: FaFire,
     value: profile.currentStreak,
     label: 'Current Streak',
-    color: '#EA580C',
-    bgColor: 'rgba(234, 88, 12, 0.1)',
-    shadowColor: 'rgba(234, 88, 12, 0.2)',
+    color: 'var(--warning-color)',
+    bgColor: 'rgba(255, 165, 2, 0.1)',
+    shadowColor: 'rgba(255, 165, 2, 0.2)',
     unit: 'days',
     showBadge: true,
     progress: Math.min((profile.currentStreak / 30) * 100, 100),
@@ -444,7 +466,6 @@ const StatsCards = ({ profile, onStatClick, showProgress = true, showTrends = tr
   const statsData = getEnhancedStatsData(profile);
 
   useEffect(() => {
-    // Animate values on mount
     const timers = statsData.map((stat, index) => {
       return setTimeout(() => {
         setAnimatedValues(prev => ({
@@ -457,22 +478,17 @@ const StatsCards = ({ profile, onStatClick, showProgress = true, showTrends = tr
     return () => timers.forEach(clearTimeout);
   }, [statsData]);
 
-  const handleStatClick = (stat) => {
+  const handleStatClick = (stat, index) => {
     if (onStatClick) {
       onStatClick(stat.label, stat);
-    } else {
-      console.log(`Clicked on ${stat.label}:`, stat);
     }
   };
 
   const getTrendIcon = (trendType) => {
     switch (trendType) {
-      case 'up':
-        return <FaArrowUp />;
-      case 'down':
-        return <FaArrowDown />;
-      default:
-        return null;
+      case 'up': return <FaArrowUp />;
+      case 'down': return <FaArrowDown />;
+      default: return null;
     }
   };
 
@@ -483,80 +499,79 @@ const StatsCards = ({ profile, onStatClick, showProgress = true, showTrends = tr
         const displayValue = animatedValues[index] || 0;
 
         return (
-          <Col xl={2} lg={3} md={4} sm={6} key={index}>
-            <StatBox
-              $delay={`${0.1 + index * 0.05}s`}
-              $color={stat.color}
-              onClick={() => handleStatClick(stat, index)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  handleStatClick(stat, index);
-                }
-              }}
-              title={stat.info}
-            >
-              {/* Trend Badge */}
-              {showTrends && stat.trendType && (
-                <TrendBadge $trend={stat.trendType} className="trend-badge">
-                  {getTrendIcon(stat.trendType)}
-                  {stat.trendType}
-                </TrendBadge>
-              )}
+          <StatBox
+            key={index}
+            $delay={`${0.1 + index * 0.05}s`}
+            $color={stat.color}
+            onClick={() => handleStatClick(stat, index)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleStatClick(stat, index);
+              }
+            }}
+            title={stat.info}
+          >
+            {/* Trend Badge */}
+            {showTrends && stat.trendType && (
+              <TrendBadge $trend={stat.trendType} className="trend-badge">
+                {getTrendIcon(stat.trendType)}
+                {stat.trendType}
+              </TrendBadge>
+            )}
 
-              {/* Streak Badge */}
-              {stat.showBadge && (
-                <StreakBadge>
-                  🔥 Hot Streak!
-                </StreakBadge>
-              )}
+            {/* Streak Badge */}
+            {stat.showBadge && (
+              <StreakBadge>
+                🔥 Hot Streak!
+              </StreakBadge>
+            )}
 
-              <Card.Body>
-                {/* Icon */}
-                <StatIcon
-                  className="stat-icon"
-                  $color={stat.color}
-                  $bgColor={stat.bgColor}
-                  $shadowColor={stat.shadowColor}
-                >
-                  <IconComponent />
-                </StatIcon>
+            <Card.Body>
+              {/* Icon */}
+              <StatIcon
+                className="stat-icon"
+                $color={stat.color}
+                $bgColor={stat.bgColor}
+                $shadowColor={stat.shadowColor}
+              >
+                <IconComponent />
+              </StatIcon>
 
-                {/* Value */}
-                <StatValue className="stat-value">
-                  <div className="main-value">
-                    {displayValue}
-                    {stat.unit && <span className="unit">{stat.unit}</span>}
+              {/* Value */}
+              <StatValue className="stat-value">
+                <div className="main-value">
+                  {displayValue}
+                  {stat.unit && <span className="unit">{stat.unit}</span>}
+                </div>
+                {showTrends && stat.trend && (
+                  <div className="trend">
+                    {getTrendIcon(stat.trendType)}
+                    {stat.trend}
                   </div>
-                  {showTrends && stat.trend && (
-                    <div className="trend">
-                      {getTrendIcon(stat.trendType)}
-                      {stat.trend}
-                    </div>
-                  )}
-                </StatValue>
-
-                {/* Label */}
-                <StatLabel>{stat.label}</StatLabel>
-
-                {/* Progress Indicator */}
-                {showProgress && stat.progress !== undefined && (
-                  <ProgressIndicator
-                    className="progress-indicator"
-                    $progress={stat.progress}
-                    $color={stat.color}
-                  />
                 )}
+              </StatValue>
 
-                {/* Info Tooltip */}
-                <InfoTooltip title={stat.info}>
-                  <FaInfoCircle />
-                </InfoTooltip>
-              </Card.Body>
-            </StatBox>
-          </Col>
+              {/* Label */}
+              <StatLabel>{stat.label}</StatLabel>
+
+              {/* Progress Indicator */}
+              {showProgress && stat.progress !== undefined && (
+                <ProgressIndicator
+                  className="progress-indicator"
+                  $progress={stat.progress}
+                  $color={stat.color}
+                />
+              )}
+
+              {/* Info Tooltip */}
+              <InfoTooltip title={stat.info}>
+                <FaInfoCircle />
+              </InfoTooltip>
+            </Card.Body>
+          </StatBox>
         );
       })}
     </StatsContainer>

@@ -1,12 +1,21 @@
-// hooks/useProfile.js
-import { useState } from 'react';
+// ✅ hooks/useProfile.js
+import { useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchProfile, updateProfileNames } from '../../store/profileSlice';
 
 const useProfile = () => {
-  const [profileData, setProfileData] = useState({
-    name: 'Jonathan Lerid G',
-    role: 'UI/UX Designer',
+  const dispatch = useDispatch();
+  const reduxProfile = useSelector((state) => state.profile.data) || {};
+
+  useEffect(() => {
+    if (!reduxProfile?.firstName) {
+      dispatch(fetchProfile());
+    }
+  }, [dispatch]);
+
+  const staticData = {
     location: 'Egypt',
-    avatar: 'https://i.pravatar.cc/100',
+    avatar: 'https://static.vecteezy.com/system/resources/previews/048/926/061/non_2x/bronze-membership-icon-default-avatar-profile-icon-membership-icon-social-media-user-image-illustration-vector.jpg',
     joinDate: 'January 2024',
     coursesEnrolled: 24,
     hoursLearned: 302,
@@ -86,31 +95,34 @@ const useProfile = () => {
         credentialId: 'MAHD-2024-032'
       },
     ]
-  });
-
-  const updateProfile = (updates) => {
-    setProfileData(prev => ({ ...prev, ...updates }));
   };
 
+  const profileData = useMemo(() => {
+    return {
+      ...staticData,
+      ...reduxProfile,
+      name: `${reduxProfile.firstName || ''} ${reduxProfile.lastName || ''}`.trim(),
+    };
+  }, [reduxProfile]);
+
+  const updateProfile = async ({ firstName, lastName }) => {
+    await dispatch(updateProfileNames({ firstName, lastName }));
+    await dispatch(fetchProfile()); // ⬅️ دا بيجبر البيانات إنها تتحدث بعد التحديث
+  };
+  
   const addActivity = (activity) => {
-    const newActivity = {
+    const newActivity = { 
       ...activity,
       id: Date.now(),
       date: 'Just now'
     };
-    setProfileData(prev => ({
-      ...prev,
-      recentActivities: [newActivity, ...prev.recentActivities.slice(0, 4)]
-    }));
+    staticData.recentActivities = [newActivity, ...staticData.recentActivities.slice(0, 4)];
   };
 
   const updateLearningPath = (pathId, progress) => {
-    setProfileData(prev => ({
-      ...prev,
-      learningPaths: prev.learningPaths.map(path =>
-        path.id === pathId ? { ...path, progress } : path
-      )
-    }));
+    staticData.learningPaths = staticData.learningPaths.map((path) =>
+      path.id === pathId ? { ...path, progress } : path
+    );
   };
 
   return {

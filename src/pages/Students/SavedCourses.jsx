@@ -53,7 +53,7 @@ const PageContainer = styled.div`
 
 const ContentWrapper = styled.div`
   flex: 1;
-  padding: 2rem;
+  //padding: 2rem;
 `;
 
 const HeaderSection = styled.div`

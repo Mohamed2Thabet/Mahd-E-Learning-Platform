@@ -9,7 +9,7 @@ import styled from "styled-components";
 import { registerSchema } from "../utils/validationSchema";
 import { registerUser, clearError, clearSuccess } from "../store/authSlice";
 
-const SignIn = () => {
+const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, error, isSuccess } = useSelector((state) => state.auth);
@@ -232,7 +232,7 @@ const SignIn = () => {
               >
                 <option value="">Select your role</option>
                 <option value="student">Student</option>
-                <option value="teacher">Teacher</option>
+                <option value="Educator">Educator</option>
               </CustomSelect>
               {getFieldError("role") && (
                 <ErrorMessage>{getFieldError("role")}</ErrorMessage>
@@ -284,7 +284,7 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Signup;
 
 // All styled components remain the same as in your original code
 // ... (include all your existing styled components here)

@@ -5,6 +5,7 @@ import PlanCard from "../../components/Dasboard/User/Billing/PlanCard";
 import PaymentMethodCard from "../../components/Dasboard/User/Billing/PaymentMethodCard";
 import BillingHistoryTable from "../../components/Dasboard/User/Billing/BillingHistoryTable";
 import AvailablePlans from "../../components/Dasboard/User/Billing/AvailablePlans";
+import SideBarSettings from "../../components/Settings/SideBarSettings";
 // import SideBarSettings from "../../components/Dashboard/User/Settings/SideBarSettings";
 
 // ✅ Page wrapper with responsive design using CSS variables
@@ -123,7 +124,7 @@ const LoadingWrapper = styled.div`
 const BillingPage = () => {
   return (
     <>
-      {/* <SideBarSettings /> */}
+      <SideBarSettings />
       <PageWrapper>
         <MainContent>
           {/* Header Section */}

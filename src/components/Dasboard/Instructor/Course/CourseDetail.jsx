@@ -1,12 +1,211 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Badge, Button, Tabs, Tab, Alert, Spinner } from 'react-bootstrap';
 import { FaEdit, FaArrowLeft, FaBook, FaVideo, FaQuestionCircle, FaCheckCircle, FaClock, FaGraduationCap } from 'react-icons/fa';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { courseAPI, sectionAPI } from '../../../services/api';
+import { useDispatch, useSelector } from 'react-redux';
 import SectionManager from "../Section/SectionManager"
 import VideoUploader from "../video/VideoUploader"
 import QuizEditor from "../Quiz/QuizEditor"
+import { fetchCourseById } from '../../../../store/courseSlice';
+
+const CourseDetail = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  const [activeTab, setActiveTab] = useState('sections');
+
+  const { current: course, loading, error } = useSelector((state) => state.course);
+
+  useEffect(() => {
+    if (id) dispatch(fetchCourseById({ courseId: id }));
+  }, [id]);
+
+  const handleSectionUpdate = () => {
+    if (id) dispatch(fetchCourseById({ courseId: id }));
+  };
+
+  const getLevelBadgeVariant = (level) => {
+    switch (level) {
+      case 'Beginner': return 'success';
+      case 'Intermediate': return 'warning';
+      case 'Advanced': return 'danger';
+      default: return 'secondary';
+    }
+  };
+
+  if (loading) {
+    return (
+      <PageWrapper>
+        <Sidebar>
+          <SidebarIcon>
+            <FaGraduationCap />
+          </SidebarIcon>
+        </Sidebar>
+        <LoadingContainer>
+          <StyledSpinner animation="border" />
+          <LoadingText>Loading course details...</LoadingText>
+        </LoadingContainer>
+      </PageWrapper>
+    );
+  }
+
+  if (error || !course) {
+    return (
+      <PageWrapper>
+        <Sidebar>
+          <SidebarIcon>
+            <FaGraduationCap />
+          </SidebarIcon>
+        </Sidebar>
+        <ContentContainer>
+          <StyledAlert variant="danger">
+            {error || 'Course not found'}
+          </StyledAlert>
+          <StyledButton className="btn-outline-primary" onClick={() => navigate('/instructor/courses')}>
+            <FaArrowLeft /> Back to Courses
+          </StyledButton>
+        </ContentContainer>
+      </PageWrapper>
+    );
+  }
+
+  return (
+    <PageWrapper>
+      <Sidebar>
+        <SidebarIcon onClick={() => navigate('/')}>
+          <FaGraduationCap />
+        </SidebarIcon>
+        <SidebarIcon>
+          <FaBook />
+        </SidebarIcon>
+        <SidebarIcon>
+          <FaVideo />
+        </SidebarIcon>
+        <SidebarIcon>
+          <FaQuestionCircle />
+        </SidebarIcon>
+      </Sidebar>
+
+      <ContentContainer>
+        <BackButtonContainer>
+          <StyledButton className="btn-outline-primary" onClick={() => navigate('/dashboard/instructor/courses')}>
+            <FaArrowLeft /> Back to Courses
+          </StyledButton>
+        </BackButtonContainer>
+
+        <CourseHero>
+          <Row>
+            <Col lg={8}>
+              <div className="d-flex align-items-start justify-content-between mb-4">
+                <div>
+                  <h1>{course.title}</h1>
+                  <div className="d-flex align-items-center gap-3 mb-3">
+                    <StyledBadge className={`bg-${course.approved ? 'success' : 'warning'}`}>
+                      {course.approved ? <FaCheckCircle /> : <FaClock />}
+                      {course.approved ? 'Approved' : 'Pending'}
+                    </StyledBadge>
+                  </div>
+                </div>
+                <Link to={`/dashboard/instructor/course/edit/${course._id}`}>
+                  <StyledButton className="btn-primary">
+                    <FaEdit /> Edit Course
+                  </StyledButton>
+                </Link>
+              </div>
+              <p className="lead">{course.description}</p>
+              <CourseMetadata>
+                <div className="metadata-item">
+                  <strong>Educator</strong>
+                  <span>{course.educator}</span>
+                </div>
+                <div className="metadata-item">
+                  <strong>Price</strong>
+                  <span>${course.price}</span>
+                </div>
+                <div className="metadata-item">
+                  <strong>Level</strong>
+                  <StyledBadge className={`bg-${getLevelBadgeVariant(course.level)}`}>
+                    {course.level}
+                  </StyledBadge>
+                </div>
+              </CourseMetadata>
+
+              <div>
+                {course.tags && course.tags.map((tag, index) => (
+                  <StyledBadge key={index} className="bg-secondary">
+                    {tag}
+                  </StyledBadge>
+                ))}
+              </div>
+            </Col>
+            <Col lg={4}>
+              <CourseImage
+                src={course.imageUrl || 'https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=400'}
+                alt={course.title}
+              />
+            </Col>
+          </Row>
+        </CourseHero>
+
+        <Row>
+          <Col>
+            <StyledCard>
+              <Card.Header className="p-0">
+                <Tabs
+                  activeKey={activeTab}
+                  onSelect={(k) => setActiveTab(k)}
+                  className="border-0"
+                >
+                  <Tab
+                    eventKey="sections"
+                    title={<span><FaBook className="me-2" />Sections</span>}
+                  />
+                  <Tab
+                    eventKey="videos"
+                    title={<span><FaVideo className="me-2" />Videos</span>}
+                  />
+                  <Tab
+                    eventKey="quizzes"
+                    title={<span><FaQuestionCircle className="me-2" />Quizzes</span>}
+                  />
+                </Tabs>
+              </Card.Header>
+
+              <TabContent>
+                {activeTab === 'sections' && (
+                  <SectionManager
+                    courseId={course._id}
+                    sections={course.sections || []}
+                    onUpdate={handleSectionUpdate}
+                  />
+                )}
+                {activeTab === 'videos' && (
+                  <VideoUploader
+                    courseId={course._id}
+                    sections={course.sections || []}
+                    onUpdate={handleSectionUpdate}
+                  />
+                )}
+                {activeTab === 'quizzes' && (
+                  <QuizEditor
+                    courseId={course._id}
+                    sections={course.sections || []}
+                    onUpdate={handleSectionUpdate}
+                  />
+                )}
+              </TabContent>
+            </StyledCard>
+          </Col>
+        </Row>
+      </ContentContainer>
+    </PageWrapper>
+  );
+};
+
+export default CourseDetail;
+
 
 // Main wrapper with sidebar space and background
 const PageWrapper = styled.div`
@@ -379,244 +578,3 @@ const BackButtonContainer = styled.div`
   top: 20px;
   z-index: 100;
 `;
-
-const CourseDetail = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const [course, setCourse] = useState(null);
-  const [sections, setSections] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('sections');
-
-  useEffect(() => {
-    fetchCourseData();
-  }, [id]);
-
-  const fetchCourseData = async () => {
-    try {
-      setLoading(true);
-      const [courseResponse, sectionsResponse] = await Promise.all([
-        courseAPI.getById(id),
-        sectionAPI.getByCourseId(id)
-      ]);
-
-      setCourse(courseResponse.data);
-      setSections(sectionsResponse.data);
-      setError('');
-    } catch (err) {
-      setError('Failed to fetch course data. Please try again.');
-      console.error('Error fetching course data:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSectionUpdate = () => {
-    fetchCourseData();
-  };
-
-  const getLevelBadgeVariant = (level) => {
-    switch (level) {
-      case 'Beginner': return 'success';
-      case 'Intermediate': return 'warning';
-      case 'Advanced': return 'danger';
-      default: return 'secondary';
-    }
-  };
-
-  if (loading) {
-    return (
-      <PageWrapper>
-        <Sidebar>
-          <SidebarIcon>
-            <FaGraduationCap />
-          </SidebarIcon>
-        </Sidebar>
-        <LoadingContainer>
-          <StyledSpinner animation="border" />
-          <LoadingText>Loading course details...</LoadingText>
-        </LoadingContainer>
-      </PageWrapper>
-    );
-  }
-
-  if (error || !course) {
-    return (
-      <PageWrapper>
-        <Sidebar>
-          <SidebarIcon>
-            <FaGraduationCap />
-          </SidebarIcon>
-        </Sidebar>
-        <ContentContainer>
-          <StyledAlert variant="danger">
-            {error || 'Course not found'}
-          </StyledAlert>
-          <StyledButton className="btn-outline-primary" onClick={() => {
-            console.log("/instructor/courses'")
-            navigate('/instructor/courses')
-          }} >
-            <FaArrowLeft /> Back to Courses
-          </StyledButton>
-        </ContentContainer>
-      </PageWrapper>
-    );
-  }
-
-  return (
-    <PageWrapper>
-      <Sidebar>
-        <SidebarIcon onClick={() => navigate('/')}>
-          <FaGraduationCap />
-        </SidebarIcon>
-        <SidebarIcon>
-          <FaBook />
-        </SidebarIcon>
-        <SidebarIcon>
-          <FaVideo />
-        </SidebarIcon>
-        <SidebarIcon>
-          <FaQuestionCircle />
-        </SidebarIcon>
-      </Sidebar>
-
-      <ContentContainer>
-        <BackButtonContainer>
-          <StyledButton className="btn-outline-primary" onClick={() => navigate('/instructor/courses')}>
-            <FaArrowLeft /> Back to Courses
-          </StyledButton>
-        </BackButtonContainer>
-
-        <CourseHero>
-          <Row>
-            <Col lg={8}>
-              <div className="d-flex align-items-start justify-content-between mb-4">
-                <div>
-                  <h1>{course.title}</h1>
-                  <div className="d-flex align-items-center gap-3 mb-3">
-                    <StyledBadge
-                      className={`bg-${course.approved ? 'success' : 'warning'}`}
-                    >
-                      {course.approved ? <FaCheckCircle /> : <FaClock />}
-                      {course.approved ? 'Approved' : 'Pending'}
-                    </StyledBadge>
-                  </div>
-                </div>
-                <StyledButton
-                  as={Link}
-                  to={`/edit-course/${course.id}`}
-                  className="btn-primary"
-                >
-                  <FaEdit /> Edit Course
-                </StyledButton>
-              </div>
-
-              <p className="lead">{course.description}</p>
-
-              <CourseMetadata>
-                <div className="metadata-item">
-                  <strong>Educator</strong>
-                  <span>{course.educator}</span>
-                </div>
-                <div className="metadata-item">
-                  <strong>Price</strong>
-                  <span>${course.price}</span>
-                </div>
-                <div className="metadata-item">
-                  <strong>Level</strong>
-                  <StyledBadge className={`bg-${getLevelBadgeVariant(course.level)}`}>
-                    {course.level}
-                  </StyledBadge>
-                </div>
-              </CourseMetadata>
-
-              <div>
-                {course.tags && course.tags.map((tag, index) => (
-                  <StyledBadge key={index} className="bg-secondary">
-                    {tag}
-                  </StyledBadge>
-                ))}
-              </div>
-            </Col>
-            <Col lg={4}>
-              <CourseImage
-                src={course.imageUrl || 'https://images.pexels.com/photos/159775/library-la-trobe-study-students-159775.jpeg?auto=compress&cs=tinysrgb&w=400'}
-                alt={course.title}
-              />
-            </Col>
-          </Row>
-        </CourseHero>
-
-        <Row>
-          <Col>
-            <StyledCard>
-              <Card.Header className="p-0">
-                <Tabs
-                  activeKey={activeTab}
-                  onSelect={(k) => setActiveTab(k)}
-                  className="border-0"
-                >
-                  <Tab
-                    eventKey="sections"
-                    title={
-                      <span>
-                        <FaBook className="me-2" />
-                        Sections ({sections.length})
-                      </span>
-                    }
-                  />
-                  <Tab
-                    eventKey="videos"
-                    title={
-                      <span>
-                        <FaVideo className="me-2" />
-                        Videos
-                      </span>
-                    }
-                  />
-                  <Tab
-                    eventKey="quizzes"
-                    title={
-                      <span>
-                        <FaQuestionCircle className="me-2" />
-                        Quizzes
-                      </span>
-                    }
-                  />
-                </Tabs>
-              </Card.Header>
-
-              <TabContent>
-                {activeTab === 'sections' && (
-                  <SectionManager
-                    courseId={course.id}
-                    sections={sections}
-                    onUpdate={handleSectionUpdate}
-                  />
-                )}
-                {activeTab === 'videos' && (
-                  <VideoUploader
-                    courseId={course.id}
-                    sections={sections}
-                    onUpdate={handleSectionUpdate}
-                  />
-                )}
-                {activeTab === 'quizzes' && (
-                  <QuizEditor
-                    courseId={course.id}
-                    sections={sections}
-                    onUpdate={handleSectionUpdate}
-                  />
-                )}
-              </TabContent>
-            </StyledCard>
-          </Col>
-        </Row>
-      </ContentContainer>
-    </PageWrapper>
-  );
-};
-
-export default CourseDetail;

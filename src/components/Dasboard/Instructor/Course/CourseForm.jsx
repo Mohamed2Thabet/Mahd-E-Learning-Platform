@@ -3,7 +3,300 @@ import { Form, Button, Container, Row, Col, Card, Alert, Spinner } from 'react-b
 import { FaSave, FaTimes, FaImage, FaPlus, FaMinus } from 'react-icons/fa';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { courseAPI } from '../../../services/api';
+import { useDispatch, useSelector } from 'react-redux';
+import { createCourse, updateCourse, fetchCourseById } from '../../../../store/courseSlice';
+
+const CourseForm = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditing = Boolean(id);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  const [tagInput, setTagInput] = useState('');
+  console.log(id)
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    image: null,
+    imagePreview: '',
+    tags: [],
+    price: 0,
+    level: 'Beginner',
+    // approved: false
+  });
+
+  const course = useSelector(state => state.course.current);
+  console.log(course)
+  useEffect(() => {
+    if (isEditing) {
+      const token = localStorage.getItem('token');
+      dispatch(fetchCourseById({ courseId: id, token }));
+    }
+  }, [id, isEditing, dispatch]);
+
+  useEffect(() => {
+    if (course && isEditing) {
+      setFormData({
+        title: course.title || '',
+        description: course.description || '',
+        price: course.price || 0,
+        level: course.level || 'Beginner',
+        approved: course.approved || false,
+        tags: course.tags || [],
+        image: null,
+        imagePreview: course.imageUrl || '',
+      });
+    }
+  }, [course, isEditing]);
+
+  const handleInputChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+  };
+
+  const handleAddTag = (e) => {
+    e.preventDefault();
+    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, tagInput.trim()]
+      }));
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const formPayload = new FormData();
+      formPayload.append('title', formData.title);
+      formPayload.append('description', formData.description);
+      formPayload.append('price', formData.price);
+      formPayload.append('level', formData.level);
+      formData.tags.forEach(tag => {
+        formPayload.append('tags[]', tag);
+      });
+      
+      if (formData.image) {
+        formPayload.append('image', formData.image);
+      }
+
+      const token = localStorage.getItem('token');
+
+      if (isEditing) {
+        await dispatch(updateCourse({ courseId: id, formData: formPayload, token }));
+        setSuccess('Course updated successfully!');
+      } else {
+        await dispatch(createCourse({ formData: formPayload, token }));
+        setSuccess('Course created successfully!');
+      }
+
+      setTimeout(() => {
+        navigate('/');
+      }, 2000);
+    } catch (err) {
+      setError('Failed to save course. Please try again.');
+      console.error('Error saving course:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading && isEditing) {
+    return (
+      <LoadingContainer>
+        <StyledSpinner animation="border" size="lg" />
+        <div className="loading-text">Loading course data...</div>
+      </LoadingContainer>
+    );
+  }
+
+  return (
+    <div style={{ backgroundColor: 'var(--background-dark)', minHeight: '100vh', padding: '0' }}>
+      <Container className="py-4">
+        <Row className="justify-content-center">
+          <Col lg={8} xl={7}>
+            <StyledCard>
+              <Card.Header>
+                <h3>{isEditing ? 'Edit Course' : 'Create New Course'}</h3>
+              </Card.Header>
+              <Card.Body>
+                {error && <StyledAlert variant="danger" dismissible onClose={() => setError('')}>{error}</StyledAlert>}
+                {success && <StyledAlert variant="success" dismissible onClose={() => setSuccess('')}>{success}</StyledAlert>}
+
+                <StyledForm onSubmit={handleSubmit}>
+                  <FormSection>
+                    <Row>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Course Title *</Form.Label>
+                          <Form.Control
+                            type="text"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                            placeholder="Enter course title"
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Price ($) *</Form.Label>
+                          <Form.Control
+                            type="number"
+                            name="price"
+                            value={formData.price}
+                            onChange={handleInputChange}
+                            placeholder="0.00"
+                            min="0"
+                            step="0.01"
+                            required
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+
+                    <Form.Group className="mb-3">
+                      <Form.Label>Description *</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={4}
+                        name="description"
+                        value={formData.description}
+                        onChange={handleInputChange}
+                        placeholder="Describe your course..."
+                        required
+                      />
+                    </Form.Group>
+                  </FormSection>
+
+                  <FormSection>
+                    <Form.Group className="mb-3">
+                      <Form.Label>Upload Course Image *</Form.Label>
+                      <Form.Control
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        onChange={(e) =>
+                          setFormData(prev => ({
+                            ...prev,
+                            image: e.target.files[0],
+                            imagePreview: URL.createObjectURL(e.target.files[0])
+                          }))
+                        }
+                        required={!isEditing}
+                      />
+                      {formData.imagePreview ? (
+                        <ImagePreview>
+                          <img src={formData.imagePreview} alt="Course preview" />
+                        </ImagePreview>
+                      ) : (
+                        <ImagePreview>
+                          <div className="text-center">
+                            <FaImage size={48} />
+                            <p>No image selected</p>
+                          </div>
+                        </ImagePreview>
+                      )}
+                    </Form.Group>
+                  </FormSection>
+
+                  <FormSection>
+                    <Row>
+                      <Col md={6}>
+                        <Form.Group className="mb-3">
+                          <Form.Label>Level *</Form.Label>
+                          <Form.Select
+                            name="level"
+                            value={formData.level}
+                            onChange={handleInputChange}
+                            required
+                          >
+                            <option value="Beginner">Beginner</option>
+                            <option value="Intermediate">Intermediate</option>
+                            <option value="Advanced">Advanced</option>
+                          </Form.Select>
+                        </Form.Group>
+                      </Col>
+                    
+                    </Row>
+                  </FormSection>
+
+                  <FormSection>
+                    <Form.Group className="mb-4">
+                      <Form.Label>Tags</Form.Label>
+                      <div className="d-flex gap-2">
+                        <Form.Control
+                          type="text"
+                          value={tagInput}
+                          onChange={(e) => setTagInput(e.target.value)}
+                          placeholder="Add a tag..."
+                          onKeyPress={(e) => e.key === 'Enter' && handleAddTag(e)}
+                        />
+                        <StyledButton type="button" className="btn-outline-primary" onClick={handleAddTag}>
+                          <FaPlus />
+                        </StyledButton>
+                      </div>
+                      <TagInput>
+                        {formData.tags.map((tag, index) => (
+                          <Tag key={index}>
+                            {tag}
+                            <RemoveTagButton type="button" onClick={() => handleRemoveTag(tag)}>
+                              <FaMinus />
+                            </RemoveTagButton>
+                          </Tag>
+                        ))}
+                      </TagInput>
+                    </Form.Group>
+                  </FormSection>
+
+                  <ActionButtons>
+                    <StyledButton
+                      type="button"
+                      className="btn-outline-secondary"
+                      onClick={() => navigate('/')}
+                    >
+                      <FaTimes /> Cancel
+                    </StyledButton>
+                    <StyledButton
+                      type="submit"
+                      className="btn-primary"
+                      disabled={loading}
+                    >
+                      {loading ? <StyledSpinner animation="border" size="sm" /> : <FaSave />}
+                      {loading ? 'Saving...' : isEditing ? 'Update Course' : 'Create Course'}
+                    </StyledButton>
+                  </ActionButtons>
+                </StyledForm>
+              </Card.Body>
+            </StyledCard>
+          </Col>
+        </Row>
+      </Container>
+    </div>
+  );
+};
+
+export default CourseForm;
+
 
 const StyledCard = styled(Card)`
   background-color: var(--card-background);
@@ -374,323 +667,3 @@ const ActionButtons = styled.div`
     }
   }
 `;
-
-const CourseForm = () => {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const isEditing = Boolean(id);
-
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
-  const [tagInput, setTagInput] = useState('');
-
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    educator: '',
-    educatorId: '',
-    imageUrl: '',
-    tags: [],
-    price: 0,
-    level: 'Beginner',
-    approved: false
-  });
-
-  useEffect(() => {
-    if (isEditing) {
-      fetchCourse();
-    }
-  }, [id, isEditing]);
-
-  const fetchCourse = async () => {
-    try {
-      setLoading(true);
-      const response = await courseAPI.getById(id);
-      setFormData(response.data);
-      setError('');
-    } catch (err) {
-      setError('Failed to fetch course data. Please try again.');
-      console.error('Error fetching course:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-  };
-
-  const handleAddTag = (e) => {
-    e.preventDefault();
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, tagInput.trim()]
-      }));
-      setTagInput('');
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags.filter(tag => tag !== tagToRemove)
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const courseData = {
-        ...formData,
-        price: parseFloat(formData.price),
-        sections: formData.sections || [],
-        createdAt: formData.createdAt || new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-
-      if (isEditing) {
-        await courseAPI.update(id, courseData);
-        setSuccess('Course updated successfully!');
-      } else {
-        await courseAPI.create(courseData);
-        setSuccess('Course created successfully!');
-      }
-
-      setTimeout(() => {
-        navigate('/');
-      }, 2000);
-    } catch (err) {
-      setError(isEditing ? 'Failed to update course. Please try again.' : 'Failed to create course. Please try again.');
-      console.error('Error saving course:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading && isEditing) {
-    return (
-      <LoadingContainer>
-        <StyledSpinner animation="border" size="lg" />
-        <div className="loading-text">Loading course data...</div>
-      </LoadingContainer>
-    );
-  }
-
-  return (
-    <div style={{ backgroundColor: 'var(--background-dark)', minHeight: '100vh', padding: '0' }}>
-      <Container className="py-4">
-        <Row className="justify-content-center">
-          <Col lg={8} xl={7}>
-            <StyledCard>
-              <Card.Header>
-                <h3>
-                  {isEditing ? 'Edit Course' : 'Create New Course'}
-                </h3>
-              </Card.Header>
-              <Card.Body>
-                {error && <StyledAlert variant="danger" dismissible onClose={() => setError('')}>{error}</StyledAlert>}
-                {success && <StyledAlert variant="success" dismissible onClose={() => setSuccess('')}>{success}</StyledAlert>}
-      
-                <StyledForm onSubmit={handleSubmit}>
-                  <FormSection>
-                    <Row>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Course Title *</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleInputChange}
-                            placeholder="Enter course title"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Price ($) *</Form.Label>
-                          <Form.Control
-                            type="number"
-                            name="price"
-                            value={formData.price}
-                            onChange={handleInputChange}
-                            placeholder="0.00"
-                            min="0"
-                            step="0.01"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-      
-                    <Form.Group className="mb-3">
-                      <Form.Label>Description *</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={4}
-                        name="description"
-                        value={formData.description}
-                        onChange={handleInputChange}
-                        placeholder="Describe your course..."
-                        required
-                      />
-                    </Form.Group>
-                  </FormSection>
-      
-                  <FormSection>
-                    <Row>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Educator Name *</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="educator"
-                            value={formData.educator}
-                            onChange={handleInputChange}
-                            placeholder="Enter educator name"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Educator ID *</Form.Label>
-                          <Form.Control
-                            type="text"
-                            name="educatorId"
-                            value={formData.educatorId}
-                            onChange={handleInputChange}
-                            placeholder="Enter educator ID"
-                            required
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                  </FormSection>
-      
-                  <FormSection>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Course Image URL</Form.Label>
-                      <Form.Control
-                        type="url"
-                        name="imageUrl"
-                        value={formData.imageUrl}
-                        onChange={handleInputChange}
-                        placeholder="https://example.com/image.jpg"
-                      />
-                      {formData.imageUrl ? (
-                        <ImagePreview>
-                          <img src={formData.imageUrl} alt="Course preview" />
-                        </ImagePreview>
-                      ) : (
-                        <ImagePreview>
-                          <div className="text-center">
-                            <FaImage size={48} />
-                            <p>No image selected</p>
-                          </div>
-                        </ImagePreview>
-                      )}
-                    </Form.Group>
-                  </FormSection>
-      
-                  <FormSection>
-                    <Row>
-                      <Col md={6}>
-                        <Form.Group className="mb-3">
-                          <Form.Label>Level *</Form.Label>
-                          <Form.Select
-                            name="level"
-                            value={formData.level}
-                            onChange={handleInputChange}
-                            required
-                          >
-                            <option value="Beginner">Beginner</option>
-                            <option value="Intermediate">Intermediate</option>
-                            <option value="Advanced">Advanced</option>
-                          </Form.Select>
-                        </Form.Group>
-                      </Col>
-                      <Col md={6} className="d-flex align-items-end">
-                        <Form.Group className="mb-3">
-                          <Form.Check
-                            type="checkbox"
-                            name="approved"
-                            checked={formData.approved}
-                            onChange={handleInputChange}
-                            label="Mark as approved"
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                  </FormSection>
-      
-                  <FormSection>
-                    <Form.Group className="mb-4">
-                      <Form.Label>Tags</Form.Label>
-                      <div className="d-flex gap-2">
-                        <Form.Control
-                          type="text"
-                          value={tagInput}
-                          onChange={(e) => setTagInput(e.target.value)}
-                          placeholder="Add a tag..."
-                          onKeyPress={(e) => e.key === 'Enter' && handleAddTag(e)}
-                        />
-                        <StyledButton type="button" className="btn-outline-primary" onClick={handleAddTag}>
-                          <FaPlus />
-                        </StyledButton>
-                      </div>
-                      <TagInput>
-                        {formData.tags.map((tag, index) => (
-                          <Tag key={index}>
-                            {tag}
-                            <RemoveTagButton
-                              type="button"
-                              onClick={() => handleRemoveTag(tag)}
-                            >
-                              <FaMinus />
-                            </RemoveTagButton>
-                          </Tag>
-                        ))}
-                      </TagInput>
-                    </Form.Group>
-                  </FormSection>
-      
-                  <ActionButtons>
-                    <StyledButton
-                      type="button"
-                      className="btn-outline-secondary"
-                      onClick={() => navigate('/')}
-                    >
-                      <FaTimes /> Cancel
-                    </StyledButton>
-                    <StyledButton
-                      type="submit"
-                      className="btn-primary"
-                      disabled={loading}
-                    >
-                      {loading ? <StyledSpinner animation="border" size="sm" /> : <FaSave />}
-                      {loading ? 'Saving...' : isEditing ? 'Update Course' : 'Create Course'}
-                    </StyledButton>
-                  </ActionButtons>
-                </StyledForm>
-              </Card.Body>
-            </StyledCard>
-          </Col>
-        </Row>
-      </Container>
-    </div>
-  );
-};
-
-export default CourseForm;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Nav } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   FaHome,
   FaBook,
@@ -16,8 +16,131 @@ import {
   FaEdit,
   FaInfoCircle,
   FaArrowLeft,
+  FaBullseye,
 } from 'react-icons/fa';
 import styled, { css } from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../../store/authSlice';
+
+const Sidebar = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const user =  JSON.parse(localStorage.getItem("user")); // أو أي key مخزن فيه اليوزر
+  
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // console.log(user,""")
+  const role = user?.role === 'Educator' ? 'Educator' : 'student';
+ 
+  const studentLinks = [
+    { name: 'Dashboard', icon: <FaHome />, to: '/dashboard/student' },
+    { name: 'Saved Courses', icon: <FaRegSave />, to: '/dashboard/student/saved-courses' },
+    { name: 'Profile', icon: <FaUser />, to: '/dashboard/student/profile' },
+    { name: 'Settings', icon: <FaCog />, to: '/settings' },
+    { name: 'Goals', icon: <FaBullseye />, to: '/dashboard/student/goals-milestones' },
+  ];
+  
+  const instructorLinks = [
+    { name: 'Dashboard', icon: <FaHome />, to: '/dashboard/instructor' },
+    { name: 'Profile', icon: <FaUser />, to: '/dashboard/instructor/profile' },
+    { name: 'Courses', icon: <FaBook />, to: '/dashboard/instructor/courses' },
+    { name: 'Settings', icon: <FaCog />, to: '/settings' },
+    { name: 'Create Course', icon: <FaPlus />, to: '/dashboard/instructor/course/create' },
+  ];
+
+  const navLinks = role === 'Educator' ? instructorLinks : studentLinks;
+
+  console.log(navLinks);
+  const toggleSidebar = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  const toggleMobileSidebar = () => {
+    setIsMobileOpen(!isMobileOpen);
+  };
+
+  const handleLogout = async () => {
+    await dispatch(logoutUser());
+    navigate('/login'); // رجّع المستخدم لصفحة تسجيل الدخول
+  };
+  return (
+    <>
+      {/* ✅ Mobile Toggle Button Only - تم إزالة Back Button الخارجي */}
+      <MobileToggleButton
+        onClick={toggleMobileSidebar}
+        aria-label="Toggle sidebar"
+        title="Menu"
+      >
+        {isMobileOpen ? <FaTimes /> : <FaBars />}
+      </MobileToggleButton>
+
+      {/* Mobile Overlay */}
+      {isMobileOpen && <MobileOverlay onClick={toggleMobileSidebar} />}
+
+      {/* ✅ Fixed: Updated to use transient props */}
+      <SidebarContainer $expanded={isExpanded} $mobileOpen={isMobileOpen}>
+        {/* Mobile Close Button */}
+        {isMobileOpen && (
+          <MobileCloseButton onClick={toggleMobileSidebar}>
+            <FaTimes />
+          </MobileCloseButton>
+        )}
+
+        {/* Desktop Toggle Button */}
+        <DesktopToggle onClick={toggleSidebar} aria-label="Toggle sidebar">
+          <FaBars />
+        </DesktopToggle>
+
+        {/* Navigation Links */}
+        <SidebarNav>
+          <Nav className="flex-column">
+            {navLinks.map((link, index) => (
+              <NavItemCustom key={link.name} className="nav-item-custom">
+                <StyledNavLink
+                  to={link.to}
+                  title={!isExpanded ? link.name : ''}
+                  onClick={() => setIsMobileOpen(false)}
+                  data-aos="fade-right"
+                  data-aos-delay={index * 50}
+                >
+                  {/* ✅ Fixed: Updated to use transient props */}
+                  <NavIcon $expanded={isExpanded}>{link.icon}</NavIcon>
+                  <NavText $expanded={isExpanded}>{link.name}</NavText>
+                </StyledNavLink>
+              </NavItemCustom>
+            ))}
+          </Nav>
+        </SidebarNav>
+
+        {/* ✅ Bottom Section مع Back Button داخل الـ Sidebar فقط */}
+        <SidebarBottom>
+          {/* Back Button داخل الـ Sidebar */}
+          <SidebarBackButton to="/" title="Back to Home">
+            {/* ✅ Fixed: Updated to use transient props */}
+            <NavIcon $expanded={isExpanded}>
+              <FaArrowLeft />
+            </NavIcon>
+            <NavText $expanded={isExpanded}>Back to Home</NavText>
+          </SidebarBackButton>
+
+          {/* Logout Button */}
+          <LogoutBtn
+            onClick={handleLogout}
+            title={!isExpanded ? 'Logout' : ''}
+          >
+            <NavIcon $expanded={isExpanded}>
+              <FaSignOutAlt />
+            </NavIcon>
+            <NavText $expanded={isExpanded}>Logout</NavText>
+          </LogoutBtn>
+
+        </SidebarBottom>
+      </SidebarContainer>
+    </>
+  );
+};
+
+export default Sidebar;
 
 // ✅ Mobile Toggle Button - نقل لأسفل اليمين
 const MobileToggleButton = styled.button`
@@ -325,116 +448,3 @@ const LogoutBtn = styled.button`
     padding: 1rem !important;
   }
 `;
-
-const Sidebar = ({ role = 'instructor', instructorId = '' }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
-
-  const studentLinks = [
-    { name: 'Dashboard', icon: <FaHome />, to: '/dashboard' },
-    { name: 'Saved Courses', icon: <FaRegSave />, to: '/dashboard/saved-courses' },
-    { name: 'Profile', icon: <FaUser />, to: '/dashboard/profile' },
-    { name: 'Settings', icon: <FaCog />, to: '/dashboard/settings' },
-    { name: 'Billing', icon: <FaChartBar />, to: '/dashboard/billing' },
-    { name: 'Goals', icon: <FaChartBar />, to: '/dashboard/goals-milestones' },
-  ];
-
-  const instructorLinks = [
-    { name: 'Dashboard', icon: <FaHome />, to: '/instructor' },
-    { name: 'Profile', icon: <FaUser />, to: '/instructor/profile' },
-    { name: 'Courses', icon: <FaBook />, to: '/instructor/courses' },
-    { name: 'Create Course', icon: <FaPlus />, to: '/instructor/course/create' },
-  ];
-
-  const navLinks = role === 'instructor' ? instructorLinks : studentLinks;
-  console.log(navLinks);
-  const toggleSidebar = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const toggleMobileSidebar = () => {
-    setIsMobileOpen(!isMobileOpen);
-  };
-
-  const handleLogout = () => {
-    console.log('Logout clicked');
-  };
-
-  return (
-    <>
-      {/* ✅ Mobile Toggle Button Only - تم إزالة Back Button الخارجي */}
-      <MobileToggleButton
-        onClick={toggleMobileSidebar}
-        aria-label="Toggle sidebar"
-        title="Menu"
-      >
-        {isMobileOpen ? <FaTimes /> : <FaBars />}
-      </MobileToggleButton>
-
-      {/* Mobile Overlay */}
-      {isMobileOpen && <MobileOverlay onClick={toggleMobileSidebar} />}
-
-      {/* ✅ Fixed: Updated to use transient props */}
-      <SidebarContainer $expanded={isExpanded} $mobileOpen={isMobileOpen}>
-        {/* Mobile Close Button */}
-        {isMobileOpen && (
-          <MobileCloseButton onClick={toggleMobileSidebar}>
-            <FaTimes />
-          </MobileCloseButton>
-        )}
-
-        {/* Desktop Toggle Button */}
-        <DesktopToggle onClick={toggleSidebar} aria-label="Toggle sidebar">
-          <FaBars />
-        </DesktopToggle>
-
-        {/* Navigation Links */}
-        <SidebarNav>
-          <Nav className="flex-column">
-            {navLinks.map((link, index) => (
-              <NavItemCustom key={link.name} className="nav-item-custom">
-                <StyledNavLink
-                  to={link.to}
-                  title={!isExpanded ? link.name : ''}
-                  onClick={() => setIsMobileOpen(false)}
-                  data-aos="fade-right"
-                  data-aos-delay={index * 50}
-                >
-                  {/* ✅ Fixed: Updated to use transient props */}
-                  <NavIcon $expanded={isExpanded}>{link.icon}</NavIcon>
-                  <NavText $expanded={isExpanded}>{link.name}</NavText>
-                </StyledNavLink>
-              </NavItemCustom>
-            ))}
-          </Nav>
-        </SidebarNav>
-
-        {/* ✅ Bottom Section مع Back Button داخل الـ Sidebar فقط */}
-        <SidebarBottom>
-          {/* Back Button داخل الـ Sidebar */}
-          <SidebarBackButton to="/" title="Back to Home">
-            {/* ✅ Fixed: Updated to use transient props */}
-            <NavIcon $expanded={isExpanded}>
-              <FaArrowLeft />
-            </NavIcon>
-            <NavText $expanded={isExpanded}>Back to Home</NavText>
-          </SidebarBackButton>
-
-          {/* Logout Button */}
-          <LogoutBtn
-            onClick={handleLogout}
-            title={!isExpanded ? 'Logout' : ''}
-          >
-            {/* ✅ Fixed: Updated to use transient props */}
-            <NavIcon $expanded={isExpanded}>
-              <FaSignOutAlt />
-            </NavIcon>
-            <NavText $expanded={isExpanded}>Logout</NavText>
-          </LogoutBtn>
-        </SidebarBottom>
-      </SidebarContainer>
-    </>
-  );
-};
-
-export default Sidebar;

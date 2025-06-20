@@ -3,9 +3,9 @@ import { FaClock, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-// ✅ CourseCard Component
 const CourseCard = ({ course }) => {
-  const navigateCourseDatails=useNavigate()
+  const navigate = useNavigate();
+
   const renderStars = (rating) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -24,16 +24,24 @@ const CourseCard = ({ course }) => {
   return (
     <StyledCard>
       <div className="position-relative">
-        <CourseImage $bgImage={course.image} />
+        <CourseImage $bgImage={course.imageUrl} />
         {course.isPopular && <PopularBadge>Popular</PopularBadge>}
       </div>
 
       <Card.Body className="d-flex flex-column">
         <div className="d-flex align-items-center mb-3">
-          <InstructorAvatar src={course.instructor.avatar} alt={course.instructor.name} />
+          <InstructorAvatar
+            src={course.instructorAvatar || "/image/default-avatar.jpg"}
+            alt={course.educator}
+            onError={(e) => {
+              e.target.onerror = null;
+              e.target.src = "/image/default-avatar.jpg";
+            }}
+          />
+
           <div className="ms-3">
             <div className="fw-semibold" style={{ color: 'var(--text-light)', fontSize: '0.9rem' }}>
-              {course.instructor.name}
+              {course.educator}
             </div>
           </div>
         </div>
@@ -44,27 +52,27 @@ const CourseCard = ({ course }) => {
 
         <div className="d-flex justify-content-between align-items-center mb-3">
           <RatingStars className="d-flex align-items-center">
-            {renderStars(course.rating)}
-            <span className="ms-2 fw-semibold">{course.rating}</span>
+            {renderStars(course.rating?.average || 0)}
+            <span className="ms-2 fw-semibold">{course.rating?.average || 0}</span>
             <span className="ms-1" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-              ({course.students.toLocaleString()})
+              ({course.enrollmentCount?.toLocaleString() || 0})
             </span>
           </RatingStars>
-          <DifficultyBadge $level={course.difficulty}>
-            {course.difficulty}
+          <DifficultyBadge $level={course.level?.toLowerCase()}>
+            {course.level || "N/A"}
           </DifficultyBadge>
         </div>
 
         <div className="d-flex justify-content-between align-items-center mb-4">
           <div className="d-flex align-items-center" style={{ color: 'var(--text-secondary)' }}>
             <FaClock className="me-1" />
-            <span>{course.duration}h</span>
+            <span>{course.duration || 1}h</span>
           </div>
           <PriceTag>${course.price}</PriceTag>
         </div>
 
         <div className="mt-auto">
-          <PrimaryButton className="w-100" onClick={() => navigateCourseDatails('/course-details-page')}>
+          <PrimaryButton className="w-100" onClick={() => navigate(`/course-details/${course._id}`)}>
             Enroll Now
           </PrimaryButton>
         </div>
@@ -72,7 +80,9 @@ const CourseCard = ({ course }) => {
     </StyledCard>
   );
 };
+
 export default CourseCard;
+
 
 
 const PopularBadge = styled(Badge)`

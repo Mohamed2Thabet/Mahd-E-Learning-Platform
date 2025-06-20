@@ -1,16 +1,36 @@
-// hooks/useFilteredCourses.js
 import { useMemo } from 'react';
 
 export const useFilteredCourses = (coursesData, searchQuery, filters, sortBy) => {
   return useMemo(() => {
     let filtered = coursesData.filter(course => {
-      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.instructor.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesCategory = filters.categories.length === 0 || filters.categories.includes(course.category);
-      const matchesDifficulty = filters.difficulties.length === 0 || filters.difficulties.includes(course.difficulty);
+      const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesInstructorSearch =
+        !filters.instructorName ||
+        course.educator?.toLowerCase().includes(filters.instructorName.toLowerCase());
+
+
+      const matchesCategory =
+        filters.categories.length === 0 ||
+        filters.categories.some(cat =>
+          course.tags?.some(tag => tag.toLowerCase().includes(cat.toLowerCase()))
+        );
+      
+
+      const matchesDifficulty =
+        filters.difficulties.length === 0 ||
+        filters.difficulties.includes(course.level?.toLowerCase());
+      
+
       const matchesPrice = course.price <= filters.maxPrice;
 
-      return matchesSearch && matchesCategory && matchesDifficulty && matchesPrice;
+      return (
+        matchesSearch &&
+        matchesInstructorSearch &&
+        matchesCategory &&
+        matchesDifficulty &&
+        matchesPrice
+      );
     });
 
     switch (sortBy) {

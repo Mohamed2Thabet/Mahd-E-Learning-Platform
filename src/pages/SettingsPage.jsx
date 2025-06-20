@@ -6,7 +6,7 @@ import PrivacyControls from "../components/Settings/PrivacyControls";
 import ChangePassword from "../components/Settings/SecuritySettings/ChangePassword";
 import TwoFactorAuth from "../components/Settings/SecuritySettings/TwoFactorAuth";
 import SideBarSettings from "../components/Settings/SideBarSettings";
-import ThemeToggle from '../components/ThemeToggle/ThemeToggle';
+import { useSelector } from "react-redux";
 
 // Styled Components
 const Container = styled.div`
@@ -76,37 +76,42 @@ const PageTitle = styled.h1`
   }
 `;
 
+
 const SettingsPage = () => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   return (
     <Container>
       <ContentRow>
         <SideBarSettings />
-        
+
         <MainContentWrapper>
           <MainContent>
             <PageTitle>Privacy & Security Settings</PageTitle>
-            
+
             <Section>
-            <ThemeToggle />
-      
               <PrivacyControls />
             </Section>
-            
-            <Section>
-              <DataManagement />
-            </Section>
-            
-            <Section>
-              <ChangePassword />
-            </Section>
-            
-            <Section>
-              <TwoFactorAuth />
-            </Section>
-            
-            <Section>
-              <ActiveSessions />
-            </Section>
+
+            {isAuthenticated && (
+        <>
+                <Section>
+                  <DataManagement />
+                </Section>
+                <Section>
+                  <ChangePassword />
+                </Section>
+          
+          
+              <Section>
+                <TwoFactorAuth />
+              </Section>
+          
+              <Section>
+                <ActiveSessions />
+              </Section>
+        </>
+          )}
           </MainContent>
         </MainContentWrapper>
       </ContentRow>
@@ -115,3 +120,5 @@ const SettingsPage = () => {
 };
 
 export default SettingsPage;
+
+

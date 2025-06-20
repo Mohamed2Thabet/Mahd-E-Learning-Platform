@@ -8,7 +8,10 @@ import CourseContent from '../components/CourseDetails/CourseContent';
 import CourseHeader from '../components/CourseDetails/CourseHeader';
 import WhatYouWillLearn from '../components/CourseDetails/WhatYouWillLearn';
 import CoursePurchaseBox from '../components/CourseDetails/CoursePurchaseBox';
-
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCourseById } from '../store/courseSlice';
+import { useEffect } from 'react';
 // Sample Data
 const courseData = {
   title: 'The Complete 2025 Web Development Bootcamp',
@@ -64,25 +67,51 @@ const courseData = {
 
 // Main Component
 const CourseDetailsPage = () => {
+  const { courseId } = useParams();
+  const dispatch = useDispatch();
+
+  const token = localStorage.getItem('token');
+  const course = useSelector(state => state.course.current);
+  const error = useSelector(state => state.course.error);
+  console.log(token)
+  useEffect(() => {
+
+    if (token && courseId) {
+      dispatch(fetchCourseById({ courseId, token }));
+    }
+  }, [dispatch, courseId, token]);
+
+  useEffect(() => {
+
+    if (course) {
+      console.log("📦 Course Data:", course);
+    }
+    if (error) {
+      console.error("❌ Error:", error);
+    }
+  }, [course, error]);
+
+  // fallback if API fails
+  const data = course || courseData;
+
   return (
-    <>
-      <PageWrapper>
-        <CourseHeader {...courseData} />
-        <Container>
-          <Row>
-            <Col lg={8}>
-              <WhatYouWillLearn outcomes={courseData.learningOutcomes} />
-              <CourseContent curriculum={courseData.curriculum} />
-            </Col>
-            <Col lg={4}>
-              <CoursePurchaseBox {...courseData} />
-            </Col>
-          </Row>
-        </Container>
-      </PageWrapper>
-    </>
+    <PageWrapper>
+      <CourseHeader {...data} />
+      <Container>
+        <Row>
+          <Col lg={8}>
+            <WhatYouWillLearn outcomes={data.learningOutcomes || []} />
+            <CourseContent curriculum={data.curriculum || []} />
+          </Col>
+          <Col lg={4}>
+            <CoursePurchaseBox {...data} />
+          </Col>
+        </Row>
+      </Container>
+    </PageWrapper>
   );
 };
+
 
 export default CourseDetailsPage;
 // Styled Components - Base

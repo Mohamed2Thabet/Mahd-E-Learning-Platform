@@ -257,3 +257,15 @@
 html {
   scroll-behavior: smooth;
 }
+.profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.2s ease;
+}
+
+.profile-avatar:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}

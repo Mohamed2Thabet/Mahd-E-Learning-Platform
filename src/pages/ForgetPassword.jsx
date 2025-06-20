@@ -3,10 +3,27 @@ import { Form, Button } from "react-bootstrap";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
+import { forgotPassword } from "../store/authSlice";
 
 // Component
 const ForgotPassword = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = async () => {
+    if (!email) return; // تحقق إن الإيميل موجود
+
+    const result = await dispatch(forgotPassword(email));
+
+    if (forgotPassword.fulfilled.match(result)) {
+      navigate('/password-reset');
+    } else {
+      alert(result.payload || "Failed to send reset link.");
+    }
+  };
 
   return (
     <ForgotPasswordContainer>
@@ -28,7 +45,12 @@ const ForgotPassword = () => {
 
         <FormGroup data-aos="fade-up" data-aos-duration="1500" data-aos-delay="600">
           <InputGroup>
-            <EmailInput type="email" placeholder="Enter your email" />
+            <EmailInput
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </InputGroup>
         </FormGroup>
 
@@ -36,7 +58,7 @@ const ForgotPassword = () => {
           data-aos="fade-up"
           data-aos-duration="1500"
           data-aos-delay="700"
-          onClick={() => navigate('/password-reset')}
+          onClick={handleSubmit}
         >
           Send Reset Link
         </SendButton>
@@ -51,6 +73,7 @@ const ForgotPassword = () => {
     </ForgotPasswordContainer>
   );
 };
+
 
 export default ForgotPassword;
 

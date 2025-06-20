@@ -8,6 +8,68 @@ import StatsCards from '../../components/Dasboard/User/profileStudent/StatsCards
 import RecentActivity from '../../components/Dasboard/User/profileStudent/RecentActivity';
 
 
+
+// ✅ Component
+const StudentProfilePage = () => {
+  const { profileData, updateProfile, updateLearningPath } = useProfile();
+
+  const handleStatClick = (statType) => {
+    console.log(`Clicked on ${statType} stat`);
+    // Add navigation or detailed view logic here
+  };
+
+  const handlePathClick = (path) => {
+    console.log(`Clicked on learning path: ${path.title}`);
+    // Navigate to path details or continue learning
+  };
+
+  const handleActivityAction = (activity) => {
+    console.log(`Action for activity: ${activity.text}`);
+    // Handle activity-specific actions
+  };
+
+  const handleCertificateView = (certificate) => {
+    console.log(`Viewing certificate: ${certificate.title}`);
+    // Open certificate viewer or download
+  };
+
+  return (
+    <PageWrapper>
+      <ProfileContainer>
+        <ProfileHeader
+          profile={profileData}
+          onUpdateProfile={updateProfile}
+        />
+
+        <StatsCards
+          profile={profileData}
+          onStatClick={handleStatClick}
+        />
+
+        <LearningPath
+          paths={profileData.learningPaths}
+          onPathClick={handlePathClick}
+          onUpdateProgress={updateLearningPath}
+        />
+
+        <RecentActivity
+          activities={profileData.recentActivities}
+          onActivityAction={handleActivityAction}
+        />
+
+        <Certificates
+          certificates={profileData.certificates}
+          onCertificateView={handleCertificateView}
+        />
+      </ProfileContainer>
+    </PageWrapper>
+  );
+};
+
+export default StudentProfilePage;
+
+
+
 // ✅ Animations
 const fadeIn = keyframes`
   from {  
@@ -83,62 +145,3 @@ const ProfileContainer = styled.div`
     padding: 1rem 0.5rem;
   }
 `;
-
-// ✅ Component
-const StudentProfilePage = () => {
-  const { profileData, updateProfile, updateLearningPath } = useProfile();
-
-  const handleStatClick = (statType) => {
-    console.log(`Clicked on ${statType} stat`);
-    // Add navigation or detailed view logic here
-  };
-
-  const handlePathClick = (path) => {
-    console.log(`Clicked on learning path: ${path.title}`);
-    // Navigate to path details or continue learning
-  };
-
-  const handleActivityAction = (activity) => {
-    console.log(`Action for activity: ${activity.text}`);
-    // Handle activity-specific actions
-  };
-
-  const handleCertificateView = (certificate) => {
-    console.log(`Viewing certificate: ${certificate.title}`);
-    // Open certificate viewer or download
-  };
-
-  return (
-    <PageWrapper>
-      <ProfileContainer>
-        <ProfileHeader
-          profile={profileData}
-          onUpdateProfile={updateProfile}
-        />
-
-        <StatsCards
-          profile={profileData}
-          onStatClick={handleStatClick}
-        />
-
-        <LearningPath
-          paths={profileData.learningPaths}
-          onPathClick={handlePathClick}
-          onUpdateProgress={updateLearningPath}
-        />
-
-        <RecentActivity
-          activities={profileData.recentActivities}
-          onActivityAction={handleActivityAction}
-        />
-
-        <Certificates
-          certificates={profileData.certificates}
-          onCertificateView={handleCertificateView}
-        />
-      </ProfileContainer>
-    </PageWrapper>
-  );
-};
-
-export default StudentProfilePage;

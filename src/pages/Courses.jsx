@@ -1,34 +1,44 @@
-import  { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Form, Offcanvas, InputGroup, Dropdown } from 'react-bootstrap';
-import { FaFilter, FaSearch } from 'react-icons/fa';
+import { useState, useEffect } from 'react';
+import { Container, Row, Col, Button, Form, Offcanvas, InputGroup } from 'react-bootstrap';
+import { FaSearch } from 'react-icons/fa';
 import styled, { css } from 'styled-components';
 import Pagination from '../components/courses/Pagination';
-import { coursesData } from '../data/coursesData';
 import FilterPanel from '../components/courses/FilterPanel';
 import CourseCard from '../components/courses/CourseCard';
 import { fadeInUp } from '../components/common/Animations';
 import { useFilteredCourses } from '../components/hooks/useFilteredCourses';
 import { usePagination } from '../components/hooks/usePagination';
 import FilterSortControls from '../components/courses/FilterSortControls';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllCourses } from '../store/courseSlice';
 
 const CoursesPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('popular');
-  const [showFilters,   setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
   const [filters, setFilters] = useState({
     categories: [],
     difficulties: [],
     maxPrice: 200
   });
+
+  const dispatch = useDispatch();
+  const { list: allCourses, loading, error } = useSelector((state) => state.course);
+
   const [currentPage, setCurrentPage] = useState(1);
   const coursesPerPage = 6;
 
-  const filteredAndSortedCourses = useFilteredCourses(coursesData, searchQuery, filters, sortBy);
-  const { currentItems: currentCourses, totalPages } = usePagination(filteredAndSortedCourses, currentPage, coursesPerPage);
+
+  useEffect(() => {
+    dispatch(fetchAllCourses({ limit: 0, offset:0 }));
+  }, [dispatch, currentPage]);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, sortBy, filters]);
+
+  const filteredAndSortedCourses = useFilteredCourses(allCourses, searchQuery, filters, sortBy);
+  const { currentItems: currentCourses, totalPages } = usePagination(filteredAndSortedCourses, currentPage, coursesPerPage);
 
   const handleClearFilters = () => {
     setFilters({
@@ -57,13 +67,12 @@ const CoursesPage = () => {
           </Col>
         </Row>
 
-        <Row className="mb-4 ">
+        <Row className="mb-4">
           <Col lg={8}>
             <SearchContainer>
               <InputGroup>
                 <Form.Control
                   type="text"
-                  
                   placeholder="Search courses, instructors..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -80,9 +89,20 @@ const CoursesPage = () => {
               setSortBy={setSortBy}
               setShowFilters={setShowFilters}
             />
-
           </Col>
         </Row>
+
+        {loading && (
+          <div className="text-center py-4">
+            <p style={{ color: 'var(--text-secondary)' }}>Loading courses...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="text-center py-4">
+            <p className="text-danger">{error}</p>
+          </div>
+        )}
 
         <Row>
           <Col lg={3} className="d-none d-lg-block">
@@ -99,7 +119,7 @@ const CoursesPage = () => {
 
             <Row className="g-4">
               {currentCourses.map(course => (
-                <Col key={course.id} md={6} xl={4}>
+                <Col key={course._id} md={6} xl={4}>
                   <CourseCard course={course} />
                 </Col>
               ))}
@@ -119,27 +139,29 @@ const CoursesPage = () => {
 
             {totalPages > 1 && (
               <div className="mt-5 justify-content-center d-flex">
-                <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} showInfo={true} />
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                  showInfo={true}
+                />
               </div>
             )}
           </Col>
         </Row>
       </Container>
+
       <Offcanvas
         show={showFilters}
         onHide={() => setShowFilters(false)}
         placement="end"
-        style={{ backgroundColor: 'var(--background-dark)', }}
-        
+        style={{ backgroundColor: 'var(--background-dark)' }}
       >
-        <Offcanvas.Header closeButton style={{ borderColor: 'var(--border-color)' }} >
-          {/* <Offcanvas.Title style={{ color: 'var(--heading-color)' }}>Filters</Offcanvas.Title> */}
-        </Offcanvas.Header>
+        <Offcanvas.Header closeButton style={{ borderColor: 'var(--border-color)' }} />
         <Offcanvas.Body>
           <FilterPanel filters={filters} onFilterChange={setFilters} onClearFilters={handleClearFilters} />
         </Offcanvas.Body>
       </Offcanvas>
-
     </CoursesPageWrapper>
   );
 };
@@ -180,5 +202,3 @@ const SearchContainer = styled.div`
     border-radius: 0 50px 50px 0;
   }
 `;
-
-

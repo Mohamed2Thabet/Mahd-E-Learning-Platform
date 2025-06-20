@@ -17,7 +17,6 @@ const StyledDropdown = styled(Dropdown)`
     transition: 0.3s ease !important;
     margin-left:auto;
     margin-right:auto;
-    margin-bottom: 20px;
     &:hover {
       background: var(--primary) !important;
       color: var(--background-dark) !important;

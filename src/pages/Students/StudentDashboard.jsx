@@ -65,9 +65,8 @@ const PageWrapper = styled.div`
 
 const MainContent = styled.main`
   flex-grow: 1;
-  padding: 2rem;
+  // padding: 2rem;
   background-color: var(--background-dark);
-  margin-left:50px;
 `;
 
 const SummaryCards = styled.div`

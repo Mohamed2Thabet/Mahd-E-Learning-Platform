@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
-import { FaGoogle, FaFacebookF, FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
+import {  FaEnvelope, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { GoogleLogin } from "@react-oauth/google";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import styled from "styled-components";
 import { loginUser, googleLogin, clearError } from "../store/authSlice";
+import { loginSchema } from "../utils/validationSchema";
+import { fetchProfile } from "../store/profileSlice";
 
 // Validation schema
-const loginSchema = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-});
 
 const Login = () => {
   const navigate = useNavigate();
@@ -40,12 +37,26 @@ const Login = () => {
   }, [dispatch]);
 
   // Redirect if already authenticated or login successful
-  useEffect(() => {
-    if (isAuthenticated || isSuccess) {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated, isSuccess, navigate]);
+  const profile = useSelector(state => state.profile.data);
 
+  useEffect(() => {
+    if ((isAuthenticated || isSuccess)) {
+      dispatch(fetchProfile());
+    }
+  }, [isAuthenticated, isSuccess, dispatch]);
+
+  useEffect(() => {
+    if (profile?.role) {
+      localStorage.setItem("user", JSON.stringify(profile));
+      if (profile.role === "teacher") {
+        navigate("/dashboard/instructor");
+      } else {
+        navigate("/dashboard/student");
+      }
+    }
+  }, [profile, navigate]);
+  
+  
   const onSubmit = async (data) => {
     dispatch(loginUser(data));
   };
@@ -166,9 +177,8 @@ const Login = () => {
 
             <SignupLink>
               Don't have an account?{" "}
-              <SignupText to="/signin">
-                Sign Up
-              </SignupText>
+              <SignupText to="/signup">Sign Up</SignupText>
+
             </SignupLink>
           </StyledForm>
         </Box>

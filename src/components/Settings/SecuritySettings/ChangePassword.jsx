@@ -1,7 +1,255 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { passwordSchema } from '../../../utils/validationSchema';
+import { useDispatch } from "react-redux";
+import { changePassword } from "../../../store/profileSlice"; // تأكد من المسار
 
-// Styled Components
+
+
+const ChangePassword = () => {
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [showPasswords, setShowPasswords] = useState({
+    currentPassword: false,
+    newPassword: false,
+    confirmPassword: false
+  });
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    trigger,
+    reset,
+    formState: { errors, isValid }
+  } = useForm({
+    resolver: zodResolver(passwordSchema),
+    mode: 'onChange',
+    defaultValues: {
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: ''
+    }
+  });
+
+  // Watch all form values for real-time validation
+  const watchedValues = watch();
+
+  const togglePasswordVisibility = (field) => {
+    setShowPasswords(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
+  };
+
+  const onSubmit = async ({ currentPassword, newPassword }) => {
+    setSuccessMessage('');
+    setIsLoading(true);
+
+    try {
+      const resultAction = await dispatch(changePassword({
+        oldPassword: currentPassword,
+        newPassword,
+      }));
+
+      console.log("Action Result:", resultAction);
+
+      if (changePassword.fulfilled.match(resultAction)) {
+        reset();
+        setSuccessMessage('Password has been successfully updated.');
+        setShowPasswords({
+          currentPassword: false,
+          newPassword: false,
+          confirmPassword: false
+        });
+      } else {
+        const errorMsg =
+          resultAction.payload ||
+          resultAction.error?.message ||
+          'Failed to update password';
+        throw new Error(errorMsg);
+      }
+    } catch (error) {
+      console.error('Password update failed:', error.message);
+      setSuccessMessage(error.message || 'Failed to update password. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  
+  const handleInputChange = (field, value) => {
+    // Clear success message when user starts typing
+    if (successMessage) {
+      setSuccessMessage('');
+    }
+
+    // Trigger validation for dependent fields
+    if (field === 'newPassword') {
+      trigger('confirmPassword');
+    }
+    if (field === 'currentPassword') {
+      trigger('newPassword');
+    }
+  };
+
+  return (
+    <Container>
+      <Title>Change Password</Title>
+
+      {successMessage && (
+        <SuccessMessage>{successMessage}</SuccessMessage>
+      )}
+
+      <StyledForm onSubmit={handleSubmit(onSubmit)}>
+        <FormGroup>
+          <Label htmlFor="currentPassword">Current Password</Label>
+          <InputContainer>
+            <Controller
+              name="currentPassword"
+              control={control}
+              render={({ field }) => (
+                <StyledInput
+                  {...field}
+                  type={showPasswords.currentPassword ? 'text' : 'password'}
+                  id="currentPassword"
+                  placeholder="Enter current password"
+                  className={errors.currentPassword ? 'is-invalid' : ''}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleInputChange('currentPassword', e.target.value);
+                  }}
+                />
+              )}
+            />
+            <EyeButton
+              type="button"
+              onClick={() => togglePasswordVisibility('currentPassword')}
+            >
+              {showPasswords.currentPassword ? <FaEyeSlash /> : <FaEye />}
+            </EyeButton>
+          </InputContainer>
+          {errors.currentPassword && (
+            <ErrorMessage>{errors.currentPassword.message}</ErrorMessage>
+          )}
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="newPassword">New Password</Label>
+          <InputContainer>
+            <Controller
+              name="newPassword"
+              control={control}
+              render={({ field }) => (
+                <StyledInput
+                  {...field}
+                  type={showPasswords.newPassword ? 'text' : 'password'}
+                  id="newPassword"
+                  placeholder="Enter new password"
+                  className={errors.newPassword ? 'is-invalid' : ''}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleInputChange('newPassword', e.target.value);
+                  }}
+                />
+              )}
+            />
+            <EyeButton
+              type="button"
+              onClick={() => togglePasswordVisibility('newPassword')}
+            >
+              {showPasswords.newPassword ? <FaEyeSlash /> : <FaEye />}
+            </EyeButton>
+          </InputContainer>
+          {errors.newPassword && (
+            <ErrorMessage>{errors.newPassword.message}</ErrorMessage>
+          )}
+          <PasswordStrength password={watchedValues.newPassword} />
+        </FormGroup>
+
+        <FormGroup>
+          <Label htmlFor="confirmPassword">Confirm Password</Label>
+          <InputContainer>
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <StyledInput
+                  {...field}
+                  type={showPasswords.confirmPassword ? 'text' : 'password'}
+                  id="confirmPassword"
+                  placeholder="Confirm new password"
+                  className={errors.confirmPassword ? 'is-invalid' : ''}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    handleInputChange('confirmPassword', e.target.value);
+                  }}
+                />
+              )}
+            />
+            <EyeButton
+              type="button"
+              onClick={() => togglePasswordVisibility('confirmPassword')}
+            >
+              {showPasswords.confirmPassword ? <FaEyeSlash /> : <FaEye />}
+            </EyeButton>
+          </InputContainer>
+          {errors.confirmPassword && (
+            <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
+          )}
+        </FormGroup>
+
+        <StyledButton
+          type="submit"
+          disabled={isLoading || !isValid}
+        >
+          {isLoading ? 'Updating Password...' : 'Update Password'}
+        </StyledButton>
+      </StyledForm>
+    </Container>
+  );
+};
+
+// Password Strength Indicator Component
+const PasswordStrength = ({ password }) => {
+  const getStrength = (pwd) => {
+    if (!pwd) return { level: 0, text: '', color: '' };
+
+    let score = 0;
+    if (pwd.length >= 6) score++;
+    if (pwd.length >= 8) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/\d/.test(pwd)) score++;
+    if (/[^a-zA-Z\d]/.test(pwd)) score++;
+
+    if (score < 3) return { level: 1, text: 'Weak', color: '#ef4444' };
+    if (score < 5) return { level: 2, text: 'Medium', color: '#f59e0b' };
+    return { level: 3, text: 'Strong', color: '#10b981' };
+  };
+
+  const strength = getStrength(password);
+
+  if (!password) return null;
+
+  return (
+    <StrengthContainer>
+      <StrengthBar>
+        <StrengthFill $level={strength.level} color={strength.color} />      </StrengthBar>
+      <StrengthText color={strength.color}>
+        Password strength: {strength.text}
+      </StrengthText>
+    </StrengthContainer>
+  );
+};
+
+export default ChangePassword;
+
+// Updated Styled Components
 const Container = styled.div`
   max-width: 450px;
   margin: 0 auto;
@@ -21,6 +269,10 @@ const Title = styled.h1`
   letter-spacing: -0.025em;
 `;
 
+const StyledForm = styled.form`
+  width: 100%;
+`;
+
 const FormGroup = styled.div`
   margin-bottom: 1.75rem;
 `;
@@ -34,12 +286,18 @@ const Label = styled.label`
   letter-spacing: 0.025em;
 `;
 
+const InputContainer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
 const StyledInput = styled.input`
   width: 100%;
   background-color: var(--background-dark);
   border: 1px solid var(--border-color);
   color: var(--text-light);
-  padding: 0.875rem 1rem;
+  padding: 0.875rem 3rem 0.875rem 1rem;
   border-radius: 6px;
   font-size: 0.95rem;
   transition: all 0.2s ease;
@@ -62,11 +320,46 @@ const StyledInput = styled.input`
   }
 `;
 
+const EyeButton = styled.button`
+  position: absolute;
+  right: 0.75rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--text-light);
+  }
+
+  &:focus {
+    outline: none;
+    color: var(--primary);
+  }
+`;
+
 const ErrorMessage = styled.div`
   color: #ef4444;
   font-size: 0.8125rem;
   margin-top: 0.375rem;
   font-weight: 500;
+`;
+
+const SuccessMessage = styled.div`
+  background-color: rgba(0, 230, 118, 0.08);
+  border: 1px solid rgba(0, 230, 118, 0.3);
+  color: var(--primary);
+  padding: 0.875rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-weight: 500;
+  font-size: 0.875rem;
 `;
 
 const StyledButton = styled.button`
@@ -106,186 +399,30 @@ const StyledButton = styled.button`
   }
 `;
 
-const SuccessMessage = styled.div`
-  background-color: rgba(0, 230, 118, 0.08);
-  border: 1px solid rgba(0, 230, 118, 0.3);
-  color: var(--primary);
-  padding: 0.875rem 1rem;
-  border-radius: 6px;
-  margin-bottom: 1.5rem;
-  text-align: center;
-  font-weight: 500;
-  font-size: 0.875rem;
+const StrengthContainer = styled.div`
+  margin-top: 0.5rem;
 `;
 
-const StyledForm = styled.div`
+const StrengthBar = styled.div`
   width: 100%;
+  height: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
 `;
 
-const ChangePassword = () => {
-  const [formData, setFormData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
+// ✅ Fix the styled component
+const StrengthFill = styled.div`
+  height: 100%;
+  width: ${props => props.$level * 33.33}%;
+  background-color: ${props => props.color};
+  transition: all 0.3s ease;
+  border-radius: 2px;
+`;
 
-  const [errors, setErrors] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-
-    if (errors[name]) {
-      setErrors(prev => ({
-        ...prev,
-        [name]: ''
-      }));
-    }
-
-    if (successMessage) {
-      setSuccessMessage('');
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.currentPassword.trim()) {
-      newErrors.currentPassword = 'Current password is required.';
-    }
-
-    if (!formData.newPassword.trim()) {
-      newErrors.newPassword = 'New password is required.';
-    } else if (formData.newPassword.length < 6) {
-      newErrors.newPassword = 'Password must be at least 6 characters long.';
-    } else if (formData.newPassword === formData.currentPassword) {
-      newErrors.newPassword = 'New password must differ from current password.';
-    }
-
-    if (!formData.confirmPassword.trim()) {
-      newErrors.confirmPassword = 'Password confirmation is required.';
-    } else if (formData.confirmPassword !== formData.newPassword) {
-      newErrors.confirmPassword = 'Password confirmation does not match.';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSuccessMessage('');
-
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      setFormData({
-        currentPassword: '',
-        newPassword: '',
-        confirmPassword: ''
-      });
-
-      setSuccessMessage('Password has been successfully updated.');
-    } catch (error) {
-      setErrors({ submit: 'Unable to update password. Please try again.' });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSubmit(e);
-    }
-  };
-
-  return (
-    <Container>
-      <Title>Change Password</Title>
-
-      {successMessage && (
-        <SuccessMessage>{successMessage}</SuccessMessage>
-      )}
-
-      <StyledForm>
-        <FormGroup>
-          <Label htmlFor="currentPassword">Current Password</Label>
-          <StyledInput
-            type="password"
-            id="currentPassword"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter current password"
-            className={errors.currentPassword ? 'is-invalid' : ''}
-          />
-          {errors.currentPassword && (
-            <ErrorMessage>{errors.currentPassword}</ErrorMessage>
-          )}
-        </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="newPassword">New Password</Label>
-          <StyledInput
-            type="password"
-            id="newPassword"
-            name="newPassword"
-            value={formData.newPassword}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="Enter new password"
-            className={errors.newPassword ? 'is-invalid' : ''}
-          />
-          {errors.newPassword && (
-            <ErrorMessage>{errors.newPassword}</ErrorMessage>
-          )}
-        </FormGroup>
-
-        <FormGroup>
-          <Label htmlFor="confirmPassword">Confirm Password</Label>
-          <StyledInput
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleInputChange}
-            onKeyPress={handleKeyPress}
-            placeholder="Confirm new password"
-            className={errors.confirmPassword ? 'is-invalid' : ''}
-          />
-          {errors.confirmPassword && (
-            <ErrorMessage>{errors.confirmPassword}</ErrorMessage>
-          )}
-        </FormGroup>
-
-        {errors.submit && (
-          <ErrorMessage style={{ marginBottom: '1rem', textAlign: 'center' }}>
-            {errors.submit}
-          </ErrorMessage>
-        )}
-
-        <StyledButton
-          type="button"
-          onClick={handleSubmit}
-          disabled={isLoading}
-        >
-          {isLoading ? 'Updating Password...' : 'Update Password'}
-        </StyledButton>
-      </StyledForm>
-    </Container>
-  );
-};
-
-export default ChangePassword;
+const StrengthText = styled.div`
+  font-size: 0.75rem;
+  color: ${props => props.color};
+  font-weight: 500;
+`;

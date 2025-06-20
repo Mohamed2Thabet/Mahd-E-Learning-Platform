@@ -1,4 +1,4 @@
-// components/profileStudent/ProfileHeader.jsx
+// ✅ components/profileStudent/ProfileHeader.jsx
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import { Button, Card, Col, Row, Modal, Form } from 'react-bootstrap';
@@ -10,6 +10,153 @@ import {
   FaCalendarAlt,
   FaTrophy
 } from 'react-icons/fa';
+
+const ProfileHeader = ({ profile, onUpdateProfile }) => {
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({ firstName: '', lastName: '' });
+
+  const handleOpenModal = () => {
+    setEditFormData({
+      firstName: profile.firstName || '',
+      lastName: profile.lastName || ''
+    });
+    setShowEditModal(true);
+  };
+  
+  const handleInputChange = (e) => {
+    setEditFormData({
+      ...editFormData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSaveProfile = () => {
+    onUpdateProfile({
+      firstName: editFormData.firstName,
+      lastName: editFormData.lastName
+    });
+    setShowEditModal(false);
+  };
+
+  return (
+    <>
+      <HeaderCard>
+        <AchievementBadge>
+          <FaTrophy />
+          Top Learner
+        </AchievementBadge>
+
+        <Row className="align-items-center">
+          <Col md="auto">
+            <ProfileImageContainer>
+              <ProfileImage
+                src={profile.avatar}
+                alt="Profile"
+                className="rounded-circle"
+              />
+              <CameraOverlay>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={() => { }}
+                  style={{ display: 'none' }}
+                  id="profile-image-input"
+                />
+                <label htmlFor="profile-image-input" style={{ cursor: 'pointer', margin: 0 }}>
+                  <FaCamera />
+                </label>
+              </CameraOverlay>
+            </ProfileImageContainer>
+          </Col>
+
+          <Col>
+            <ProfileInfo>
+              <h5>{`${profile.firstName || ''} ${profile.lastName || ''}`.trim()}</h5>
+              <ProfileDetails>
+                <DetailItem>
+                  <FaBriefcase />
+                  {profile.role}
+                </DetailItem>
+                <DetailItem>
+                  <FaMapMarkerAlt />
+                  {profile.email}
+                </DetailItem>
+                <DetailItem>
+                  <FaCalendarAlt />
+                  Joined {profile.joinDate}
+                </DetailItem>
+              </ProfileDetails>
+            </ProfileInfo>
+          </Col>
+
+          <Col xs="auto">
+            <EditButton onClick={handleOpenModal}>
+              <FaUserEdit />
+              Edit Name
+            </EditButton>
+          </Col>
+        </Row>
+      </HeaderCard>
+
+      <StyledModal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Name</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <FormGroup>
+            <Form.Label>First Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="firstName"
+              value={editFormData.firstName}
+              onChange={handleInputChange}
+              placeholder="Enter your first name"
+              required
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Form.Label>Last Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="lastName"
+              value={editFormData.lastName}
+              onChange={handleInputChange}
+              placeholder="Enter your last name"
+              required
+            />
+          </FormGroup>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            variant="secondary"
+            onClick={() => setShowEditModal(false)}
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-secondary)'
+            }}
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSaveProfile}
+            style={{
+              backgroundColor: 'var(--primary)',
+              borderColor: 'var(--primary)',
+              color: 'white'
+            }}
+          >
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </StyledModal>
+    </>
+  );
+};
+
+export default ProfileHeader;
+
 
 // ✅ Animations
 const fadeInLeft = keyframes`
@@ -298,164 +445,3 @@ const FormGroup = styled(Form.Group)`
     }
   }
 `;
-
-// ✅ Component
-const ProfileHeader = ({ profile, onUpdateProfile }) => {
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editFormData, setEditFormData] = useState({
-    name: profile.name,
-    role: profile.role,
-    location: profile.location
-  });
-
-  const handleInputChange = (e) => {
-    setEditFormData({
-      ...editFormData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSaveProfile = () => {
-    onUpdateProfile(editFormData);
-    setShowEditModal(false);
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        onUpdateProfile({ avatar: e.target.result });
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  return (
-    <>
-      <HeaderCard>
-        <AchievementBadge>
-          <FaTrophy />
-          Top Learner
-        </AchievementBadge>
-
-        <Row className="align-items-center">
-          <Col md="auto">
-            <ProfileImageContainer>
-              <ProfileImage
-                src={profile.avatar}
-                alt="Profile"
-                className="rounded-circle"
-              />
-              <CameraOverlay>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: 'none' }}
-                  id="profile-image-input"
-                />
-                <label htmlFor="profile-image-input" style={{ cursor: 'pointer', margin: 0 }}>
-                  <FaCamera />
-                </label>
-              </CameraOverlay>
-            </ProfileImageContainer>
-          </Col>
-
-          <Col>
-            <ProfileInfo>
-              <h5>{profile.name}</h5>
-              <ProfileDetails>
-                <DetailItem>
-                  <FaBriefcase />
-                  {profile.role}
-                </DetailItem>
-                <DetailItem>
-                  <FaMapMarkerAlt />
-                  {profile.location}
-                </DetailItem>
-                <DetailItem>
-                  <FaCalendarAlt />
-                  Joined {profile.joinDate}
-                </DetailItem>
-              </ProfileDetails>
-            </ProfileInfo>
-          </Col>
-
-          <Col xs="auto">
-            <EditButton onClick={() => setShowEditModal(true)}>
-              <FaUserEdit />
-              Edit Profile
-            </EditButton>
-          </Col>
-        </Row>
-      </HeaderCard>
-
-      {/* Edit Profile Modal */}
-      <StyledModal show={showEditModal} onHide={() => setShowEditModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Profile</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <FormGroup>
-            <Form.Label>Full Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={editFormData.name}
-              onChange={handleInputChange}
-              placeholder="Enter your full name"
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <Form.Label>Role/Title</Form.Label>
-            <Form.Control
-              type="text"
-              name="role"
-              value={editFormData.role}
-              onChange={handleInputChange}
-              placeholder="Enter your role or title"
-            />
-          </FormGroup>
-
-          <FormGroup>
-            <Form.Label>Location</Form.Label>
-            <Form.Control
-              type="text"
-              name="location"
-              value={editFormData.location}
-              onChange={handleInputChange}
-              placeholder="Enter your location"
-            />
-          </FormGroup>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowEditModal(false)}
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-secondary)'
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSaveProfile}
-            style={{
-              backgroundColor: 'var(--primary)',
-              borderColor: 'var(--primary)',
-              color: 'white'
-            }}
-          >
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </StyledModal>
-    </>
-  );
-};
-
-export default ProfileHeader;

@@ -32,8 +32,8 @@ export const registerSchema = z.object({
   role: z
     .string()
     .min(1, 'Please select a role')
-    .refine((value) => ['student', 'teacher'].includes(value), {
-      message: 'Role must be either student or teacher',
+    .refine((value) => ['student', 'Educator'].includes(value), {
+      message: 'Role must be either student or Educator',
     }),
 });
 
@@ -48,4 +48,50 @@ export const loginSchema = z.object({
     .string()
     .min(1, 'Password is required')
     .min(6, 'Password must be at least 6 characters')
+});
+
+// Zod validation schema
+export const passwordSchema = z.object({
+  currentPassword: z
+    .string()
+    .min(1, 'Current password is required'),
+
+  newPassword: z
+    .string()
+    .min(6, 'Password must be at least 6 characters long')
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+    ),
+
+  confirmPassword: z
+    .string()
+    .min(1, 'Password confirmation is required')
+}).refine((data) => data.newPassword !== data.currentPassword, {
+  message: 'New password must differ from current password',
+  path: ['newPassword']
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: 'Password confirmation does not match',
+  path: ['confirmPassword']
+});
+
+
+
+export const passwordResetSchema = z.object({
+  email: z
+    .string()
+    .min(1, { message: 'Email is required' })
+    .email({ message: 'Please enter a valid email address' }),
+  otp: z
+    .string()
+    .min(1, { message: 'OTP is required' })
+    .length(6, { message: 'OTP must be exactly 6 digits' })
+    .regex(/^\d+$/, { message: 'OTP must contain only numbers' }),
+  newPassword: z
+    .string()
+    .min(8, { message: 'Password must be at least 8 characters' })
+    .max(64, { message: 'Password cannot exceed 64 characters' })
+    .regex(/^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])/, {
+      message: 'Password must contain letters, numbers, and special characters'
+    })
 });
