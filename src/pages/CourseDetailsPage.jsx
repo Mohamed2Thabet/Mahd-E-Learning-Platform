@@ -69,13 +69,11 @@ const courseData = {
 const CourseDetailsPage = () => {
   const { courseId } = useParams();
   const dispatch = useDispatch();
-
   const token = localStorage.getItem('token');
   const course = useSelector(state => state.course.current);
   const error = useSelector(state => state.course.error);
-  console.log(token)
   useEffect(() => {
-
+    
     if (token && courseId) {
       dispatch(fetchCourseById({ courseId, token }));
     }
@@ -90,9 +88,9 @@ const CourseDetailsPage = () => {
       console.error("❌ Error:", error);
     }
   }, [course, error]);
-
+  
   // fallback if API fails
-  const data = course || courseData;
+  const data = courseData;
 
   return (
     <PageWrapper>

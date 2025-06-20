@@ -5,6 +5,74 @@ import { FaChartLine } from 'react-icons/fa';
 import { MdTrendingUp } from 'react-icons/md';
 
 
+
+
+// ✅ Analytics Component
+const Analytics = ({ data }) => {
+  const analyticsData = {
+    courseViews: { value: 123, progress: 100 },
+    newEnrollments: { value: 89, progress: 89 },
+    completionRate: { value: 76, progress: 76 },
+    ...data
+  };
+
+  const handleViewReport = () => {
+    console.log('Opening detailed analytics report...');
+    // Add navigation to detailed report here
+  };
+
+  return (
+    <AnalyticsContainer>
+      <TitleRow>
+        <h5>
+          <SectionIcon>
+            <FaChartLine />
+          </SectionIcon>
+          Analytics
+        </h5>
+        <span>This Week</span>
+      </TitleRow>
+
+      <AnalyticsCard>
+        <Card.Body>
+          <AnalyticsRow>
+            <div className="d-flex">
+              <span>Course Views</span>
+              <span>{analyticsData.courseViews.value}</span>
+            </div>
+            <ProgressBar now={analyticsData.courseViews.progress} />
+          </AnalyticsRow>
+
+          <AnalyticsRow>
+            <div className="d-flex">
+              <span>New Enrollments</span>
+              <span>{analyticsData.newEnrollments.value}</span>
+            </div>
+            <ProgressBar now={analyticsData.newEnrollments.progress} />
+          </AnalyticsRow>
+
+          <AnalyticsRow>
+            <div className="d-flex">
+              <span>Completion Rate</span>
+              <span>{analyticsData.completionRate.value}%</span>
+            </div>
+            <ProgressBar now={analyticsData.completionRate.progress} />
+          </AnalyticsRow>
+
+          <DetailedReportButton
+            className="w-100"
+            onClick={handleViewReport}
+          >
+            <MdTrendingUp style={{ marginRight: '8px' }} />
+            View Detailed Report
+          </DetailedReportButton>
+        </Card.Body>
+      </AnalyticsCard>
+    </AnalyticsContainer>
+  );
+};
+
+export default Analytics;
 // ✅ Animations
 const slideInRight = keyframes`
   from {
@@ -200,70 +268,3 @@ const DetailedReportButton = styled(BSButton)`
     transform: translateY(0) !important;
   }
 `;
-
-// ✅ Analytics Component
-const Analytics = ({ data }) => {
-  const analyticsData = {
-    courseViews: { value: 123, progress: 100 },
-    newEnrollments: { value: 89, progress: 89 },
-    completionRate: { value: 76, progress: 76 },
-    ...data
-  };
-
-  const handleViewReport = () => {
-    console.log('Opening detailed analytics report...');
-    // Add navigation to detailed report here
-  };
-
-  return (
-    <AnalyticsContainer>
-      <TitleRow>
-        <h5>
-          <SectionIcon>
-            <FaChartLine />
-          </SectionIcon>
-          Analytics
-        </h5>
-        <span>This Week</span>
-      </TitleRow>
-
-      <AnalyticsCard>
-        <Card.Body>
-          <AnalyticsRow>
-            <div className="d-flex">
-              <span>Course Views</span>
-              <span>{analyticsData.courseViews.value}</span>
-            </div>
-            <ProgressBar now={analyticsData.courseViews.progress} />
-          </AnalyticsRow>
-
-          <AnalyticsRow>
-            <div className="d-flex">
-              <span>New Enrollments</span>
-              <span>{analyticsData.newEnrollments.value}</span>
-            </div>
-            <ProgressBar now={analyticsData.newEnrollments.progress} />
-          </AnalyticsRow>
-
-          <AnalyticsRow>
-            <div className="d-flex">
-              <span>Completion Rate</span>
-              <span>{analyticsData.completionRate.value}%</span>
-            </div>
-            <ProgressBar now={analyticsData.completionRate.progress} />
-          </AnalyticsRow>
-
-          <DetailedReportButton
-            className="w-100"
-            onClick={handleViewReport}
-          >
-            <MdTrendingUp style={{ marginRight: '8px' }} />
-            View Detailed Report
-          </DetailedReportButton>
-        </Card.Body>
-      </AnalyticsCard>
-    </AnalyticsContainer>
-  );
-};
-
-export default Analytics;

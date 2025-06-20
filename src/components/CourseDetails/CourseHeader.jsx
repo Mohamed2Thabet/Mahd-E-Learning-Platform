@@ -33,13 +33,13 @@ const CourseHeader = ({ title, subtitle, rating, reviewsCount, instructor, lastU
             <RatingWrapper>
               <RatingText>{rating}</RatingText>
               <RatingStars>{renderStars()}</RatingStars>
-              <ReviewsText>({reviewsCount.toLocaleString()} ratings)</ReviewsText>
+              <ReviewsText>({reviewsCount?.toLocaleString()} ratings)</ReviewsText>
             </RatingWrapper>
-            <InstructorText>Created by <span>{instructor.name}</span></InstructorText>
+            <InstructorText>Created by <span>{instructor?.name}</span></InstructorText>
             <InfoBar>
               <InfoItem><FaSyncAlt /> Last updated {lastUpdated}</InfoItem>
               <InfoItem><FaLanguage /> {language}</InfoItem>
-              <InfoItem><FaClosedCaptioning /> {subtitles.join(', ')}</InfoItem>
+              <InfoItem><FaClosedCaptioning /> {subtitles?.join(', ')}</InfoItem>
             </InfoBar>
           </Col>
         </Row>

@@ -5,6 +5,345 @@ import { Card, Modal, Form, Button as BSButton, Alert } from 'react-bootstrap';
 import { FaEdit, FaPlus, FaEye, FaUsers, FaStar, FaBookOpen } from 'react-icons/fa';
 import { MdDelete, MdClose } from 'react-icons/md';
 
+
+
+// ✅ CoursesList Component
+const VeiwCourses = ({ courses=[], onAdd, onUpdate, onDelete }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [editingCourse, setEditingCourse] = useState(null);
+  const [deletingCourse, setDeleteingCourse] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [formData, setFormData] = useState({
+    title: '',
+    price: '',
+    category: '',
+    description: ''
+  });
+
+  // Form handlers
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      price: '',
+      category: '',
+      description: ''
+    });
+  };
+
+  // Add course
+  const handleAddCourse = () => {
+    setEditingCourse(null);
+    resetForm();
+    setShowModal(true);
+  };
+
+  // Edit course
+  const handleEditCourse = (course) => {
+    setEditingCourse(course);
+    setFormData({
+      title: course.title,
+      price: course.price,
+      category: course.category || '',
+      description: course.description || ''
+    });
+    setShowModal(true);
+  };
+
+  // Delete course
+  const handleDeleteCourse = (course) => {
+    setDeleteingCourse(course);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      onDelete(deletingCourse.id);
+      setAlertMessage(`Course "${deletingCourse.title}" deleted successfully!`);
+      setShowDeleteModal(false);
+      setDeleteingCourse(null);
+      setTimeout(() => setAlertMessage(''), 3000);
+    } catch (error) {
+      console.error('Error deleting course:', error);
+      setAlertMessage('Error deleting course. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Save course (add or edit)
+  const handleSaveCourse = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      if (editingCourse) {
+        onUpdate(editingCourse.id, formData);
+        setAlertMessage(`Course "${formData.title}" updated successfully!`);
+      } else {
+        onAdd(formData);
+        setAlertMessage(`Course "${formData.title}" added successfully!`);
+      }
+
+      setShowModal(false);
+      resetForm();
+      setEditingCourse(null);
+      setTimeout(() => setAlertMessage(''), 3000);
+    } catch (error) {
+      console.error('Error saving course:', error);
+      setAlertMessage('Error saving course. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <CoursesContainer>
+      {alertMessage && (
+        <Alert
+          variant={alertMessage.includes('Error') ? 'danger' : 'success'}
+          style={{
+            backgroundColor: alertMessage.includes('Error') ? 'rgba(244, 67, 54, 0.1)' : 'rgba(0, 230, 118, 0.1)',
+            borderColor: alertMessage.includes('Error') ? '#f44336' : 'var(--primary)',
+            color: alertMessage.includes('Error') ? '#f44336' : 'var(--primary)',
+            marginBottom: '24px'
+          }}
+        >
+          {alertMessage}
+        </Alert>
+      )}
+
+      <TitleRow>
+        <h5>
+          <SectionIcon>
+            <FaBookOpen />
+          </SectionIcon>
+          Recent Courses ({courses.length})
+        </h5>
+        <ActionButtonsGroup>
+          <ViewAll>
+            <FaEye />
+            View All
+          </ViewAll>
+          <AddCourseButton onClick={handleAddCourse}>
+            <FaPlus />
+            Add Course
+          </AddCourseButton>
+        </ActionButtonsGroup>
+      </TitleRow>
+
+      {courses.map((course, index) => (
+        <StyledCard
+          key={course.id}
+          $delay={`${index * 0.1}s`}
+          role="group"
+          aria-label={`Course: ${course.title}`}
+        >
+          <Card.Body>
+            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+              <CourseImage>
+                <FaBookOpen />
+              </CourseImage>
+              <CourseInfo>
+                <h6>{course.title}</h6>
+                <CourseStats>
+                  <StatItem>
+                    <FaUsers />
+                    {course.students} Students
+                  </StatItem>
+                  <StatItem>
+                    <FaStar />
+                    {course.rating}
+                  </StatItem>
+                  <CoursePrice>{course.price}</CoursePrice>
+                </CourseStats>
+              </CourseInfo>
+            </div>
+            <IconGroup>
+              <ActionIcon
+                className="edit"
+                onClick={() => handleEditCourse(course)}
+                title={`Edit ${course.title}`}
+              >
+                <FaEdit size={16} />
+              </ActionIcon>
+              <ActionIcon
+                className="delete"
+                onClick={() => handleDeleteCourse(course)}
+                title={`Delete ${course.title}`}
+              >
+                <MdDelete size={16} />
+              </ActionIcon>
+            </IconGroup>
+          </Card.Body>
+        </StyledCard>
+      ))}
+
+      {/* Add/Edit Course Modal */}
+      <StyledModal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header>
+          <Modal.Title>
+            {editingCourse ? 'Edit Course' : 'Add New Course'}
+          </Modal.Title>
+          <button
+            type="button"
+            className="btn-close"
+            onClick={() => setShowModal(false)}
+          >
+            <MdClose />
+          </button>
+        </Modal.Header>
+        <Form onSubmit={handleSaveCourse}>
+          <Modal.Body>
+            <FormGroup>
+              <Form.Label>Course Title</Form.Label>
+              <Form.Control
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                placeholder="Enter course title"
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Form.Label>Price</Form.Label>
+              <Form.Control
+                type="text"
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                placeholder="e.g., $99.99"
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Form.Label>Category</Form.Label>
+              <Form.Control
+                as="select"
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                required
+              >
+                <option value="">Select category</option>
+                <option value="Design">Design</option>
+                <option value="Development">Development</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Business">Business</option>
+                <option value="Photography">Photography</option>
+              </Form.Control>
+            </FormGroup>
+
+            <FormGroup>
+              <Form.Label>Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="Enter course description"
+                required
+              />
+            </FormGroup>
+          </Modal.Body>
+          <Modal.Footer>
+            <BSButton
+              variant="secondary"
+              onClick={() => setShowModal(false)}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                borderColor: 'var(--border-color)',
+                color: 'var(--text-secondary)'
+              }}
+            >
+              Cancel
+            </BSButton>
+            <BSButton
+              type="submit"
+              disabled={isLoading}
+              style={{
+                backgroundColor: 'var(--primary)',
+                borderColor: 'var(--primary)',
+                color: 'white'
+              }}
+            >
+              {isLoading ? (
+                <>
+                  <LoadingSpinner />
+                  Saving...
+                </>
+              ) : (
+                editingCourse ? 'Update Course' : 'Add Course'
+              )}
+            </BSButton>
+          </Modal.Footer>
+        </Form>
+      </StyledModal>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+        <Modal.Body>
+          <div className="icon">
+            <MdDelete />
+          </div>
+          <h4>Delete Course?</h4>
+          <p>
+            Are you sure you want to delete "{deletingCourse?.title}"?
+            This action cannot be undone.
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <BSButton
+            variant="secondary"
+            onClick={() => setShowDeleteModal(false)}
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'var(--border-color)',
+              color: 'var(--text-secondary)'
+            }}
+          >
+            Cancel
+          </BSButton>
+          <BSButton
+            onClick={confirmDelete}
+            disabled={isLoading}
+            style={{
+              backgroundColor: '#f44336',
+              borderColor: '#f44336',
+              color: 'white'
+            }}
+          >
+            {isLoading ? (
+              <>
+                <LoadingSpinner />
+                Deleting...
+              </>
+            ) : (
+              'Delete Course'
+            )}
+          </BSButton>
+        </Modal.Footer>
+      </ConfirmationModal>
+    </CoursesContainer>
+  );
+};
+
+export default VeiwCourses;
 // ✅ Animations
 const slideInLeft = keyframes`
   from {
@@ -398,341 +737,3 @@ const LoadingSpinner = styled.div`
     100% { transform: rotate(360deg); }
   }
 `;
-
-// ✅ CoursesList Component
-const VeiwCourses = ({ courses=[], onAdd, onUpdate, onDelete }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editingCourse, setEditingCourse] = useState(null);
-  const [deletingCourse, setDeleteingCourse] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [alertMessage, setAlertMessage] = useState('');
-  const [formData, setFormData] = useState({
-    title: '',
-    price: '',
-    category: '',
-    description: ''
-  });
-
-  // Form handlers
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const resetForm = () => {
-    setFormData({
-      title: '',
-      price: '',
-      category: '',
-      description: ''
-    });
-  };
-
-  // Add course
-  const handleAddCourse = () => {
-    setEditingCourse(null);
-    resetForm();
-    setShowModal(true);
-  };
-
-  // Edit course
-  const handleEditCourse = (course) => {
-    setEditingCourse(course);
-    setFormData({
-      title: course.title,
-      price: course.price,
-      category: course.category || '',
-      description: course.description || ''
-    });
-    setShowModal(true);
-  };
-
-  // Delete course
-  const handleDeleteCourse = (course) => {
-    setDeleteingCourse(course);
-    setShowDeleteModal(true);
-  };
-
-  const confirmDelete = async () => {
-    setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      onDelete(deletingCourse.id);
-      setAlertMessage(`Course "${deletingCourse.title}" deleted successfully!`);
-      setShowDeleteModal(false);
-      setDeleteingCourse(null);
-      setTimeout(() => setAlertMessage(''), 3000);
-    } catch (error) {
-      console.error('Error deleting course:', error);
-      setAlertMessage('Error deleting course. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Save course (add or edit)
-  const handleSaveCourse = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      if (editingCourse) {
-        onUpdate(editingCourse.id, formData);
-        setAlertMessage(`Course "${formData.title}" updated successfully!`);
-      } else {
-        onAdd(formData);
-        setAlertMessage(`Course "${formData.title}" added successfully!`);
-      }
-
-      setShowModal(false);
-      resetForm();
-      setEditingCourse(null);
-      setTimeout(() => setAlertMessage(''), 3000);
-    } catch (error) {
-      console.error('Error saving course:', error);
-      setAlertMessage('Error saving course. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return (
-    <CoursesContainer>
-      {alertMessage && (
-        <Alert
-          variant={alertMessage.includes('Error') ? 'danger' : 'success'}
-          style={{
-            backgroundColor: alertMessage.includes('Error') ? 'rgba(244, 67, 54, 0.1)' : 'rgba(0, 230, 118, 0.1)',
-            borderColor: alertMessage.includes('Error') ? '#f44336' : 'var(--primary)',
-            color: alertMessage.includes('Error') ? '#f44336' : 'var(--primary)',
-            marginBottom: '24px'
-          }}
-        >
-          {alertMessage}
-        </Alert>
-      )}
-
-      <TitleRow>
-        <h5>
-          <SectionIcon>
-            <FaBookOpen />
-          </SectionIcon>
-          Recent Courses ({courses.length})
-        </h5>
-        <ActionButtonsGroup>
-          <ViewAll>
-            <FaEye />
-            View All
-          </ViewAll>
-          <AddCourseButton onClick={handleAddCourse}>
-            <FaPlus />
-            Add Course
-          </AddCourseButton>
-        </ActionButtonsGroup>
-      </TitleRow>
-
-      {courses.map((course, index) => (
-        <StyledCard
-          key={course.id}
-          $delay={`${index * 0.1}s`}
-          role="group"
-          aria-label={`Course: ${course.title}`}
-        >
-          <Card.Body>
-            <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
-              <CourseImage>
-                <FaBookOpen />
-              </CourseImage>
-              <CourseInfo>
-                <h6>{course.title}</h6>
-                <CourseStats>
-                  <StatItem>
-                    <FaUsers />
-                    {course.students} Students
-                  </StatItem>
-                  <StatItem>
-                    <FaStar />
-                    {course.rating}
-                  </StatItem>
-                  <CoursePrice>{course.price}</CoursePrice>
-                </CourseStats>
-              </CourseInfo>
-            </div>
-            <IconGroup>
-              <ActionIcon
-                className="edit"
-                onClick={() => handleEditCourse(course)}
-                title={`Edit ${course.title}`}
-              >
-                <FaEdit size={16} />
-              </ActionIcon>
-              <ActionIcon
-                className="delete"
-                onClick={() => handleDeleteCourse(course)}
-                title={`Delete ${course.title}`}
-              >
-                <MdDelete size={16} />
-              </ActionIcon>
-            </IconGroup>
-          </Card.Body>
-        </StyledCard>
-      ))}
-
-      {/* Add/Edit Course Modal */}
-      <StyledModal show={showModal} onHide={() => setShowModal(false)} centered>
-        <Modal.Header>
-          <Modal.Title>
-            {editingCourse ? 'Edit Course' : 'Add New Course'}
-          </Modal.Title>
-          <button
-            type="button"
-            className="btn-close"
-            onClick={() => setShowModal(false)}
-          >
-            <MdClose />
-          </button>
-        </Modal.Header>
-        <Form onSubmit={handleSaveCourse}>
-          <Modal.Body>
-            <FormGroup>
-              <Form.Label>Course Title</Form.Label>
-              <Form.Control
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                placeholder="Enter course title"
-                required
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Form.Label>Price</Form.Label>
-              <Form.Control
-                type="text"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                placeholder="e.g., $99.99"
-                required
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Form.Label>Category</Form.Label>
-              <Form.Control
-                as="select"
-                name="category"
-                value={formData.category}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select category</option>
-                <option value="Design">Design</option>
-                <option value="Development">Development</option>
-                <option value="Marketing">Marketing</option>
-                <option value="Business">Business</option>
-                <option value="Photography">Photography</option>
-              </Form.Control>
-            </FormGroup>
-
-            <FormGroup>
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Enter course description"
-                required
-              />
-            </FormGroup>
-          </Modal.Body>
-          <Modal.Footer>
-            <BSButton
-              variant="secondary"
-              onClick={() => setShowModal(false)}
-              style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                borderColor: 'var(--border-color)',
-                color: 'var(--text-secondary)'
-              }}
-            >
-              Cancel
-            </BSButton>
-            <BSButton
-              type="submit"
-              disabled={isLoading}
-              style={{
-                backgroundColor: 'var(--primary)',
-                borderColor: 'var(--primary)',
-                color: 'white'
-              }}
-            >
-              {isLoading ? (
-                <>
-                  <LoadingSpinner />
-                  Saving...
-                </>
-              ) : (
-                editingCourse ? 'Update Course' : 'Add Course'
-              )}
-            </BSButton>
-          </Modal.Footer>
-        </Form>
-      </StyledModal>
-
-      {/* Delete Confirmation Modal */}
-      <ConfirmationModal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
-        <Modal.Body>
-          <div className="icon">
-            <MdDelete />
-          </div>
-          <h4>Delete Course?</h4>
-          <p>
-            Are you sure you want to delete "{deletingCourse?.title}"?
-            This action cannot be undone.
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <BSButton
-            variant="secondary"
-            onClick={() => setShowDeleteModal(false)}
-            style={{
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
-              borderColor: 'var(--border-color)',
-              color: 'var(--text-secondary)'
-            }}
-          >
-            Cancel
-          </BSButton>
-          <BSButton
-            onClick={confirmDelete}
-            disabled={isLoading}
-            style={{
-              backgroundColor: '#f44336',
-              borderColor: '#f44336',
-              color: 'white'
-            }}
-          >
-            {isLoading ? (
-              <>
-                <LoadingSpinner />
-                Deleting...
-              </>
-            ) : (
-              'Delete Course'
-            )}
-          </BSButton>
-        </Modal.Footer>
-      </ConfirmationModal>
-    </CoursesContainer>
-  );
-};
-
-export default VeiwCourses;

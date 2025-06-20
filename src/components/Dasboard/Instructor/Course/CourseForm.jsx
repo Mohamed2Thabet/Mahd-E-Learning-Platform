@@ -16,7 +16,6 @@ const CourseForm = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [tagInput, setTagInput] = useState('');
-  console.log(id)
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -29,7 +28,6 @@ const CourseForm = () => {
   });
 
   const course = useSelector(state => state.course.current);
-  console.log(course)
   useEffect(() => {
     if (isEditing) {
       const token = localStorage.getItem('token');
@@ -83,31 +81,42 @@ const CourseForm = () => {
     setLoading(true);
     setError('');
     setSuccess('');
-
+  
     try {
-      const formPayload = new FormData();
-      formPayload.append('title', formData.title);
-      formPayload.append('description', formData.description);
-      formPayload.append('price', formData.price);
-      formPayload.append('level', formData.level);
-      formData.tags.forEach(tag => {
-        formPayload.append('tags[]', tag);
-      });
-      
-      if (formData.image) {
-        formPayload.append('image', formData.image);
-      }
-
       const token = localStorage.getItem('token');
-
+      let payload;
+  
+      const hasImage = formData.image instanceof File;
+  
+      if (hasImage) {
+        const formPayload = new FormData();
+        formPayload.append('title', formData.title);
+        formPayload.append('description', formData.description);
+        formPayload.append('price', formData.price);
+        formPayload.append('level', formData.level);
+        formData.tags.forEach(tag => {
+          formPayload.append('tags[]', tag);
+        });
+        formPayload.append('image', formData.image);
+        payload = formPayload;
+      } else {
+        payload = {
+          title: formData.title,
+          description: formData.description,
+          price: formData.price,
+          level: formData.level,
+          tags: formData.tags,
+        };
+      }
+  
       if (isEditing) {
-        await dispatch(updateCourse({ courseId: id, formData: formPayload, token }));
+        await dispatch(updateCourse({ courseId: id, formData: payload, token }));
         setSuccess('Course updated successfully!');
       } else {
-        await dispatch(createCourse({ formData: formPayload, token }));
+        await dispatch(createCourse({ formData: payload, token }));
         setSuccess('Course created successfully!');
       }
-
+  
       setTimeout(() => {
         navigate('/');
       }, 2000);
@@ -118,6 +127,7 @@ const CourseForm = () => {
       setLoading(false);
     }
   };
+  
 
   if (loading && isEditing) {
     return (
@@ -236,7 +246,7 @@ const CourseForm = () => {
                           </Form.Select>
                         </Form.Group>
                       </Col>
-                    
+
                     </Row>
                   </FormSection>
 

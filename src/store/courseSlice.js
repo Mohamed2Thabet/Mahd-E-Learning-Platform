@@ -45,10 +45,10 @@ export const fetchCourseById = createAsyncThunk(
 // GET courses for specific educator
 export const fetchCoursesForEducator = createAsyncThunk(
   "course/fetchForEducator",
-  async ({ educatorId, limit, offset}, { rejectWithValue }) => {
+  async ({ educatorId, limit, offset }, { rejectWithValue }) => {
     try {
       const res = await fetch(`${CMS_BASE_URL}/get-for-educator/${educatorId}/${limit}/${offset}`, {
-        
+
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Failed to fetch courses");
@@ -75,7 +75,7 @@ export const createCourse = createAsyncThunk(
         body: formData,
       });
       const data = await res.json();
-      console.log(data,"errot")
+      console.log(data, "errot")
       if (!res.ok) throw new Error(data.message || "Create failed");
       return data.data;
     } catch (err) {
@@ -89,14 +89,23 @@ export const updateCourse = createAsyncThunk(
   "course/update",
   async ({ courseId, formData, token }, { rejectWithValue }) => {
     try {
-      formData.append("courseId", courseId); // لازم لأن الـ API بيطلبه في البودي
+      let body;
+      let headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (formData instanceof FormData) {
+        formData.append("courseId", courseId);
+        body = formData;
+      } else {
+        body = JSON.stringify({ ...formData, courseId });
+        headers["Content-Type"] = "application/json";
+      }
 
       const res = await fetch(`${CMS_BASE_URL}/update`, {
         method: "PUT",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
+        headers,
+        body,
       });
 
       const data = await res.json();
@@ -111,6 +120,7 @@ export const updateCourse = createAsyncThunk(
     }
   }
 );
+
 
 
 

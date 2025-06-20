@@ -22,7 +22,7 @@ export const refreshAccessToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const refreshToken = localStorage.getItem("refreshToken");
     try {
-      const res = await fetch("/api/v1/ums/auth/refresh-token", {
+      const res = await fetch("/ums/auth/refresh-token", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refreshToken }),

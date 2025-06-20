@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container, Row, Col, Button, Spinner, Alert, Card, Badge } from "react-bootstrap";
+import { Container, Row, Col, Button, Spinner, Alert, Card, Badge, Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaPlus, FaEye, FaEdit, FaTrash, FaBook } from "react-icons/fa";
+import { FaPlus, FaEye, FaEdit, FaTrash, FaBook, FaUser, FaGraduationCap, FaExclamationTriangle } from "react-icons/fa";
 import styled, { keyframes } from "styled-components";
-import { fetchCoursesForEducator } from "../../../../store/courseSlice";
+import { deleteCourse, fetchCoursesForEducator } from "../../../../store/courseSlice";
 
 const CourseList = () => {
   const dispatch = useDispatch();
@@ -14,38 +14,85 @@ const CourseList = () => {
   const courses = useSelector(state => state.course.educatorCourses);
   const loading = useSelector(state => state.course.loading);
   const error = useSelector(state => state.course.error);
-  console.log(courses)
+
+  // Enhanced delete confirmation state
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState(null);
+
   useEffect(() => {
-    console.log(educatorId)
     if (educatorId) {
       dispatch(fetchCoursesForEducator({ educatorId, limit: 0, offset: 0 }));
     }
   }, [dispatch, educatorId, token]);
 
+  // Enhanced delete handler with professional modal
+  const handleDeleteClick = (course) => {
+    setCourseToDelete(course);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (courseToDelete) {
+      dispatch(deleteCourse({ courseId: courseToDelete._id, token }));
+      setShowDeleteModal(false);
+      setCourseToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setCourseToDelete(null);
+  };
+
   if (loading) {
     return (
-      <Container className="text-center py-5">
-        <Spinner animation="border" role="status" />
-        <p>Loading courses...</p>
-      </Container>
+      <LoadingContainer>
+        <StyledSpinner animation="border" role="status" />
+        <LoadingText>Loading courses...</LoadingText>
+      </LoadingContainer>
     );
   }
 
   return (
-    <Container fluid>
-      <Row className="mb-4">
-        <Col className="d-flex justify-content-between align-items-center">
-          <h3>My Courses</h3>
-          <Button as={Link} to="/create-course" variant="success">
+    <ProfessionalContainer fluid>
+      <PageHeader>
+        <div className="header-content">
+          <PageTitle>
+            <FaGraduationCap className="title-icon" />
+            My Courses
+          </PageTitle>
+          <StyledButton as={Link} to="/create-course" className="btn-primary">
             <FaPlus /> Add New Course
-          </Button>
-        </Col>
-      </Row>
+          </StyledButton>
+        </div>
+      </PageHeader>
+
+      {/* Enhanced Stats Section */}
+      <StatsSection>
+        <StatCard>
+          <div className="stat-number">{courses.length}</div>
+          <div className="stat-label">Total Courses</div>
+        </StatCard>
+        <StatCard>
+          <div className="stat-number">{courses.filter(c => c.approved).length}</div>
+          <div className="stat-label">Approved</div>
+        </StatCard>
+        <StatCard>
+          <div className="stat-number">{courses.filter(c => !c.approved).length}</div>
+          <div className="stat-label">Pending</div>
+        </StatCard>
+        <StatCard>
+          <div className="stat-number">
+            ${courses.reduce((sum, course) => sum + (course.price || 0), 0).toFixed(0)}
+          </div>
+          <div className="stat-label">Total Value</div>
+        </StatCard>
+      </StatsSection>
 
       {error && (
         <Row className="mb-3">
           <Col>
-            <Alert variant="danger">{error}</Alert>
+            <ErrorAlert variant="danger">{error}</ErrorAlert>
           </Col>
         </Row>
       )}
@@ -56,54 +103,128 @@ const CourseList = () => {
             <FaBook />
           </div>
           <h4>No Courses Found</h4>
-          <p>You haven’t created any courses yet. Start by adding your first course.</p>
-          <Button as={Link} to="/create-course" variant="success">
-            <FaPlus /> Create Course
-          </Button>
+          <p>You haven't created any courses yet. Start by adding your first course to share your knowledge with the world.</p>
+          <StyledButton as={Link} to="/create-course" className="btn-primary">
+            <FaPlus /> Create Your First Course
+          </StyledButton>
         </EmptyState>
       ) : (
         <Row>
           {courses.map(course => (
             <Col key={course.id} md={6} lg={4} className="mb-4">
-              <Card>
-                <Card.Img variant="top" src={course.imageUrl || 'https://via.placeholder.com/400x200'} />
-                <Card.Body>
+              <StyledCard>
+                <CourseImage>
+                  <img
+                    src={course.imageUrl || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&h=200&fit=crop'}
+                    alt={course.title}
+                    loading="lazy"
+                  />
+                  <PriceTag>
+                    ${course.price || 0}
+                  </PriceTag>
+                  <ApprovalBadge className={course.approved ? "approved" : "pending"}>
+                    {course.approved ? "✓ Approved" : "⏳ Pending"}
+                  </ApprovalBadge>
+                </CourseImage>
+
+                <CardBody>
                   <Card.Title>{course.title}</Card.Title>
                   <Card.Text>
-                    {course.description.length > 100
+                    {course.description?.length > 100
                       ? `${course.description.substring(0, 100)}...`
-                      : course.description}
+                      : course.description || "No description available"}
                   </Card.Text>
-                  <Badge bg={course.approved ? "success" : "warning"}>
-                    {course.approved ? "Approved" : "Pending"}
-                  </Badge>{" "}
-                  <Badge bg="info">{course.level}</Badge>{" "}
-                  <Badge bg="secondary">${course.price}</Badge>
-                </Card.Body>
-                <Card.Footer className="d-flex justify-content-between">
-                  <Button size="sm" as={Link} to={`/dashboard/instructor/course/${course._id}`} variant="outline-primary">
-                    <FaEye /> View
-                  </Button>
-                  <Button size="sm" as={Link} to={`/dashboard/instructor/course/edit/${course._id}`} variant="outline-secondary">
-                    <FaEdit /> Edit
-                  </Button>
-                  <Button size="sm" variant="outline-danger" onClick={() => alert('Confirm deletion')}>
-                    <FaTrash /> Delete
-                  </Button>
-                </Card.Footer>
-              </Card>
+
+                  <CourseMetadata>
+                    <div className="educator-info">
+                      <FaUser />
+                      {educatorData?.firstName} {educatorData?.lastName}
+                    </div>
+                    <div className="level-badge">
+                      <StyledBadge>{course.level || "Beginner"}</StyledBadge>
+                    </div>
+                  </CourseMetadata>
+
+                  <CardActions>
+                    <StyledButton
+                      size="sm"
+                      as={Link}
+                      to={`/dashboard/instructor/course/${course._id}`}
+                      className="btn-outline-primary"
+                    >
+                      <FaEye /> View
+                    </StyledButton>
+                    <StyledButton
+                      size="sm"
+                      as={Link}
+                      to={`/dashboard/instructor/course/edit/${course._id}`}
+                      className="btn-outline-secondary"
+                    >
+                      <FaEdit /> Edit
+                    </StyledButton>
+                    <StyledButton
+                      size="sm"
+                      className="btn-outline-danger"
+                      onClick={() => handleDeleteClick(course)}
+                    >
+                      <FaTrash /> Delete
+                    </StyledButton>
+                  </CardActions>
+                </CardBody>
+              </StyledCard>
             </Col>
           ))}
         </Row>
       )}
-    </Container>
+
+      {/* Professional Delete Confirmation Modal */}
+      <DeleteModal
+        show={showDeleteModal}
+        onHide={cancelDelete}
+        centered
+        backdrop="static"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>
+            <FaExclamationTriangle className="text-danger me-2" />
+            Confirm Course Deletion
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {courseToDelete && (
+            <div>
+              <p className="mb-3">
+                Are you sure you want to delete <strong>"{courseToDelete.title}"</strong>?
+              </p>
+              <div className="alert alert-warning">
+                <strong>Warning:</strong> This action cannot be undone and will permanently remove:
+                <ul className="mt-2 mb-0">
+                  <li>Course content and materials</li>
+                  <li>Student enrollment data</li>
+                  <li>All associated progress</li>
+                  <li>Course analytics and reviews</li>
+                </ul>
+              </div>
+            </div>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="outline-secondary" onClick={cancelDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            <FaTrash className="me-1" />
+            Delete Course
+          </Button>
+        </Modal.Footer>
+      </DeleteModal>
+    </ProfessionalContainer>
   );
 };
 
 export default CourseList;
 
-
-//  Professional animations with subtle easing
+// Professional animations
 const fadeInUp = keyframes`
   from {
     opacity: 0;
@@ -114,8 +235,6 @@ const fadeInUp = keyframes`
     transform: translateY(0);
   }
 `;
-
-
 
 const pulse = keyframes`
   0%, 100% {
@@ -128,28 +247,13 @@ const pulse = keyframes`
   }
 `;
 
-// Professional main container with sidebar offset and enhanced background
+// Professional main container
 const ProfessionalContainer = styled(Container)`
   background: var(--background-dark);
   min-height: 100vh;
   padding: 1.5rem 1.5rem 1.5rem calc(60px + 1.5rem);
   position: relative;
   max-width: none;
-  
-  // &::before {
-  //   content: '';
-  //   position: fixed;
-  //   top: 0;
-  //   left: 60px;
-  //   right: 0;
-  //   height: 120px;
-  //   background: linear-gradient(135deg, 
-  //     rgba(0, 230, 118, 0.08) 0%,
-  //     rgba(0, 200, 83, 0.05) 50%,
-  //     rgba(0, 230, 118, 0.03) 100%);
-  //   z-index: 0;
-  //   border-radius: 0 0 24px 24px;
-  // }
   
   &::after {
     content: '';
@@ -159,14 +263,14 @@ const ProfessionalContainer = styled(Container)`
     right: 0;
     height: 80px;
     background: linear-gradient(45deg, 
-      rgba(0, 230, 118, 0.04) 0%,
-      rgba(0, 200, 83, 0.06) 100%);
+      rgba(38, 166, 154, 0.04) 0%,
+      rgba(0, 105, 92, 0.06) 100%);
     z-index: 0;
     border-radius: 24px 24px 0 0;
   }
 `;
 
-// Refined card with professional subtle effects and enhanced background
+// Enhanced card with professional styling
 const StyledCard = styled(Card)`
   background: var(--card-background);
   backdrop-filter: blur(10px);
@@ -177,7 +281,7 @@ const StyledCard = styled(Card)`
   position: relative;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   animation: ${fadeInUp} 0.5s ease-out;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--box-shadow);
   z-index: 1;
   
   &::before {
@@ -197,7 +301,7 @@ const StyledCard = styled(Card)`
   
   &:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--box-shadow-hover);
     border-color: var(--primary);
     
     &::before {
@@ -206,7 +310,7 @@ const StyledCard = styled(Card)`
   }
 `;
 
-// Refined course image with colorful gradient overlay
+// Course image with professional gradient
 const CourseImage = styled.div`
   position: relative;
   height: 200px;
@@ -220,7 +324,7 @@ const CourseImage = styled.div`
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
-    filter: brightness(0.8) contrast(1.1);
+    filter: brightness(0.9) contrast(1.1);
   }
   
   &::after {
@@ -232,9 +336,9 @@ const CourseImage = styled.div`
     bottom: 0;
     background: linear-gradient(
       135deg,
-      rgba(0, 230, 118, 0.1) 0%,
+      rgba(38, 166, 154, 0.1) 0%,
       transparent 50%,
-      rgba(0, 200, 83, 0.1) 100%
+      rgba(0, 105, 92, 0.1) 100%
     );
     transition: opacity 0.3s ease;
   }
@@ -247,15 +351,15 @@ const CourseImage = styled.div`
     &::after {
       background: linear-gradient(
         135deg,
-        rgba(0, 230, 118, 0.15) 0%,
-        rgba(0, 200, 83, 0.1) 50%,
-        rgba(0, 230, 118, 0.15) 100%
+        rgba(38, 166, 154, 0.15) 0%,
+        rgba(0, 105, 92, 0.1) 50%,
+        rgba(38, 166, 154, 0.15) 100%
       );
     }
   }
 `;
 
-// Professional badges with colorful styling
+// Professional badges
 const StyledBadge = styled(Badge)`
   padding: 0.4rem 0.8rem;
   font-size: 0.7rem;
@@ -272,11 +376,11 @@ const StyledBadge = styled(Badge)`
     background: var(--primary) !important;
     color: var(--background-dark) !important;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 4px 12px rgba(38, 166, 154, 0.3);
   }
 `;
 
-// Refined price tag with professional styling
+// Price tag styling
 const PriceTag = styled.div`
   position: absolute;
   top: 12px;
@@ -288,7 +392,7 @@ const PriceTag = styled.div`
   border-radius: 20px;
   font-weight: 700;
   font-size: 0.85rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--box-shadow);
   display: flex;
   align-items: center;
   gap: 0.3rem;
@@ -296,7 +400,7 @@ const PriceTag = styled.div`
   border: 1px solid var(--border-color);
 `;
 
-// Professional approval badge with refined animation
+// Approval badge
 const ApprovalBadge = styled(Badge)`
   position: absolute;
   top: 12px;
@@ -315,7 +419,7 @@ const ApprovalBadge = styled(Badge)`
   &.approved {
     background: var(--primary) !important;
     color: var(--background-dark) !important;
-    box-shadow: 0 2px 8px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 2px 8px rgba(38, 166, 154, 0.3);
   }
   
   &.pending {
@@ -326,7 +430,7 @@ const ApprovalBadge = styled(Badge)`
   }
 `;
 
-// Professional card body with refined spacing
+// Card body styling
 const CardBody = styled(Card.Body)`
   padding: 1.5rem;
   background: var(--card-background);
@@ -351,7 +455,7 @@ const CardBody = styled(Card.Body)`
   }
 `;
 
-// Refined metadata section
+// Course metadata section
 const CourseMetadata = styled.div`
   margin-bottom: 1.2rem;
   
@@ -378,15 +482,7 @@ const CourseMetadata = styled.div`
   }
 `;
 
-// Professional tags container
-const TagsContainer = styled.div`
-  margin-bottom: 1.5rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-`;
-
-// Refined action buttons
+// Card actions
 const CardActions = styled.div`
   display: flex;
   gap: 0.6rem;
@@ -395,6 +491,7 @@ const CardActions = styled.div`
   border-top: 1px solid var(--border-color);
 `;
 
+// Enhanced buttons
 const StyledButton = styled(Button)`
   border-radius: 8px;
   font-weight: 500;
@@ -408,7 +505,7 @@ const StyledButton = styled(Button)`
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow);
   }
   
   &.btn-outline-primary {
@@ -456,7 +553,7 @@ const StyledButton = styled(Button)`
   }
 `;
 
-// Professional loading container
+// Loading components
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -466,7 +563,20 @@ const LoadingContainer = styled.div`
   gap: 1rem;
 `;
 
-// Professional empty state
+const StyledSpinner = styled(Spinner)`
+  color: var(--primary) !important;
+  width: 2.5rem;
+  height: 2.5rem;
+`;
+
+const LoadingText = styled.p`
+  color: var(--text-secondary);
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+`;
+
+// Empty state
 const EmptyState = styled.div`
   text-align: center;
   padding: 3rem 2rem;
@@ -484,7 +594,7 @@ const EmptyState = styled.div`
     justify-content: center;
     color: var(--background-dark);
     font-size: 2rem;
-    box-shadow: 0 4px 16px rgba(0, 230, 118, 0.3);
+    box-shadow: 0 4px 16px rgba(38, 166, 154, 0.3);
   }
   
   h4 {
@@ -505,14 +615,14 @@ const EmptyState = styled.div`
   }
 `;
 
-// Professional header section
+// Page header
 const PageHeader = styled.div`
   background: var(--card-background);
   border-radius: 12px;
   padding: 2rem;
   margin-bottom: 2rem;
   border: 1px solid var(--border-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
   
   .header-content {
     display: flex;
@@ -537,21 +647,7 @@ const PageTitle = styled.h1`
   }
 `;
 
-// Professional spinner
-const StyledSpinner = styled(Spinner)`
-  color: var(--primary) !important;
-  width: 2.5rem;
-  height: 2.5rem;
-`;
-
-const LoadingText = styled.p`
-  color: var(--text-secondary);
-  font-size: 1rem;
-  font-weight: 500;
-  margin: 0;
-`;
-
-// Professional alert
+// Error alert
 const ErrorAlert = styled(Alert)`
   background: rgba(220, 53, 69, 0.1) !important;
   border: 1px solid rgba(220, 53, 69, 0.2) !important;
@@ -560,7 +656,7 @@ const ErrorAlert = styled(Alert)`
   padding: 1rem !important;
 `;
 
-// Stats section with professional grid
+// Stats section
 const StatsSection = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -575,11 +671,11 @@ const StatCard = styled.div`
   padding: 1.2rem;
   text-align: center;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
   
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--box-shadow-hover);
     border-color: var(--primary);
   }
   
@@ -596,5 +692,69 @@ const StatCard = styled.div`
     text-transform: uppercase;
     letter-spacing: 0.5px;
     font-weight: 500;
+  }
+`;
+
+// Professional Delete Modal
+const DeleteModal = styled(Modal)`
+  .modal-content {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--box-shadow-hover);
+  }
+  
+  .modal-header {
+    border-bottom: 1px solid var(--border-color);
+    background: var(--card-background);
+    
+    .modal-title {
+      color: var(--heading-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+    }
+    
+    .btn-close {
+      filter: invert(1);
+    }
+  }
+  
+  .modal-body {
+    color: var(--text-secondary);
+    background: var(--card-background);
+    
+    .alert-warning {
+      background: rgba(255, 193, 7, 0.1);
+      border: 1px solid rgba(255, 193, 7, 0.3);
+      color: var(--text-light);
+      border-radius: 8px;
+      
+      ul {
+        padding-left: 1.2rem;
+        
+        li {
+          margin-bottom: 0.3rem;
+        }
+      }
+    }
+  }
+  
+  .modal-footer {
+    border-top: 1px solid var(--border-color);
+    background: var(--card-background);
+    
+    .btn {
+      border-radius: 8px;
+      font-weight: 500;
+      padding: 0.6rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      
+      &:hover {
+        transform: translateY(-1px);
+      }
+    }
   }
 `;
