@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import SectionManager from "../Section/SectionManager"
 import QuizEditor from "../Quiz/QuizEditor"
 import { fetchCourseById } from '../../../../store/courseSlice';
-import VideoUploader from '../video/VideoUploader';
+import Videos from '../Video/Videos';
 
 
 const CourseDetail = () => {
@@ -178,7 +178,7 @@ const CourseDetail = () => {
                   />
                 )}
                 {activeTab === 'videos' && (
-                  <VideoUploader
+                  <Videos
                     courseId={course._id}
                     sections={course.sections || []}
                     onUpdate={handleSectionUpdate}

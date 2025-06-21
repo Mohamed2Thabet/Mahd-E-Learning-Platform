@@ -14,7 +14,7 @@
     deleteVideo,
   } from '../../../../store/videoSlice';
 
-  const VideoUploader = ({ courseId, sections, onUpdate }) => {
+const Videos = ({ courseId, sections, onUpdate }) => {
     const dispatch = useDispatch();
     const [showModal, setShowModal] = useState(false);
     const [editingVideo, setEditingVideo] = useState(null);
@@ -396,7 +396,7 @@
     );
   };
 
-  export default VideoUploader;
+export default Videos;
 
   // Enhanced Styled Components
   const UploadProgressContainer = styled.div`
