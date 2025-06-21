@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { fadeInUp, glow, pulse } from "../common/Animations";
-import { FaPlus } from "react-icons/fa";
+import { FaPlus, FaShoppingCart } from "react-icons/fa";
 import { Button as BSButton } from "react-bootstrap";
 
 const EmptyState = () => (

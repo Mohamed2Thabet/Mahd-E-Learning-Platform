@@ -30,7 +30,7 @@ const Sidebar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // console.log(user,""")
-  const role = user?.role === 'Educator' ? 'Educator' : 'student';
+  const role = user?.role === 'Educator' ? 'Educator' : 'Student';
  
   const studentLinks = [
     { name: 'Dashboard', icon: <FaHome />, to: '/dashboard/student' },
@@ -60,6 +60,7 @@ const Sidebar = () => {
   };
 
   const handleLogout = async () => {
+    localStorage.removeItem("user")
     await dispatch(logoutUser());
     navigate('/login'); // رجّع المستخدم لصفحة تسجيل الدخول
   };

@@ -48,7 +48,7 @@ const Login = () => {
   useEffect(() => {
     if (profile?.role) {
       localStorage.setItem("user", JSON.stringify(profile));
-      if (profile.role === "teacher") {
+      if (profile.role === "Educator") {
         navigate("/dashboard/instructor");
       } else {
         navigate("/dashboard/student");

@@ -8,16 +8,16 @@ const OrderSummary = ({ course, onDeleteCourse }) => (
       Order Summary
     </h3>
     <CourseInfo>
-      <CourseImage src={course.image} alt={course.title} />
+      <CourseImage src={course?.imageUrl} alt={course?.title} />
       <CourseDetails>
-        <CourseTitle>{course.title}</CourseTitle>
-        <CourseInstructor>By {course.instructor.name}</CourseInstructor>
-        <CourseDescription>{course.description}</CourseDescription>
+        <CourseTitle>{course?.title}</CourseTitle>
+        <CourseInstructor>By {course?.educator}</CourseInstructor>
+        <CourseDescription>{course?.description}</CourseDescription>
       </CourseDetails>
-      <DeleteButton onClick={onDeleteCourse} aria-label="Remove course from cart">
+      {/* <DeleteButton onClick={onDeleteCourse} aria-label="Remove course from cart">
         <FaTrash />
         Remove
-      </DeleteButton>
+      </DeleteButton> */}
     </CourseInfo>
   </SummaryCard>
 );

@@ -2,38 +2,20 @@
 import { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Container, Row, Col } from 'react-bootstrap';
-import {
-  FaArrowLeft,
-  FaTrash, FaShoppingCart, FaPlus
-} from 'react-icons/fa';
-import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { fadeInUp, fadeOut } from '../components/common/Animations';
 import CheckoutHeader from '../components/Checkout/CheckoutHeader';
 import OrderSummary from '../components/Checkout/OrderSummary';
 import PaymentSection from '../components/Checkout/PaymentSection';
 import EmptyState from '../components/Checkout/EmptyState';
 
-// ✅ Stripe Promise
+import { fetchCourseById } from '../store/courseSlice';
+
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-
-
-
-
-
-// --- Course Data ---
-const initialCourseData = {
-  id: '52',
-  title: 'The Complete 2025 Web Development Bootcamp',
-  instructor: {
-    name: 'Dr. Angela Yu',
-    id: 'edu_123'
-  },
-  image: 'https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=500&h=300&fit=crop',
-  price: 89.99,
-  discountPrice: 14.99,
-  description: 'Become a Full-Stack Web Developer with just one course. HTML, CSS, Javascript, Node, React, MongoDB, Web3 and DApps'
-};
 
 // --- Styled Components ---
 const PageWrapper = styled.div`
@@ -94,47 +76,50 @@ const ContentWrapper = styled.div`
   transition: opacity 0.3s ease-out;
 `;
 
-
-// --- Main CheckoutPage Component ---
+// --- Main Component ---
 const CheckoutPage = () => {
-  const [selectedCourse, setSelectedCourse] = useState(initialCourseData);
+  const { id: courseId } = useParams();
+  const dispatch = useDispatch();
+
+  const { current: course, loading, error } = useSelector((state) => state.course);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    if (courseId) {
+      dispatch(fetchCourseById({ courseId }));
+    }
+  }, [dispatch, courseId]);
 
   const handleDeleteCourse = () => {
     setIsDeleting(true);
     setTimeout(() => {
-      setSelectedCourse(null);
       setIsDeleting(false);
     }, 300);
   };
-
-  // ✅ تحقق من متغيرات البيئة
-  useEffect(() => {
-    console.log('Environment Variables Check:');
-    console.log('VITE_STRIPE_PUBLIC_KEY:', import.meta.env.VITE_STRIPE_PUBLIC_KEY ? '✅ Set' : '❌ Missing');
-    console.log('VITE_PAYMENT_API_URL:', import.meta.env.VITE_PAYMENT_API_URL || '❌ Missing');
-  }, []);
+  console.log(course)
+  if (loading) return <PageWrapper><p>Loading course details...</p></PageWrapper>;
+  if (error) return <PageWrapper><p>Error: {error}</p></PageWrapper>;
 
   return (
     <PageWrapper>
       <CheckoutContainer>
         <CheckoutHeader
-          courseTitle={selectedCourse?.title}
-          hasSelectedCourse={!!selectedCourse}
+          courseTitle={course?.title}
+          hasSelectedCourse={!!course}
         />
         <MainContent>
-          {selectedCourse ? (
+          {course ? (
             <ContentWrapper $isDeleting={isDeleting}>
               <Row>
                 <Col lg={7} className="mb-4 mb-lg-0">
                   <OrderSummary
-                    course={selectedCourse}
+                    course={course}
                     onDeleteCourse={handleDeleteCourse}
                   />
                 </Col>
                 <Col lg={5}>
                   <Elements stripe={stripePromise}>
-                    <PaymentSection course={selectedCourse} />
+                    <PaymentSection course={course} />
                   </Elements>
                 </Col>
               </Row>

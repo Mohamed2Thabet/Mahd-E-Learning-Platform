@@ -231,7 +231,7 @@ const Signup = () => {
                 aria-label="Select role"
               >
                 <option value="">Select your role</option>
-                <option value="student">Student</option>
+                <option value="Student">Student</option>
                 <option value="Educator">Educator</option>
               </CustomSelect>
               {getFieldError("role") && (

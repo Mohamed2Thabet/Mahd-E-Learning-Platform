@@ -4,38 +4,48 @@ import styled from "styled-components";
 import { slideInRight } from "../common/Animations";
 import { Button as BSButton } from "react-bootstrap";
 
-const CoursePurchaseBox = ({ price, discountPrice, includes, videoPreviewUrl }) => {
-  const navigate = useNavigate()
+const CoursePurchaseBox = ({ includes = [], course = {} }) => {
+  const navigate = useNavigate();
+
   return (
     <PurchaseBoxWrapper>
       <PurchaseCard>
         <PreviewImageWrapper>
-          <PreviewImage src={videoPreviewUrl} alt="Course Preview" />
-          <PlayIconWrapper><FaPlayCircle /></PlayIconWrapper>
+          <PreviewImage
+            src={course?.imageUrl || "/image/default-avatar.jpg"}
+            alt="Course Preview"
+          />
+          <PlayIconWrapper>
+            <FaPlayCircle />
+          </PlayIconWrapper>
         </PreviewImageWrapper>
         <PurchaseBody>
           <PriceWrapper>
-            <CurrentPrice>${discountPrice}</CurrentPrice>
-            <OriginalPrice>${price}</OriginalPrice>
+            <CurrentPrice>${(course?.price - (course?.price * 0.1)) || 0}</CurrentPrice>
+            <OriginalPrice>${course?.price  || 0}</OriginalPrice>
           </PriceWrapper>
-          <SecondaryButton onClick={() => navigate('/checkout')}>
+          <SecondaryButton onClick={() => navigate(`/checkout/${course._id}`)}>
             <FaBolt className="me-2" /> Buy Now
           </SecondaryButton>
-          <CourseIncludesList>
-            {includes.map((item, index) => {
-              const Icon = item.icon;
-              return (
-                <CourseIncludesItem key={index}>
-                  <Icon /> {item.text}
-                </CourseIncludesItem>
-              );
-            })}
-          </CourseIncludesList>
+
+          {includes.length > 0 && (
+            <CourseIncludesList>
+              {includes.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <CourseIncludesItem key={index}>
+                    {Icon && <Icon />} {item.text}
+                  </CourseIncludesItem>
+                );
+              })}
+            </CourseIncludesList>
+          )}
         </PurchaseBody>
       </PurchaseCard>
     </PurchaseBoxWrapper>
-  )
+  );
 };
+
 export default CoursePurchaseBox;
 
 // Purchase Box Components

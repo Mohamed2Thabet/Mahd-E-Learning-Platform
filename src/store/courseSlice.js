@@ -63,10 +63,7 @@ export const fetchCoursesForEducator = createAsyncThunk(
 export const createCourse = createAsyncThunk(
   "course/create",
   async ({ formData, token }, { rejectWithValue }) => {
-    console.log("FormData contents:");
-    for (let [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
-    }
+
     console.log(token)
     try {
       const res = await fetch(`${CMS_BASE_URL}/create`, {

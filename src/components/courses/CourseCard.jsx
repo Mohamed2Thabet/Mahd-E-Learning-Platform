@@ -29,7 +29,7 @@ const CourseCard = ({ course }) => {
       </div>
 
       <Card.Body className="d-flex flex-column">
-        <div className="d-flex align-items-center mb-3">
+        <div className="d-flex align-items-center mb-3 cursor-pointer" onClick={() => navigate(`/profile/${course.educatorId}`)}>
           <InstructorAvatar
             src={course.instructorAvatar || "/image/default-avatar.jpg"}
             alt={course.educator}

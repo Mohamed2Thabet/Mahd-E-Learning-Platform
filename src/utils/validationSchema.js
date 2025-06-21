@@ -32,8 +32,8 @@ export const registerSchema = z.object({
   role: z
     .string()
     .min(1, 'Please select a role')
-    .refine((value) => ['student', 'Educator'].includes(value), {
-      message: 'Role must be either student or Educator',
+    .refine((value) => ['Student', 'Educator'].includes(value), {
+      message: 'Role must be either Student  or Educator',
     }),
 });
 

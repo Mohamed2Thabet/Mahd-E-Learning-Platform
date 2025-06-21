@@ -73,14 +73,8 @@ const CourseList = () => {
           <div className="stat-number">{courses.length}</div>
           <div className="stat-label">Total Courses</div>
         </StatCard>
-        <StatCard>
-          <div className="stat-number">{courses.filter(c => c.approved).length}</div>
-          <div className="stat-label">Approved</div>
-        </StatCard>
-        <StatCard>
-          <div className="stat-number">{courses.filter(c => !c.approved).length}</div>
-          <div className="stat-label">Pending</div>
-        </StatCard>
+      
+      
         <StatCard>
           <div className="stat-number">
             ${courses.reduce((sum, course) => sum + (course.price || 0), 0).toFixed(0)}
@@ -122,9 +116,7 @@ const CourseList = () => {
                   <PriceTag>
                     ${course.price || 0}
                   </PriceTag>
-                  <ApprovalBadge className={course.approved ? "approved" : "pending"}>
-                    {course.approved ? "✓ Approved" : "⏳ Pending"}
-                  </ApprovalBadge>
+                  
                 </CourseImage>
 
                 <CardBody>
@@ -415,19 +407,9 @@ const ApprovalBadge = styled(Badge)`
   gap: 0.4rem;
   border: none;
   z-index: 2;
+
   
-  &.approved {
-    background: var(--primary) !important;
-    color: var(--background-dark) !important;
-    box-shadow: 0 2px 8px rgba(38, 166, 154, 0.3);
-  }
-  
-  &.pending {
-    background: #ffc107 !important;
-    color: var(--background-dark) !important;
-    box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
-    animation: ${pulse} 3s infinite;
-  }
+
 `;
 
 // Card body styling

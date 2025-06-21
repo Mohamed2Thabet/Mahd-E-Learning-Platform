@@ -4,6 +4,7 @@ import profileReducer from "./profileSlice";
 import courseReducer from "./courseSlice";
 import sectionReducer from "./sectionSlice";
 import videoReducer from "./videoSlice";
+import examReducer from "./examSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     course: courseReducer,
     section: sectionReducer,
     video: videoReducer,
+    exam: examReducer,
   },
 });

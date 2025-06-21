@@ -78,7 +78,6 @@ function App() {
     }
   }, [dispatch]);
 
-  if (!isInitialized) return <div>Loading...</div>;
 
   return (
     <Router>
@@ -99,7 +98,7 @@ function App() {
         <Route path="/courses" element={<><Header /><Courese /></>} />
         <Route path="/course-details/:courseId" element={<CoursePage />} />
         <Route path="/course-player" element={<><Header /><CoursePlayer /></>} />
-        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/checkout/:id" element={<CheckoutPage />} />
         <Route path="/community" element={<><Header /><Community /></>} />
         <Route path="/platform-insights" element={<PlatformInsights />} />
         <Route path="/download-app" element={<><Header /><DownloadAppPage /></>} />
@@ -122,14 +121,15 @@ function App() {
 
         <Route path="/dashboard/instructor" element={<ProtectedRoute />}>
           <Route element={<Instructor />}>
+            <Route path="profile" element={<StudentProfilePage />} />
             <Route index element={<InstructorDashboard />} />
             <Route path="courses" element={<CourseList />} />
-            <Route path="profile" element={<Profile />} />
             <Route path="course/create" element={<CourseForm />} />
             <Route path="course/edit/:id" element={<CourseForm />} />
             <Route path="course/:id" element={<CourseDetail />} />
           </Route>
         </Route>
+        <Route path="/profile/:userId" element={<Profile />} />
 
 
 

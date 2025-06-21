@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Row,
@@ -23,7 +23,12 @@ import {
   FaExclamationTriangle,
 } from "react-icons/fa";
 import styled from "styled-components";
-import { addSection, deleteSection, fetchSectionsByCourse, updateSection } from "../../../../store/sectionSlice";
+import {
+  addSection,
+  deleteSection,
+  fetchSectionsByCourse,
+  updateSection,
+} from "../../../../store/sectionSlice";
 
 const SectionManager = ({ courseId }) => {
   const dispatch = useDispatch();
@@ -40,11 +45,18 @@ const SectionManager = ({ courseId }) => {
     order: 1,
   });
   const [success, setSuccess] = useState("");
+
   useEffect(() => {
     if (courseId && token) {
       dispatch(fetchSectionsByCourse({ courseId, token }));
     }
   }, [courseId, token, dispatch]);
+
+  const filteredSections = useMemo(() => {
+    return Array.isArray(sections)
+      ? sections.filter((section) => section.courseId === courseId)
+      : [];
+  }, [sections, courseId]);
 
   const handleShowModal = (section = null) => {
     if (section) {
@@ -59,7 +71,7 @@ const SectionManager = ({ courseId }) => {
       setFormData({
         title: "",
         description: "",
-        order: (Array.isArray(sections) ? sections.length : 0) + 1,
+        order: filteredSections.length + 1,
       });
     }
     setShowModal(true);
@@ -103,7 +115,7 @@ const SectionManager = ({ courseId }) => {
       }
 
       setShowModal(false);
-      dispatch(fetchSectionsByCourse({ courseId, token }));
+      await dispatch(fetchSectionsByCourse({ courseId, token }));
     } catch (err) {
       console.error(err);
       alert(err || "Failed to save section.");
@@ -127,10 +139,10 @@ const SectionManager = ({ courseId }) => {
       await dispatch(deleteSection({
         sectionId: sectionToDelete._id,
         token,
-        courseId
+        courseId,
       })).unwrap();
       setSuccess("Section deleted successfully!");
-      dispatch(fetchSectionsByCourse({ courseId, token }));
+      await dispatch(fetchSectionsByCourse({ courseId, token }));
       handleCloseDeleteModal();
     } catch (err) {
       console.error(err);
@@ -139,12 +151,12 @@ const SectionManager = ({ courseId }) => {
   };
 
   const handleMoveSection = async (sectionId, direction) => {
-    const currentIndex = sections.findIndex((s) => s._id === sectionId);
+    const currentIndex = filteredSections.findIndex((s) => s._id === sectionId);
     const newIndex = direction === "up" ? currentIndex - 1 : currentIndex + 1;
 
-    if (newIndex < 0 || newIndex >= sections.length) return;
+    if (newIndex < 0 || newIndex >= filteredSections.length) return;
 
-    const updatedSections = [...sections];
+    const updatedSections = [...filteredSections];
     [updatedSections[currentIndex], updatedSections[newIndex]] = [
       updatedSections[newIndex],
       updatedSections[currentIndex],
@@ -155,22 +167,18 @@ const SectionManager = ({ courseId }) => {
 
     try {
       await Promise.all([
-        dispatch(
-          updateSection({
-            data: updatedSections[currentIndex],
-            token,
-            courseId,
-          })
-        ).unwrap(),
-        dispatch(
-          updateSection({
-            data: updatedSections[newIndex],
-            token,
-            courseId,
-          })
-        ).unwrap(),
+        dispatch(updateSection({
+          data: updatedSections[currentIndex],
+          token,
+          courseId,
+        })).unwrap(),
+        dispatch(updateSection({
+          data: updatedSections[newIndex],
+          token,
+          courseId,
+        })).unwrap(),
       ]);
-      dispatch(fetchSectionsByCourse({ courseId, token }));
+      await dispatch(fetchSectionsByCourse({ courseId, token }));
       setSuccess("Section order updated!");
     } catch (err) {
       console.error(err);
@@ -211,18 +219,18 @@ const SectionManager = ({ courseId }) => {
         <div className="text-center my-5">
           <Spinner animation="border" />
         </div>
-      ) : Array.isArray(sections) && sections.length > 0 ? (
+      ) : error ? null : filteredSections.length > 0 ? (
         <Row>
-          {sections
+          {filteredSections
             .slice()
             .sort((a, b) => a.order - b.order)
             .map((section, index) => (
               <Col key={section._id} lg={6} className="mb-3">
-                {section._id} all
                 <StyledCard>
                   <SectionHeader>
                     <div>
                       <h6>
+                        {section._idd}
                         Section {section.order}: {section.title}
                       </h6>
                       <small>{section.description}</small>
@@ -240,7 +248,7 @@ const SectionManager = ({ courseId }) => {
                         className="btn-outline-secondary"
                         size="sm"
                         onClick={() => handleMoveSection(section._id, "down")}
-                        disabled={index === sections.length - 1}
+                        disabled={index === filteredSections.length - 1}
                       >
                         <FaArrowDown />
                       </StyledButton>
@@ -280,7 +288,7 @@ const SectionManager = ({ courseId }) => {
               </Col>
             ))}
         </Row>
-      ) : (
+      ) : !error && !loading ? (
         <EmptyState>
           <FaBook
             size={64}
@@ -292,7 +300,7 @@ const SectionManager = ({ courseId }) => {
             <FaPlus /> Create First Section
           </StyledButton>
         </EmptyState>
-      )}
+      ) : null}
 
       {/* Edit/Create Section Modal */}
       <StyledModal show={showModal} onHide={handleCloseModal} size="lg">
@@ -404,6 +412,9 @@ const SectionManager = ({ courseId }) => {
 };
 
 export default SectionManager;
+
+// Styled Components remain unchanged
+
 
 // Styled Components
 const StyledCard = styled(Card)`

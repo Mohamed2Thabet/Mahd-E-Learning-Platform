@@ -101,12 +101,7 @@ const CourseDetail = () => {
               <div className="d-flex align-items-start justify-content-between mb-4">
                 <div>
                   <h1>{course.title}</h1>
-                  <div className="d-flex align-items-center gap-3 mb-3">
-                    <StyledBadge className={`bg-${course.approved ? 'success' : 'warning'}`}>
-                      {course.approved ? <FaCheckCircle /> : <FaClock />}
-                      {course.approved ? 'Approved' : 'Pending'}
-                    </StyledBadge>
-                  </div>
+                
                 </div>
                 <Link to={`/dashboard/instructor/course/edit/${course._id}`}>
                   <StyledButton className="btn-primary">

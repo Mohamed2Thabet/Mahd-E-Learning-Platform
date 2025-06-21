@@ -75,7 +75,7 @@ const CourseDetailsPage = () => {
   useEffect(() => {
     
     if (token && courseId) {
-      dispatch(fetchCourseById({ courseId, token }));
+      dispatch(fetchCourseById({ courseId }));
     }
   }, [dispatch, courseId, token]);
 
@@ -94,15 +94,15 @@ const CourseDetailsPage = () => {
 
   return (
     <PageWrapper>
-      <CourseHeader {...data} />
+      <CourseHeader {...data} course={course} />
       <Container>
         <Row>
           <Col lg={8}>
             <WhatYouWillLearn outcomes={data.learningOutcomes || []} />
-            <CourseContent curriculum={data.curriculum || []} />
+            <CourseContent curriculum={data.curriculum || []} courseId={courseId} />
           </Col>
           <Col lg={4}>
-            <CoursePurchaseBox {...data} />
+            <CoursePurchaseBox {...data} course={course} />
           </Col>
         </Row>
       </Container>

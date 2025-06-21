@@ -9,15 +9,15 @@ const PaymentSection = ({ course }) => (
     </h3>
     <PriceRow>
       <span>Original Price:</span>
-      <span>${course.price.toFixed(2)}</span>
+      <span>${course?.price?.toFixed(2)}</span>
     </PriceRow>
     <PriceRow>
       <span>Discount:</span>
-      <DiscountAmount>-${(course.price - course.discountPrice).toFixed(2)}</DiscountAmount>
+      <DiscountAmount>-${(course?.price * .10)?.toFixed(2)}</DiscountAmount>
     </PriceRow>
     <TotalRow>
       <span>Total Amount:</span>
-      <span>${course.discountPrice.toFixed(2)}</span>
+      <span>${(course?.price * 0.90).toFixed(2)}</span>
     </TotalRow>
     <CheckoutForm course={course} />
   </PaymentSectionCard>

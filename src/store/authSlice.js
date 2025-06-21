@@ -55,14 +55,17 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
 
     const data = await response.json();
     console.log(data)
-    if (!response.ok) return rejectWithValue(data.message || 'Login failed');
-
+    if (!response.ok) {
+      const message = data.error || 'Login failed';
+      return rejectWithValue(message);
+    }
     if (data.accessToken) localStorage.setItem('token', data.accessToken);
     if (data.refreshToken) localStorage.setItem('refresh', data.refreshToken);
     if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
 
     return { user: data.user, token: data.accessToken };
   } catch (error) {
+    
     return rejectWithValue(error.message || 'Network error');
   }
 });
@@ -91,8 +94,11 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async (idToken, 
 // ✅ Logout
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
   const token = localStorage.getItem('token');
+
+  console.log('Before remove:', localStorage.getItem('user'));
   localStorage.removeItem('token');
   localStorage.removeItem('user');
+  console.log('After remove:', localStorage.getItem('user'));
 
   if (token) {
     try {
@@ -100,13 +106,15 @@ export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
-    } catch {
-      // ignore
+    } catch (err) {
+      console.warn('Logout error:', err);
     }
   }
 
   return {};
 });
+
+
 
 // ✅ Register
 export const registerUser = createAsyncThunk('auth/registerUser', async (userData, { rejectWithValue }) => {

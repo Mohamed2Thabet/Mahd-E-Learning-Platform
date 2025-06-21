@@ -3,7 +3,7 @@ import { FaArrowLeft, FaClosedCaptioning, FaLanguage, FaRegStar, FaStar, FaStarH
 import styled from "styled-components";
 
 // Component Definitions
-const CourseHeader = ({ title, subtitle, rating, reviewsCount, instructor, lastUpdated, language, subtitles }) => {
+const CourseHeader = ({  rating, reviewsCount,lastUpdated, language, subtitles ,course}) => {
 
   const renderStars = () => {
     const stars = [];
@@ -28,14 +28,14 @@ const CourseHeader = ({ title, subtitle, rating, reviewsCount, instructor, lastU
           <Col lg={8}>
             
             <CourseTitle>
-              {title}</CourseTitle>
-            <CourseSubtitle>{subtitle}</CourseSubtitle>
+              {course?.title}</CourseTitle>
+            <CourseSubtitle>{course?.description}</CourseSubtitle>
             <RatingWrapper>
               <RatingText>{rating}</RatingText>
               <RatingStars>{renderStars()}</RatingStars>
               <ReviewsText>({reviewsCount?.toLocaleString()} ratings)</ReviewsText>
             </RatingWrapper>
-            <InstructorText>Created by <span>{instructor?.name}</span></InstructorText>
+            <InstructorText>Created by <span>{course?.educator}</span></InstructorText>
             <InfoBar>
               <InfoItem><FaSyncAlt /> Last updated {lastUpdated}</InfoItem>
               <InfoItem><FaLanguage /> {language}</InfoItem>
