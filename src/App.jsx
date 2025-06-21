@@ -7,7 +7,7 @@ import Header from "./components/Layout/Header";
 import Footer from "./components/Layout/Footer";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Signup from "./pages/signup";
+import Signup from "./pages/Signup";
 import ProfessionSelection from "./pages/ProfessionSelection";
 import ThankYouScreen from "./pages/ThankYouScreen";
 import WelcomeScreen from "./pages/WelcomeScreen";
