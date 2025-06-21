@@ -7,7 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import SectionManager from "../Section/SectionManager"
 import QuizEditor from "../Quiz/QuizEditor"
 import { fetchCourseById } from '../../../../store/courseSlice';
-import VideoUploader from '../Video/VideoUploader';
+import VideoUploader from '../video/VideoUploader';
+
 
 const CourseDetail = () => {
   const { id } = useParams();
