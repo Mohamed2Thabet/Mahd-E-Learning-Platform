@@ -5,9 +5,9 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import SectionManager from "../Section/SectionManager"
-import VideoUploader from "../video/VideoUploader"
 import QuizEditor from "../Quiz/QuizEditor"
 import { fetchCourseById } from '../../../../store/courseSlice';
+import VideoUploader from '../video/VideoUploader';
 
 const CourseDetail = () => {
   const { id } = useParams();
