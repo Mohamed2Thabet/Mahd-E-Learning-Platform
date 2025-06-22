@@ -61,7 +61,6 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
     }
     if (data.accessToken) localStorage.setItem('token', data.accessToken);
     if (data.refreshToken) localStorage.setItem('refresh', data.refreshToken);
-    if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
 
     return { user: data.user, token: data.accessToken };
   } catch (error) {
@@ -73,7 +72,7 @@ export const loginUser = createAsyncThunk('auth/loginUser', async ({ email, pass
 // ✅ Google Login
 export const googleLogin = createAsyncThunk('auth/googleLogin', async (idToken, { rejectWithValue }) => {
   try {
-    const response = await fetch('/ums/auth/google', {
+    const response = await fetch('/ums/auth/google-login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idToken })
@@ -81,11 +80,10 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async (idToken, 
 
     const data = await response.json();
     if (!response.ok) return rejectWithValue(data.message || 'Google login failed');
-
-    if (data.token) localStorage.setItem('token', data.token);
-    if (data.user) localStorage.setItem('user', JSON.stringify(data.user));
+    if (data.accessToken) localStorage.setItem('token', data.accessToken);
+    if (data.refreshToken) localStorage.setItem('refresh', data.refreshToken);
     
-    return { user: data.user, token: data.token };
+    return { user: data.user, token: data.accessToken };
   } catch (error) {
     return rejectWithValue(error.message || 'Network error');
   }

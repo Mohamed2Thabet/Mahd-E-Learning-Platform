@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Form, Nav, Navbar } from "react-bootstrap";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { BsList } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -10,7 +10,7 @@ import { fetchProfile } from "../../store/profileSlice";
 const Header = () => {
   const [activeLink, setActiveLink] = useState("Home");
   const profileData =JSON.parse(localStorage.getItem("user")); // أو أي key مخزن فيه اليوزر
-  
+  const location = useLocation();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const isAuthenticated = !!token;
@@ -20,7 +20,6 @@ const Header = () => {
       dispatch(fetchProfile());
     }
   }, [dispatch, isAuthenticated, profileData?.id]);
-
   const navItems = [
     { name: "Home", path: "/" },
     { name: "Courses", path: "/courses" },
@@ -31,22 +30,24 @@ const Header = () => {
           path:
             user?.role === "Educator"
               ? "/dashboard/instructor"
-              : "/dashboard/student"
+              : "/dashboard/student",
         },
-        { name: "Community", path: "/community" },
+        ...(user?.role === "Student"
+          ? [{ name: "Community", path: "/community" }]
+          : []),
         { name: "Settings", path: "/settings" },
       ]
       : []),
     { name: "Help Center", path: "/help-center" },
     { name: "Download App", path: "/download-app" },
   ];
-
+  
   return (
     <StyledNavbar expand="lg" >
       <StyledContainer>
         <BrandLogo as={Link} to="/" >
           <LogoImage
-            src="image/logo.png"
+            src="/image/logo.png"
             alt="Logo"
             width="40px"
           />
@@ -64,8 +65,7 @@ const Header = () => {
                 as={Link}
                 to={item.path}
                 key={item.name}
-                onClick={() => setActiveLink(item.name)}
-                $active={activeLink === item.name}
+                $active={location.pathname === item.path} // 3. compare path
               >
                 {item.name}
               </StyledNavLink>
@@ -96,7 +96,7 @@ const Header = () => {
                   }
                 >
                   <ProfileAvatar
-                    src={user?.avatar || "/image/default-avatar.jpg"}
+                      src={user?.avatar || "/image/person.avif"}
                     alt="Profile"
                   />
                   <UserInfo>

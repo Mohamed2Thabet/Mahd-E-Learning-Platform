@@ -18,7 +18,6 @@ export const fetchEnrollments = createAsyncThunk(
       });
       if (!res.ok) throw new Error('Failed to fetch enrollments');
       const data = await res.json();
-      console.log(data)
       return data;
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
@@ -70,7 +69,7 @@ export const unsaveCourse = createAsyncThunk(
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }
-  }
+  } 
 );
 
 export const fetchSavedCourses = createAsyncThunk(
@@ -80,9 +79,13 @@ export const fetchSavedCourses = createAsyncThunk(
       const res = await fetch(`${API_BASE}/get-saved`, {
         headers: getAuthHeader()
       });
-      
+
       if (!res.ok) throw new Error('Failed to fetch saved courses');
-      return await res.json();
+      const data = await res.json();
+      console.log('Fetched Data:', data);
+
+      // Safely access the first item in the array
+      return data.data[0]?.courses || [];
     } catch (err) {
       return thunkAPI.rejectWithValue(err.message);
     }

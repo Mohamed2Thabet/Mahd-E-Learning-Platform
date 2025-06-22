@@ -18,6 +18,13 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: path => path.replace(/^\/cms/, '/api/v1/cms'),
       },
+
+      // Recommendation API
+      '/recommendation': {
+        target: 'http://18.184.52.10:5006',
+        changeOrigin: true,
+        rewrite: path => path.replace(/^\/recommendation/, '/recommendation'),
+      },
     },
   },
 });

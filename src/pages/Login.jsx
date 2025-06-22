@@ -159,6 +159,7 @@ const Login = () => {
             <SocialButtons>
               <GoogleLoginWrapper>
                 <GoogleLogin
+                  onClick={() => navigate('/')}
                   onSuccess={handleGoogleSuccess}
                   onError={handleGoogleError}
                   useOneTap={false}

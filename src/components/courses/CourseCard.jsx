@@ -36,11 +36,11 @@ const CourseCard = ({ course }) => {
       <Card.Body className="d-flex flex-column">
         <div className="d-flex align-items-center mb-3 cursor-pointer" onClick={() => navigate(`/profile/${course.educatorId}`)}>
           <InstructorAvatar
-            src={course.instructorAvatar || "/image/default-avatar.jpg"}
+            src={course.instructorAvatar || "/image/person.avif"}
             alt={course.educator}
             onError={(e) => {
               e.target.onerror = null;
-              e.target.src = "/image/default-avatar.jpg";
+              e.target.src = "/image/person.avif";
             }}
           />
 

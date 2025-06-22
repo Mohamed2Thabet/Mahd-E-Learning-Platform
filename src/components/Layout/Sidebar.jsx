@@ -66,10 +66,8 @@ const Sidebar = () => {
     localStorage.removeItem("user"); // حذف بيانات المستخدم
     await dispatch(logoutUser());    // تسجيل الخروج من الستور
 
-    // إزالة التاريخ السابق من الـ history stack
     navigate('/login', { replace: true });
 
-    // اختياري: منع الرجوع تمامًا من خلال الاستماع لزر الرجوع
     window.history.pushState(null, null, window.location.href);
     window.onpopstate = function () {
       navigate('/login', { replace: true });

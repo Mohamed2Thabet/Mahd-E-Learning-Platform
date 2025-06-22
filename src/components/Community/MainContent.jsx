@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
-import { Button, Badge } from 'react-bootstrap';
+import { Button, Badge, Modal, Form } from 'react-bootstrap';
 import { FaPlus, FaFilter, FaComment, FaClock, FaUser, FaTag, FaHeart, FaShare } from 'react-icons/fa';
 import Pagination from '../courses/Pagination';
 
@@ -392,11 +392,97 @@ const PaginationWrapper = styled.div`
   animation-fill-mode: both;
 `;
 
+// ✅ Modal Styles
+const StyledModal = styled(Modal)`
+  .modal-content {
+    background: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+  }
+
+  .modal-header {
+    background: var(--card-background);
+    border-color: var(--border-color);
+    color: var(--text-light);
+    border-radius: 16px 16px 0 0;
+  }
+
+  .modal-body {
+    background: var(--card-background);
+    color: var(--text-light);
+  }
+
+  .modal-footer {
+    background: var(--card-background);
+    border-color: var(--border-color);
+    border-radius: 0 0 16px 16px;
+  }
+
+  .btn-close {
+    filter: invert(1);
+  }
+`;
+
+const StyledFormControl = styled(Form.Control)`
+  background: var(--background-dark) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-light) !important;
+  border-radius: 12px;
+  padding: 12px 16px;
+
+  &:focus {
+    background: var(--background-dark) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-light) !important;
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1) !important;
+  }
+
+  &::placeholder {
+    color: var(--text-secondary);
+  }
+`;
+
+const StyledFormSelect = styled(Form.Select)`
+  background: var(--background-dark) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-light) !important;
+  border-radius: 12px;
+  padding: 12px 16px;
+
+  &:focus {
+    background: var(--background-dark) !important;
+    border-color: var(--primary) !important;
+    color: var(--text-light) !important;
+    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1) !important;
+  }
+
+  option {
+    background: var(--background-dark);
+    color: var(--text-light);
+  }
+`;
+
+const ModalButton = styled(Button)`
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+  border: none !important;
+  color: var(--background-dark) !important;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 230, 118, 0.4);
+  }
+`;
+
 // ✅ Dummy Data
-const postsData = [
+const initialPostsData = [
   {
+    id: 1,
     title: 'Tips for creating engaging UI animations?',
-    description: "'I'm working on my first major UI project and looking for advice on creating smooth, engaging animations that don't overwhelm users.'",
+    description: "I'm working on my first major UI project and looking for advice on creating smooth, engaging animations that don't overwhelm users.",
     author: 'Sarah Chen',
     time: '2 hours ago',
     replies: 12,
@@ -404,6 +490,7 @@ const postsData = [
     category: 'UI/UX',
   },
   {
+    id: 2,
     title: 'Best practices for responsive design in 2025?',
     description: 'Looking for current best practices and modern approaches to responsive web design. What frameworks and techniques are you using?',
     author: 'Mike Johnson',
@@ -413,8 +500,9 @@ const postsData = [
     category: 'Development',
   },
   {
+    id: 3,
     title: 'How to structure a digital marketing campaign?',
-    description: "'I'm new to digital marketing and need guidance on structuring an effective campaign from start to finish.'",
+    description: "I'm new to digital marketing and need guidance on structuring an effective campaign from start to finish.",
     author: 'Emma Davis',
     time: '1 day ago',
     replies: 15,
@@ -422,6 +510,7 @@ const postsData = [
     category: 'Marketing',
   },
   {
+    id: 4,
     title: 'Which tools for user research in 2025?',
     description: 'Need feedback on top tools for conducting user research and usability testing in the current landscape.',
     author: 'Ali Ahmed',
@@ -431,6 +520,7 @@ const postsData = [
     category: 'UI/UX',
   },
   {
+    id: 5,
     title: 'React vs. Next.js for beginners?',
     description: 'Is Next.js too advanced for someone just starting with React? Looking for guidance on the learning path.',
     author: 'Leila Mansour',
@@ -440,6 +530,7 @@ const postsData = [
     category: 'Development',
   },
   {
+    id: 6,
     title: 'Building a personal brand as a designer',
     description: 'Strategies for building a strong personal brand in the design industry. What has worked for you?',
     author: 'James Wilson',
@@ -449,6 +540,7 @@ const postsData = [
     category: 'Career',
   },
   {
+    id: 7,
     title: 'Accessibility in modern web development',
     description: 'Best practices for ensuring web accessibility compliance while maintaining modern design aesthetics.',
     author: 'Maria Garcia',
@@ -461,20 +553,147 @@ const postsData = [
 
 const postsPerPage = 3;
 
-// ✅ Main Component
+// ✅ New Post Modal Component
+const NewPostModal = ({ show, onHide, onSubmit }) => {
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    category: 'UI/UX'
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (formData.title.trim() && formData.description.trim()) {
+      onSubmit(formData);
+      setFormData({ title: '', description: '', category: 'UI/UX' });
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  return (
+    <StyledModal show={show} onHide={onHide} centered size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Start New Discussion</Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group className="mb-3">
+            <Form.Label style={{ color: 'var(--text-light)', fontWeight: '600' }}>
+              Discussion Title
+            </Form.Label>
+            <StyledFormControl
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Enter your discussion title..."
+              required
+            />
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label style={{ color: 'var(--text-light)', fontWeight: '600' }}>
+              Category
+            </Form.Label>
+            <StyledFormSelect
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+            >
+              <option value="UI/UX">UI/UX</option>
+              <option value="Development">Development</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Career">Career</option>
+            </StyledFormSelect>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label style={{ color: 'var(--text-light)', fontWeight: '600' }}>
+              Description
+            </Form.Label>
+            <StyledFormControl
+              as="textarea"
+              rows={4}
+              name="description"
+              style={{width: "700px"}}
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Describe your discussion topic..."
+              required
+            />
+          </Form.Group>
+        </Form>
+      </Modal.Body>
+
+      <Modal.Footer>
+        <Button variant="secondary" onClick={onHide}>
+          Cancel
+        </Button>
+        <ModalButton onClick={handleSubmit}>
+          Create Discussion
+        </ModalButton>
+      </Modal.Footer>
+    </StyledModal>
+  );
+};
+
+// ✅ Main Component  
 const MainContent = () => {
+  const [posts, setPosts] = useState(initialPostsData);
   const [currentPage, setCurrentPage] = useState(1);
   const [categoryFilter, setCategoryFilter] = useState('All Categories');
   const [sortFilter, setSortFilter] = useState('Most Recent');
+  const [showNewPostModal, setShowNewPostModal] = useState(false);
 
-  const totalPages = Math.ceil(postsData.length / postsPerPage);
+  // فلترة البوستات حسب الفئة
+  const filteredPosts = posts.filter(post =>
+    categoryFilter === 'All Categories' || post.category === categoryFilter
+  );
+
+  // ترتيب البوستات
+  const sortedPosts = [...filteredPosts].sort((a, b) => {
+    switch (sortFilter) {
+      case 'Most Popular':
+        return b.likes - a.likes;
+      case 'Most Replies':
+        return b.replies - a.replies;
+      default: // Most Recent
+        return b.id - a.id; // افتراض أن ID الأعلى يعني أحدث
+    }
+  });
+
+  const totalPages = Math.ceil(sortedPosts.length / postsPerPage);
   const startIndex = (currentPage - 1) * postsPerPage;
-  const currentPosts = postsData.slice(startIndex, startIndex + postsPerPage);
+  const currentPosts = sortedPosts.slice(startIndex, startIndex + postsPerPage);
 
   const handlePageChange = (page) => setCurrentPage(page);
 
   const handleNewDiscussion = () => {
-    console.log('Starting new discussion...');
+    setShowNewPostModal(true);
+  };
+
+  const addNewPost = (newPostData) => {
+    const newPost = {
+      id: posts.length + 1,
+      title: newPostData.title,
+      description: newPostData.description,
+      author: 'Current User',
+      time: 'Just now',
+      replies: 0,
+      likes: 0,
+      category: newPostData.category,
+    };
+
+    setPosts([newPost, ...posts]);
+    setShowNewPostModal(false);
+    setCurrentPage(1);
   };
 
   const handlePostClick = (post) => {
@@ -483,7 +702,11 @@ const MainContent = () => {
 
   const handleLike = (e, post) => {
     e.stopPropagation();
-    console.log('Liked post:', post.title);
+    setPosts(posts.map(p =>
+      p.id === post.id
+        ? { ...p, likes: p.likes + 1 }
+        : p
+    ));
   };
 
   const handleShare = (e, post) => {
@@ -538,7 +761,7 @@ const MainContent = () => {
 
         {currentPosts.map((post, index) => (
           <PostCard
-            key={index}
+            key={post.id}
             $delay={`${index * 0.1}s`}
             onClick={() => handlePostClick(post)}
           >
@@ -577,7 +800,7 @@ const MainContent = () => {
           </PostCard>
         ))}
 
-        {postsData.length > postsPerPage && (
+        {sortedPosts.length > postsPerPage && (
           <PaginationWrapper>
             <Pagination
               currentPage={currentPage}
@@ -586,6 +809,13 @@ const MainContent = () => {
             />
           </PaginationWrapper>
         )}
+
+        {/* New Post Modal */}
+        <NewPostModal
+          show={showNewPostModal}
+          onHide={() => setShowNewPostModal(false)}
+          onSubmit={addNewPost}
+        />
       </Main>
     </LayoutWrapper>
   );

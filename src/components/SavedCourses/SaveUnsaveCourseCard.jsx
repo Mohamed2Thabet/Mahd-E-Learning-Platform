@@ -1,10 +1,9 @@
 import React from 'react';
 import { Card, Button } from 'react-bootstrap';
 import { FaStar, FaUsers } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-const CourseCard = ({
+const SaveUnsaveCourseCard = ({
   _id,
   imageUrl,
   title,
@@ -12,17 +11,22 @@ const CourseCard = ({
   educator,
   price,
   enrollmentCount,
-  rating
+  rating,
+  isSaved,
+  onToggleSave,
 }) => {
-  const navigate = useNavigate();
-
   const isFree = price === 0;
   const instructorName = typeof educator === 'string' ? educator : educator?.name || 'Instructor';
 
   return (
     <StyledCard className="text-white">
       <div className="position-relative">
-        <Card.Img variant="top" src={imageUrl || "/image/default-avatar.jpg"} className="rounded-top" />
+        <Card.Img
+          style={{height:"300px"}}
+          variant="top"
+          src={imageUrl || '/image/default-avatar.jpg'}
+          className="rounded-top"
+        />
         <PriceBadge
           free={isFree}
           className="position-absolute top-0 end-0 m-2 badge rounded-pill"
@@ -35,7 +39,7 @@ const CourseCard = ({
         <StyledCardTitle>{title}</StyledCardTitle>
         <StyledCardText>{description}</StyledCardText>
 
-        <InstructorContainer onClick={() => navigate('/profile')}>
+        <InstructorContainer>
           <InstructorImage src="/image/person.avif" alt="instructor" />
           <InstructorInfo>
             <div className="instructor-name">{instructorName}</div>
@@ -52,20 +56,17 @@ const CourseCard = ({
           </div>
         </StatsContainer>
 
-        <EnrollButton
-          className="w-100"
-          onClick={() => navigate(`/course-player/${_id}`)}
-        >
-          Enroll Now
-        </EnrollButton>
+        <ActionButton className="w-100" onClick={() => onToggleSave(_id)}>
+          {isSaved ? 'Unsave' : 'Save'}
+        </ActionButton>
       </Card.Body>
     </StyledCard>
   );
 };
 
-export default CourseCard;
+export default SaveUnsaveCourseCard;
 
-// Styled Components
+// --- Styled Components (كما هو) ---
 const StyledCard = styled(Card)`
   background-color: var(--card-background) !important;
   color: var(--text-light) !important;
@@ -73,26 +74,12 @@ const StyledCard = styled(Card)`
   border-radius: 12px !important;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  
-  /* Size adjustments */
-  width: 400px;
-  max-width: 100%;
-  height: auto;
-  
-  @media (max-width: 768px) {
-    width: 100%;
-    min-width: 280px;
-  }
-
-  .card-img-top {
-    height: 180px;
-    object-fit: cover;
-    
-    @media (max-width: 768px) {
-      height: 160px;
-    }
-  }
+  width: 350px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `;
+
 
 const PriceBadge = styled.span`
   background-color: ${props => props.free ? 'var(--primary)' : 'var(--primary-dark)'} !important;
@@ -108,38 +95,20 @@ const StyledCardTitle = styled(Card.Title)`
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.6rem;
-  
-  /* Limit title to 2 lines */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 `;
 
 const StyledCardText = styled(Card.Text)`
   color: var(--text-secondary) !important;
   font-size: 0.9rem;
-  line-height: 1.4;
   margin-bottom: 1rem;
-  
-  /* Limit description to 3 lines */
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 `;
 
 const InstructorContainer = styled.div`
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 12px;
   margin-top: 1rem;
   margin-bottom: 1rem;
-  
-  &:hover {
-    opacity: 0.8;
-  }
 `;
 
 const InstructorImage = styled.img`
@@ -152,26 +121,21 @@ const InstructorImage = styled.img`
 
 const InstructorInfo = styled.div`
   .instructor-name {
-    color: var(--text-light);
     font-weight: 600;
     font-size: 0.9rem;
-    margin: 0;
   }
 
   .instructor-role {
-    color: var(--text-secondary);
     font-size: 0.8rem;
-    margin: 0;
+    color: var(--text-secondary);
   }
 `;
 
 const StatsContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin: 1rem 0 1.25rem 0;
+  margin: 1rem 0;
   font-size: 0.85rem;
-  color: var(--text-light);
 
   .stat-item {
     display: flex;
@@ -180,38 +144,20 @@ const StatsContainer = styled.div`
 
     svg {
       color: var(--primary);
-      font-size: 0.8rem;
     }
   }
 `;
 
-const EnrollButton = styled(Button)`
+const ActionButton = styled(Button)`
   background-color: transparent !important;
   border: 2px solid var(--primary) !important;
   color: var(--primary) !important;
   font-weight: bold !important;
   padding: 0.7rem !important;
   border-radius: 8px !important;
-  font-size: 0.95rem !important;
-  transition: all 0.3s ease !important;
 
   &:hover {
     background-color: var(--primary) !important;
     color: var(--background-dark) !important;
-    border-color: var(--primary) !important;
-    transform: translateY(-1px);
-  }
-
-  &:focus {
-    background-color: var(--primary) !important;
-    color: var(--background-dark) !important;
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 0.2rem rgba(0, 230, 118, 0.25) !important;
-  }
-
-  &:active {
-    background-color: var(--primary-dark) !important;
-    border-color: var(--primary-dark) !important;
-    transform: translateY(0);
   }
 `;

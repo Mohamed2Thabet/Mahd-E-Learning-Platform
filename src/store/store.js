@@ -7,6 +7,7 @@ import videoReducer from "./videoSlice";
 import examReducer from "./examSlice";
 import studentReducer from "./studentSllice";
 import playerReducer from "./playerSlice";
+import recommendationReducer from "./recommendationSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     exam: examReducer,
     student: studentReducer,
     player: playerReducer,
+    recommendation: recommendationReducer,
   },
 });
