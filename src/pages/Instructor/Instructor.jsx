@@ -1,31 +1,32 @@
-// 📁 src/pages/Instructor.jsx
-import React from 'react';
-import './instructor.css';
-import { Card} from 'react-bootstrap';
+import { Outlet } from 'react-router-dom';
+import styled from 'styled-components';
 import Sidebar from '../../components/Layout/Sidebar';
-import DashboardCoursesAnalytics from '../../components/Dasboard/Instructor/DashboardCoursesAnalytics ';
 
 const Instructor = () => {
   return (
-    <div className="page instructor-page ">
-      <Sidebar/>
-      <main className="main-content">
-        <h2>Welcome back, Jonathan!</h2>
-        <div className="summary-cards">
-          {["Courses", "Students", "Rating", "Revenue"].map((title, i) => (
-            <Card key={i} className='card-background'>
-              <Card.Body>
-                <Card.Title className='text-white'>{title}</Card.Title>
-                <Card.Text className='p'>Value {i + 1}</Card.Text>
-              </Card.Body>
-            </Card>
-          ))}
-        </div>
-
-        <DashboardCoursesAnalytics/>
-      </main>
-    </div>
+    <Container>
+      <Sidebar />
+      <MainContentWrapper>
+        <Outlet />
+      </MainContentWrapper>
+    </Container>
   );
 };
-
 export default Instructor;
+const Container = styled.div`
+  display: flex;
+  min-height: 100vh;
+`;
+
+const MainContentWrapper = styled.main`
+  flex: 1;
+  padding: 20px;
+  background-color: var(--background-dark);
+  color: var(--text-light); 
+  margin-left: 60px;
+
+  @media (max-width: 767px) {
+    margin-left: 0;
+  }
+`;
+

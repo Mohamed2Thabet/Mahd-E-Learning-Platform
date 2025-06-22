@@ -1,19 +1,20 @@
+import React from 'react';
+import styled from 'styled-components';
 import { Container, Button } from 'react-bootstrap';
-import CourseCard from './CourseCard';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 
-// استيراد البيانات
-import courses from '../../data/coursesData';
+import CourseCard from './CourseCard';
+import { coursesData } from '../../data/coursesData';
 
 const PopularCourses = () => {
   return (
-    <section className="text-white py-5 ">
+    <Section>
       <Container>
-        <h2 className="mb-3">Popular Courses</h2>
-        <p className="p">Start your learning journey with our most in-demand courses</p>
+        <Title>Popular Courses</Title>
+        <Subtitle>Start your learning journey with our most in-demand courses</Subtitle>
 
         <Swiper
           modules={[Autoplay]}
@@ -29,21 +30,55 @@ const PopularCourses = () => {
             992: { slidesPerView: 3 },
           }}
         >
-          {courses.map((course) => (
+          {coursesData.map((course) => (
             <SwiperSlide key={course.id}>
               <CourseCard {...course} />
             </SwiperSlide>
           ))}
         </Swiper>
 
-        <div className="text-center mt-4">
-          <Button variant="success" size="lg" className="rounded-pill px-4">
+        <ButtonWrapper>
+          <StyledButton variant="success" size="lg">
             View All Courses
-          </Button>
-        </div>
+          </StyledButton>
+        </ButtonWrapper>
       </Container>
-    </section>
+    </Section>
   );
 };
 
 export default PopularCourses;
+const Section = styled.section`
+  background-color: var(--background-dark);
+  color: var(--text-light);
+  padding: 5rem 0;
+`;
+
+const Title = styled.h2`
+  color: var(--heading-color);
+  margin-bottom: 1rem;
+`;
+
+const Subtitle = styled.p`
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 2rem;
+`;
+
+const ButtonWrapper = styled.div`
+  text-align: center;
+  margin-top: 2rem;
+`;
+
+const StyledButton = styled(Button)`
+  background-color: var(--primary);
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 999px;
+  font-weight: bold;
+  font-size: 1rem;
+
+  &:hover {
+    background-color: var(--primary-dark);
+  }
+`;
