@@ -63,7 +63,7 @@ const Signup = () => {
       console.log('Registration truly successful, redirecting...');
       const timer = setTimeout(() => {
         dispatch(clearSuccess());
-        navigate('/login');
+        navigate('/profession');
       }, 2000);
       return () => clearTimeout(timer);
     }

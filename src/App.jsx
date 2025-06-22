@@ -22,7 +22,6 @@ import HelpCenterPage from "./pages/HelpCenterPage";
 import CheckoutPage from "./pages/CheckoutPage";
 import CoursePlayer from "./pages/CoursePlayer";
 import CoursePage from "./pages/CourseDetailsPage";
-import QuizApp from "./pages/quiz-app";
 import LearningGoal from "./pages/LearningGoal";
 import Notifications from "./pages/Notifications";
 import SettingsPage from "./pages/SettingsPage";
@@ -46,6 +45,7 @@ import CourseList from "./components/Dasboard/Instructor/Course/CourseList";
 
 import "./App.css";
 import PublicInstructorProfile from "./pages/PublicInstructorProfile";
+import QuizPage from "./pages/quiz-app";
 
 function App() {
   const dispatch = useDispatch();
@@ -97,13 +97,13 @@ function App() {
         {/* General Pages */}
         <Route path="/courses" element={<><Header /><Courese /></>} />
         <Route path="/course-details/:courseId" element={<CoursePage />} />
-        <Route path="/course-player" element={<><Header /><CoursePlayer /></>} />
+        <Route path="/course-player/:id" element={<><Header /><CoursePlayer /></>} />
         <Route path="/checkout/:id" element={<CheckoutPage />} />
         <Route path="/community" element={<><Header /><Community /></>} />
         <Route path="/platform-insights" element={<PlatformInsights />} />
         <Route path="/download-app" element={<><Header /><DownloadAppPage /></>} />
         <Route path="/help-center" element={<><Header /><HelpCenterPage /></>} />
-        <Route path="/quiz" element={<QuizApp />} />
+        <Route path="/quiz/:id" element={<QuizPage />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/billing" element={<BillingPage />} />

@@ -2,9 +2,14 @@ import { Badge, Button, Card } from "react-bootstrap";
 import { FaClock, FaStar } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { saveCourse } from "../../store/studentSllice";
 
 const CourseCard = ({ course }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const savedCourses = useSelector((state) => state.student.savedCourses || []);
+  const isSaved = savedCourses.includes(course._id);
 
   const renderStars = (rating) => {
     const stars = [];
@@ -71,10 +76,17 @@ const CourseCard = ({ course }) => {
           <PriceTag>${course.price}</PriceTag>
         </div>
 
-        <div className="mt-auto">
+        <div className="d-flex gap-2 mt-auto">
           <PrimaryButton className="w-100" onClick={() => navigate(`/course-details/${course._id}`)}>
             Enroll Now
           </PrimaryButton>
+          <SaveButton
+            title={isSaved ? "Saved" : "Save Course"}
+            onClick={() => dispatch(saveCourse(course._id))}
+            disabled={isSaved}
+          >
+            {isSaved ? "✔" : "💾"}
+          </SaveButton>
         </div>
       </Card.Body>
     </StyledCard>
@@ -83,8 +95,7 @@ const CourseCard = ({ course }) => {
 
 export default CourseCard;
 
-
-
+// Styled Components
 const PopularBadge = styled(Badge)`
   position: absolute;
   top: 12px;
@@ -99,7 +110,7 @@ const PopularBadge = styled(Badge)`
 
 const DifficultyBadge = styled(Badge)`
  background-color: ${props => {
-    switch (props.$level) { // ✅ transient prop
+    switch (props.$level) {
       case 'beginner': return '#4CAF50';
       case 'intermediate': return '#FF9800';
       case 'advanced': return '#F44336';
@@ -135,7 +146,7 @@ const StyledCard = styled(Card)`
 
 const CourseImage = styled.div`
  height: 200px;
- background-image: url(${props => props.$bgImage}); // ✅ transient prop
+ background-image: url(${props => props.$bgImage});
  background-size: cover;
  background-position: center;
  position: relative;
@@ -183,11 +194,31 @@ const PrimaryButton = styled(Button)`
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 230, 118, 0.3);
   background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-  color: var(--heading-color);
  }
 
  &:focus {
   box-shadow: 0 0 0 0.2rem rgba(0, 230, 118, 0.25);
-  color: var(--heading-color);
+ }
+`;
+
+const SaveButton = styled(Button)`
+ background-color: ${props => (props.disabled ? "#c8e6c9" : "#4caf50")};
+ color: white;
+ border: none;
+ border-radius: 50px;
+ padding: 0 16px;
+ font-weight: bold;
+ display: flex;
+ align-items: center;
+ justify-content: center;
+ transition: 0.3s ease;
+
+ &:hover {
+  background-color: ${props => (props.disabled ? "#c8e6c9" : "#388e3c")};
+ }
+
+ &:focus {
+  outline: none;
+  box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.4);
  }
 `;

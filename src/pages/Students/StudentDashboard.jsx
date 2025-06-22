@@ -1,14 +1,14 @@
 // 📁 src/pages/Student.jsx
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { Card, ProgressBar } from 'react-bootstrap';
+import { Card, ProgressBar, Spinner } from 'react-bootstrap';
 import { FaBook, FaClock, FaCertificate, FaTrophy } from "react-icons/fa";
+import { useDispatch, useSelector } from 'react-redux';
 import Sidebar from '../../components/Layout/Sidebar';
 import CourseCard from '../../components/Landing/CourseCard';
 import LearningSchedule from '../../components/Dasboard/User/LearningSchedule';
-import { coursesData } from '../../data/coursesData';
+import { fetchEnrollments } from '../../store/studentSllice';
 
-// بيانات ملخص الطالب
 const summaryData = [
   { title: "Courses", icon: <FaBook /> },
   { title: "Hours", icon: <FaClock /> },
@@ -17,9 +17,17 @@ const summaryData = [
 ];
 
 const StudentDashboard = () => {
+  const dispatch = useDispatch();
+  const { enrollments, loading, error } = useSelector((state) => state.student);
+
+  useEffect(() => {
+    dispatch(fetchEnrollments());
+  }, [dispatch]);
+
+  const courses = enrollments?.data?.courses || [];
   return (
     <PageWrapper>
-      <Sidebar role="instructor" instructorId="123" />
+      <Sidebar />
       <MainContent>
         <h2>Welcome back, Jonathan!</h2>
 
@@ -43,10 +51,21 @@ const StudentDashboard = () => {
         </SummaryCards>
 
         <h3>Current Courses</h3>
+
+        {loading && <Spinner animation="border" />}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+
         <CourseList>
-          {coursesData.map((course, index) => (
-            <CourseCard key={index} {...course} />
-          ))}
+          {courses.length > 0 ? (
+            courses.map((course, index) => (
+          <div>
+                
+                <CourseCard key={index} {...course} />
+          </div>
+            ))
+          ) : (
+            !loading && <p>No enrolled courses found.</p>
+          )}
         </CourseList>
 
         <LearningSchedule />
@@ -56,6 +75,7 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
+
 const PageWrapper = styled.div`
   display: flex;
   background-color: var(--background-dark);
@@ -65,7 +85,7 @@ const PageWrapper = styled.div`
 
 const MainContent = styled.main`
   flex-grow: 1;
-  // padding: 2rem;
+  padding: 2rem;
   background-color: var(--background-dark);
 `;
 

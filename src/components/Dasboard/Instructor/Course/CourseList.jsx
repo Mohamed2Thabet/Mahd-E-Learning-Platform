@@ -61,7 +61,7 @@ const CourseList = () => {
             <FaGraduationCap className="title-icon" />
             My Courses
           </PageTitle>
-          <StyledButton as={Link} to="/create-course" className="btn-primary">
+          <StyledButton as={Link} to="/dashboard/instructor/course/create" className="btn-primary">
             <FaPlus /> Add New Course
           </StyledButton>
         </div>
@@ -98,7 +98,7 @@ const CourseList = () => {
           </div>
           <h4>No Courses Found</h4>
           <p>You haven't created any courses yet. Start by adding your first course to share your knowledge with the world.</p>
-          <StyledButton as={Link} to="/create-course" className="btn-primary">
+          <StyledButton as={Link} to="/dashboard/instructor/course/create" className="btn-primary">
             <FaPlus /> Create Your First Course
           </StyledButton>
         </EmptyState>

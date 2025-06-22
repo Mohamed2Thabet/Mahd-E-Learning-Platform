@@ -94,11 +94,7 @@ export const googleLogin = createAsyncThunk('auth/googleLogin', async (idToken, 
 // ✅ Logout
 export const logoutUser = createAsyncThunk('auth/logoutUser', async () => {
   const token = localStorage.getItem('token');
-
-  console.log('Before remove:', localStorage.getItem('user'));
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  console.log('After remove:', localStorage.getItem('user'));
+localStorage.clear();
 
   if (token) {
     try {

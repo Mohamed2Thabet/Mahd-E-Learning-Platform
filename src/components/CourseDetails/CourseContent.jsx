@@ -150,7 +150,7 @@ const CourseContent = ({ courseId }) => {
                           <LessonContent>
                             <LessonTitle>{video.title}</LessonTitle>
                             <LessonMeta>
-                              <FaClock /> {video.duration || '5:00'}
+                              <FaClock /> {video?.duration}
                             </LessonMeta>
                           </LessonContent>
                           <LessonNumber>{videoIndex + 1}</LessonNumber>

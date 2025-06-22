@@ -48,9 +48,12 @@ const Sidebar = () => {
     { name: 'Create Course', icon: <FaPlus />, to: '/dashboard/instructor/course/create' },
   ];
 
-  const navLinks = role === 'Educator' ? instructorLinks : studentLinks;
+  const token = localStorage.getItem("token");
 
-  console.log(navLinks);
+
+  const navLinks = token ? (role === 'Educator' ? instructorLinks : studentLinks) : [];
+
+
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
@@ -60,10 +63,19 @@ const Sidebar = () => {
   };
 
   const handleLogout = async () => {
-    localStorage.removeItem("user")
-    await dispatch(logoutUser());
-    navigate('/login'); // رجّع المستخدم لصفحة تسجيل الدخول
+    localStorage.removeItem("user"); // حذف بيانات المستخدم
+    await dispatch(logoutUser());    // تسجيل الخروج من الستور
+
+    // إزالة التاريخ السابق من الـ history stack
+    navigate('/login', { replace: true });
+
+    // اختياري: منع الرجوع تمامًا من خلال الاستماع لزر الرجوع
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      navigate('/login', { replace: true });
+    };
   };
+  
   return (
     <>
       {/* ✅ Mobile Toggle Button Only - تم إزالة Back Button الخارجي */}

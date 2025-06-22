@@ -4,30 +4,30 @@ import { FaStar, FaUsers } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-
-
 const CourseCard = ({
-  image,
+  _id,
+  imageUrl,
   title,
   description,
-  instructor,
-  role,
-  rating,
-  reviews,
-  students,
+  educator,
   price,
-  free
+  enrollmentCount,
+  rating
 }) => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+console.log
+  const isFree = price === 0;
+  const instructorName = typeof educator === 'string' ? educator : educator?.name || 'Instructor';
+
   return (
     <StyledCard className="text-white">
       <div className="position-relative">
-        <Card.Img variant="top" src={image} className="rounded-top" />
-        <PriceBadge
-          free={free}
+        <Card.Img variant="top" src={imageUrl || "/image/default-avatar.jpg"} className="rounded-top" />
+      <PriceBadge
+          free={isFree}
           className="position-absolute top-0 end-0 m-2 badge rounded-pill"
         >
-          {free ? 'Free' : `$${price}`}
+          {isFree ? 'Free' : `$${price}`}
         </PriceBadge>
       </div>
 
@@ -36,31 +36,32 @@ const CourseCard = ({
         <StyledCardText>{description}</StyledCardText>
 
         <InstructorContainer onClick={() => navigate('/profile')}>
-          <InstructorImage src={instructor.avatar} alt="instructor" />
+          <InstructorImage src="/images/default-avatar.png" alt="instructor" />
           <InstructorInfo>
-            <div className="instructor-name">{instructor.name}</div>
-            <div className="instructor-role">{role}</div>
+            <div className="instructor-name">{instructorName}</div>
+            <div className="instructor-role">Educator</div>
           </InstructorInfo>
         </InstructorContainer>
 
         <StatsContainer>
           <div className="stat-item">
-            <FaStar /> {rating} ({reviews?.toLocaleString()})
+            <FaStar /> {rating?.average || 0} ({rating?.count || 0})
           </div>
           <div className="stat-item">
-            <FaUsers /> {students?.toLocaleString()} students
+            <FaUsers /> {enrollmentCount || 0} students
           </div>
         </StatsContainer>
 
-        <EnrollButton className="w-100">
+        <Button className="w-100" onClick={() => navigate(`/course-player/${_id}`)}>
           Enroll Now
-        </EnrollButton>
+        </Button>
       </Card.Body>
     </StyledCard>
   );
 };
 
 export default CourseCard;
+
 const StyledCard = styled(Card)`
   background-color: var(--card-background) !important;
   color: var(--text-light) !important;

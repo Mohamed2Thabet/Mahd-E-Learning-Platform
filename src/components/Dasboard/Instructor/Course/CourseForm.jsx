@@ -282,7 +282,7 @@ const CourseForm = () => {
                     <StyledButton
                       type="button"
                       className="btn-outline-secondary"
-                      onClick={() => navigate('/')}
+                      onClick={() => navigate('/dashboard/instructor/courses')}
                     >
                       <FaTimes /> Cancel
                     </StyledButton>

@@ -44,9 +44,9 @@ const Login = () => {
       dispatch(fetchProfile());
     }
   }, [isAuthenticated, isSuccess, dispatch]);
-
+  const token = localStorage.getItem("token")
   useEffect(() => {
-    if (profile?.role) {
+    if (profile?.role && token) {
       localStorage.setItem("user", JSON.stringify(profile));
       if (profile.role === "Educator") {
         navigate("/dashboard/instructor");
