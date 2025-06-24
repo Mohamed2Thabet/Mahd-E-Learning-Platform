@@ -50,7 +50,7 @@ const ProfileHeader = ({ profile, onUpdateProfile }) => {
           <Col md="auto">
             <ProfileImageContainer>
               <ProfileImage
-                src={profile.avatar}
+                src="/image/person.avif"
                 alt="Profile"
                 className="rounded-circle"
               />

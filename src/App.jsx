@@ -129,7 +129,7 @@ function App() {
             <Route path="course/:id" element={<CourseDetail />} />
           </Route>
         </Route>
-        <Route path="/profile/:userId" element={<Profile />} />
+        <Route path="/profile/:username" element={<Profile />} />
 
 
 

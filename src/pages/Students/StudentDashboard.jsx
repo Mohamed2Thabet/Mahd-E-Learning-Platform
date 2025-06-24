@@ -27,7 +27,6 @@ const StudentDashboard = () => {
   const courses = enrollments?.data?.courses || [];
   return (
     <PageWrapper>
-      <Sidebar />
       <MainContent>
         <h2>Welcome back, Jonathan!</h2>
 

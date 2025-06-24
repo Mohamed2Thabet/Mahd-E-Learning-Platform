@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Container, Button } from 'react-bootstrap';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -7,9 +7,18 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 
 import CourseCard from './CourseCard';
-import { coursesData } from '../../data/coursesData';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchGlobalTop5 } from '../../store/recommendationSlice';
+import { useNavigate } from 'react-router-dom';
 
 const PopularCourses = () => {
+  const dispatch = useDispatch() 
+  const navigate = useNavigate()
+  const { top5: courses, loading, error } = useSelector((state) => state.recommendation);
+  useEffect(() => {
+    dispatch(fetchGlobalTop5()); // أو fetchUserTop5()
+  }, [dispatch]);
+  console.log(courses)
   return (
     <Section>
       <Container>
@@ -30,15 +39,15 @@ const PopularCourses = () => {
             992: { slidesPerView: 3 },
           }}
         >
-          {coursesData.map((course) => (
-            <SwiperSlide key={course.id}>
+          {courses.map((course) => (
+            <SwiperSlide key={course._id}>
               <CourseCard {...course} />
             </SwiperSlide>
           ))}
         </Swiper>
 
         <ButtonWrapper>
-          <StyledButton variant="success" size="lg">
+          <StyledButton variant="success" size="lg" onClick={() => navigate('/courses')}>
             View All Courses
           </StyledButton>
         </ButtonWrapper>

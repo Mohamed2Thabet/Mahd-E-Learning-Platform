@@ -10,8 +10,8 @@ const sidebarSections = [
   {
     title: "Account",
     links: [
-      { to: "/account", label: "Account Overview", icon: <FaUserCircle />, description: "View your account summary" },
-      { to: "/profile", label: "Profile Info", icon: <FiUser />, description: "Manage personal information" }
+      // { to: "/account", label: "Account Overview", icon: <FaUserCircle />, description: "View your account summary" },
+      { to: "/dashboard/instructor/profile", label: "Profile Info", icon: <FiUser />, description: "Manage personal information" }
     ]
   },
   {
@@ -19,14 +19,14 @@ const sidebarSections = [
     links: [
       { to: "/settings", label: "Privacy & Security", icon: <FiLock />, description: "Control privacy settings" },
       { to: "/notifications", label: "Notifications", icon: <FiBell />, description: "Manage notification preferences" },
-      { to: "/security", label: "Security Center", icon: <FiShield />, description: "Advanced security options" }
+      // { to: "/security", label: "Security Center", icon: <FiShield />, description: "Advanced security options" }
     ]
   },
   {
     title: "Billing",
     links: [
       { to: "/billing", label: "Billing & Subscription", icon: <FiCreditCard />, description: "Manage payments & plans" },
-      { to: "/devices", label: "Connected Devices", icon: <FiTablet />, description: "View connected devices" }
+      // { to: "/devices", label: "Connected Devices", icon: <FiTablet />, description: "View connected devices" }
     ]
   }
 ];

@@ -7,14 +7,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import { registerSchema } from "../utils/validationSchema";
-import { registerUser, clearError, clearSuccess } from "../store/authSlice";
+import { registerUser, clearError, clearSuccess, loginUser } from "../store/authSlice";
 
 const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoading, error, isSuccess } = useSelector((state) => state.auth);
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const [registeredData, setRegisteredData] = useState(null); 
   const {
     register,
     handleSubmit,
@@ -43,6 +43,7 @@ const Signup = () => {
     try {
       const { firstName, lastName, email, password, role } = data;
       const apiPayload = { firstName, lastName, email, password, role };
+      setRegisteredData(apiPayload); // خزّن البيانات هنا
 
       console.log('Dispatching registerUser with:', apiPayload);
       const result = await dispatch(registerUser(apiPayload)).unwrap();
@@ -56,31 +57,25 @@ const Signup = () => {
   useEffect(() => {
     console.log('Auth state changed:', { isSuccess, error, isLoading });
   }, [isSuccess, error, isLoading]);
-
-  // في الـ useEffect للنجاح
   useEffect(() => {
-    if (isSuccess && !error) { // تأكد من عدم وجود خطأ
-      console.log('Registration truly successful, redirecting...');
+    if (isSuccess && !error && registeredData) {
       const timer = setTimeout(() => {
         dispatch(clearSuccess());
-        navigate('/profession');
+        if (registeredData.role === "Student") {
+          dispatch(loginUser({
+            email: registeredData.email,
+            password: registeredData.password,
+          }));
+          navigate("/learning-goal");
+        } else {
+          navigate("/login");
+        }
       }, 2000);
+
       return () => clearTimeout(timer);
     }
-  }, [isSuccess, error, navigate, dispatch]);
-
+  }, [isSuccess, error, registeredData, dispatch, navigate]);
   
-  // Handle successful registration
-  useEffect(() => {
-    if (isSuccess) {
-      const timer = setTimeout(() => {
-        dispatch(clearSuccess());
-        navigate('/login');
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [isSuccess, navigate, dispatch]);
-
   // Clear error when component unmounts
   useEffect(() => {
     return () => {

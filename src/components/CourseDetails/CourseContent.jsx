@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Accordion, Spinner } from "react-bootstrap";
 import styled, { keyframes } from "styled-components";
 import { fadeInUp } from "../common/Animations";
@@ -32,6 +32,20 @@ const CourseContent = ({ courseId }) => {
 
     fetchAllSectionVideos();
   }, [sections, token, dispatch]);
+
+  // Enrich sections with their video objects
+  const enrichedSections = useMemo(() => {
+    return sections.map((section) => {
+      const sectionVideos = Array.isArray(section.videos)
+        ? section.videos.map((videoItem) =>
+          typeof videoItem === "string"
+            ? videos.find((v) => v._id === videoItem)
+            : videoItem
+        ).filter(Boolean)
+        : [];
+      return { ...section, videoList: sectionVideos };
+    });
+  }, [sections, videos]);
 
   // Invalid credentials/course info
   if (!courseId || !token) {
@@ -101,80 +115,70 @@ const CourseContent = ({ courseId }) => {
     );
   }
 
+  // Main UI
   return (
     <SectionContainer>
       <SectionTitle>Course Content</SectionTitle>
       <CourseStats>
         <StatItem>
-          <StatNumber>{sections.length}</StatNumber>
+          <StatNumber>{enrichedSections.length}</StatNumber>
           <StatLabel>Sections</StatLabel>
         </StatItem>
         <StatItem>
           <StatNumber>
-            {sections.reduce((total, section) => {
-              const sectionVideos = Array.isArray(section.videos)
-                ? section.videos.map((videoId) => videos.find((v) => v._id === videoId)).filter(Boolean)
-                : [];
-              return total + sectionVideos.length;
-            }, 0)}
+            {enrichedSections.reduce((total, section) => total + section.videoList.length, 0)}
           </StatNumber>
           <StatLabel>Lessons</StatLabel>
         </StatItem>
       </CourseStats>
 
       <StyledAccordion activeKey={activeKey} onSelect={(k) => setActiveKey(k)}>
-        {sections.map((section, index) => {
-          const sectionVideos = Array.isArray(section.videos)
-            ? section.videos.map((videoId) => videos.find((v) => v._id === videoId)).filter(Boolean)
-            : [];
-
-          return (
-            <AccordionItemWrapper key={section._id}>
-              <Accordion.Item eventKey={index.toString()}>
-                <Accordion.Header>
-                  <ModuleHeaderContent>
-                    <ModuleTitle>{section.title}</ModuleTitle>
-                    <ModuleInfo>
-                      {sectionVideos.length} lesson{sectionVideos.length !== 1 ? 's' : ''}
-                    </ModuleInfo>
-                  </ModuleHeaderContent>
-                </Accordion.Header>
-                <Accordion.Body>
-                  {sectionVideos.length > 0 ? (
-                    <LessonList>
-                      {sectionVideos.map((video, videoIndex) => (
-                        <LessonItem key={video._id}>
-                          <LessonIcon>
-                            <FaPlayCircle />
-                          </LessonIcon>
-                          <LessonContent>
-                            <LessonTitle>{video.title}</LessonTitle>
-                            <LessonMeta>
-                              <FaClock /> {video?.duration}
-                            </LessonMeta>
-                          </LessonContent>
-                          <LessonNumber>{videoIndex + 1}</LessonNumber>
-                        </LessonItem>
-                      ))}
-                    </LessonList>
-                  ) : (
-                    <NoVideosMessage>
-                      <FaInbox />
-                      <span>No videos found for this section.</span>
-                    </NoVideosMessage>
-                  )}
-                </Accordion.Body>
-              </Accordion.Item>
-            </AccordionItemWrapper>
-          );
-        })}
+        {enrichedSections.map((section, index) => (
+          <AccordionItemWrapper key={section._id}>
+            <Accordion.Item eventKey={index.toString()}>
+              <Accordion.Header>
+                <ModuleHeaderContent>
+                  <ModuleTitle>{section.title}</ModuleTitle>
+                  <ModuleInfo>
+                    {section.videoList.length} lesson{section.videoList.length !== 1 ? 's' : ''}
+                  </ModuleInfo>
+                </ModuleHeaderContent>
+              </Accordion.Header>
+              <Accordion.Body>
+                {section.videoList.length > 0 ? (
+                  <LessonList>
+                    {section.videoList.map((video, videoIndex) => (
+                      <LessonItem key={video._id}>
+                        <LessonIcon>
+                          <FaPlayCircle />
+                        </LessonIcon>
+                        <LessonContent>
+                          <LessonTitle>{video.title}</LessonTitle>
+                          <LessonMeta>
+                            <FaClock /> {video?.duration}
+                          </LessonMeta>
+                        </LessonContent>
+                        <LessonNumber>{videoIndex + 1}</LessonNumber>
+                      </LessonItem>
+                    ))}
+                  </LessonList>
+                ) : (
+                  <NoVideosMessage>
+                    <FaInbox />
+                    <span>No videos found for this section.</span>
+                  </NoVideosMessage>
+                )}
+              </Accordion.Body>
+            </Accordion.Item>
+          </AccordionItemWrapper>
+        ))}
       </StyledAccordion>
     </SectionContainer>
   );
 };
 
 export default CourseContent;
-// Animations
+
 const pulse = keyframes`
   0% { opacity: 1; }
   50% { opacity: 0.5; }

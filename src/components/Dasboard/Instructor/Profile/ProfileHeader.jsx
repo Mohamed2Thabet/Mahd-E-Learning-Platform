@@ -266,14 +266,14 @@ const MessageButton = styled.button`
   }
 `;
 
-const ProfileHeader = () => {
+const ProfileHeader = ({ username }) => {
   return (
     <ProfileContainer>
       <ProfileContent>
         <AvatarSection>
           <AvatarWrapper>
             <InstructorAvatar
-              src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg"
+              src="/image/person.avif"
               alt="David Anderson"
             />
             <OnlineIndicator />
@@ -282,7 +282,7 @@ const ProfileHeader = () => {
         
         <ProfileInfo>
           <NameSection>
-            <InstructorName>David Anderson</InstructorName>
+            <InstructorName>{username}</InstructorName>
             <VerifiedBadge>
               <FiCheck size={18} />
             </VerifiedBadge>
