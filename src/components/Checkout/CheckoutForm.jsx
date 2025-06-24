@@ -13,12 +13,12 @@ const CheckoutForm = ({ course }) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [cardComplete, setCardComplete] = useState(false);
-  const [countdown, setCountdown] = useState(20);
+  const [countdown, setCountdown] = useState(10);
 
   const discount = (course?.price || 0) * 0.10;
   const finalPrice = (course?.price || 0) - discount;
 
-  // Card element change listener
+  // handle Stripe card element changes
   useEffect(() => {
     if (elements) {
       const cardElement = elements.getElement(CardElement);
@@ -35,23 +35,32 @@ const CheckoutForm = ({ course }) => {
     }
   }, [elements]);
 
-  // Countdown timer for redirect
+  // redirect after success screen
   useEffect(() => {
     if (success) {
       const timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(timer);
-            window.location.href = '/';
+            window.location.href = '/courses';
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
-
       return () => clearInterval(timer);
     }
   }, [success]);
+
+  // redirect if message includes success message inside error
+  useEffect(() => {
+    if (error?.includes("Payment processed successfully")) {
+      const timer = setTimeout(() => {
+        window.location.href = "/courses";
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -84,7 +93,6 @@ const CheckoutForm = ({ course }) => {
         throw new Error(stripeError.message);
       }
 
-      // ✅ إرسال البيانات بشكل صحيح ككائن
       const apiResponse = await paymentService.createPaymentIntent({
         course,
         finalPrice,
@@ -114,7 +122,6 @@ const CheckoutForm = ({ course }) => {
       setIsLoading(false);
     }
   };
-  
 
   if (success) {
     return (
@@ -124,7 +131,7 @@ const CheckoutForm = ({ course }) => {
           <h2>Payment Successful!</h2>
           <p>Thank you for purchasing <strong>{course?.title}</strong>.</p>
           <RedirectMessage>
-            You will be redirected to the homepage in <CountdownSpan>{countdown}</CountdownSpan> seconds.
+            You will be redirected to the course page in <CountdownSpan>{countdown}</CountdownSpan> seconds.
           </RedirectMessage>
           <p>Enjoy your learning journey!</p>
           <AccessButton onClick={() => window.location.href = '/my-courses'}>
@@ -139,12 +146,18 @@ const CheckoutForm = ({ course }) => {
     <CheckoutFormWrapper>
       <form onSubmit={handleSubmit}>
         <FormSection>
-          
           <CardElementContainer>
             <CardElement options={CARD_ELEMENT_OPTIONS} />
           </CardElementContainer>
 
-          {error && <ErrorMessage>{error}</ErrorMessage>}
+          {/* Error/Success Message */}
+          {error && (
+            error.includes("Payment processed successfully") ? (
+              <SuccessMessage>{error}</SuccessMessage>
+            ) : (
+              <ErrorMessage>{error}</ErrorMessage>
+            )
+          )}
 
           <PaymentButton
             type="submit"
@@ -167,7 +180,7 @@ const CheckoutForm = ({ course }) => {
 
 export default CheckoutForm;
 
-
+// Styled Components
 const CheckoutFormWrapper = styled.div`
   animation: ${slideInRight} 0.8s ease-out;
   animation-delay: 0.6s;
@@ -181,39 +194,23 @@ const FormSection = styled.div`
   margin-bottom: 24px;
 `;
 
-
-
 const CardElementContainer = styled.div`
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 20px;
   background-color: var(--background-dark);
-  transition: all 0.3s ease;
   margin-bottom: 24px;
-  position: relative;
-  
-  .StripeElement {
-    width: 100%;
-    height: 40px;
-    padding: 10px 0;
-  }
-
-  &.StripeElement--focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(0, 230, 118, 0.1);
-  }
-
-  &.StripeElement--complete {
-    border-color: var(--primary);
-  }
-
-  &.StripeElement--invalid {
-    border-color: #f44336;
-  }
 `;
 
 const ErrorMessage = styled.p`
   color: #f44336;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  text-align: center;
+`;
+
+const SuccessMessage = styled.p`
+  color: #4caf50;
   margin: 10px 0;
   font-size: 0.9rem;
   text-align: center;
@@ -229,8 +226,6 @@ const PaymentButton = styled(BSButton)`
   border: none;
   color: var(--heading-color);
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
 
   &:hover:not(:disabled) {
     transform: translateY(-3px);
@@ -247,21 +242,33 @@ const PaymentButton = styled(BSButton)`
 const SuccessContainer = styled.div`
   text-align: center;
   padding: 40px 20px;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #e6ffed;
   border-radius: 16px;
-  border: 2px solid var(--primary);
-  animation: ${slideInRight} 0.8s ease-out;
+  border: 2px solid #4caf50;
+  animation: ${slideInRight} 0.8s ease-out, glow 1.5s ease-in-out infinite;
+
+  @keyframes glow {
+    0% { box-shadow: 0 0 5px #4caf50; }
+    50% { box-shadow: 0 0 20px #4caf50; }
+    100% { box-shadow: 0 0 5px #4caf50; }
+  }
 `;
 
 const SuccessIcon = styled.div`
   font-size: 4rem;
   margin-bottom: 20px;
-  animation: bounce 1s ease-in-out;
-  
+  animation: bounce 1s ease-in-out, glow 1.5s ease-in-out infinite;
+
   @keyframes bounce {
     0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
     40% { transform: translateY(-10px); }
     60% { transform: translateY(-5px); }
+  }
+
+  @keyframes glow {
+    0% { text-shadow: 0 0 5px #4caf50; }
+    50% { text-shadow: 0 0 20px #4caf50; }
+    100% { text-shadow: 0 0 5px #4caf50; }
   }
 `;
 
@@ -273,27 +280,24 @@ const RedirectMessage = styled.p`
 
 const CountdownSpan = styled.span`
   font-weight: bold;
-  color: var(--primary);
+  color: #4caf50;
 `;
 
 const AccessButton = styled(BSButton)`
   margin-top: 20px;
   padding: 12px 30px;
-  background: var(--primary);
+  background: #4caf50;
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  
+
   &:hover {
-    background: var(--primary-dark);
+    background: #43a047;
     transform: translateY(-2px);
   }
 `;
 
-
-
-// ✅ Card Element Options
-const getCSSVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+const getCSSVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 const CARD_ELEMENT_OPTIONS = {
   style: {
@@ -318,4 +322,4 @@ const CARD_ELEMENT_OPTIONS = {
     },
   },
   hidePostalCode: true,
-}
+};

@@ -9,7 +9,7 @@ import { fetchProfile } from "../../store/profileSlice";
 
 const Header = () => {
   const [activeLink, setActiveLink] = useState("Home");
-  const profileData =JSON.parse(localStorage.getItem("user")); // أو أي key مخزن فيه اليوزر
+  const profileData =JSON.parse(localStorage.getItem("user")); 
   const location = useLocation();
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");

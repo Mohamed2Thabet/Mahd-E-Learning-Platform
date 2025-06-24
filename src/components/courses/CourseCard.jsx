@@ -34,7 +34,7 @@ const CourseCard = ({ course }) => {
       </div>
 
       <Card.Body className="d-flex flex-column">
-        <div className="d-flex align-items-center mb-3 cursor-pointer" onClick={() => navigate(`/profile/${course.educatorId}`)}>
+        <div className="d-flex align-items-center mb-3 cursor-pointer" onClick={() => navigate(`/profile/${course.educator}`)}>
           <InstructorAvatar
             src={course.instructorAvatar || "/image/person.avif"}
             alt={course.educator}

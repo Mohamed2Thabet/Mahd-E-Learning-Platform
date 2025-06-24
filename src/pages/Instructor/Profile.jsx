@@ -8,11 +8,11 @@ import { Container } from 'react-bootstrap';
 import '../../styles/profile.css'
 import { useParams } from 'react-router-dom';
 const Profile = () => {
-  const { userId } =useParams()
+  const { username } = useParams()
   return (
     <div className='background-dark'>
       <Container>
-        <ProfileHeader />
+        <ProfileHeader username={username} />
         <AboutSection />
         <StatsSection />
         <CoursesSection />
